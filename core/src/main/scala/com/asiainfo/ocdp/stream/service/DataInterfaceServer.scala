@@ -1,11 +1,12 @@
 package com.asiainfo.ocdp.stream.service
 
-import com.asiainfo.ocdp.stream.common.{ JDBCUtil, Logging }
+import com.asiainfo.ocdp.stream.common.{JDBCUtil, Logging}
 import com.asiainfo.ocdp.stream.config._
-import com.asiainfo.ocdp.stream.constant.{ DataSourceConstant, TableInfoConstant }
+import com.asiainfo.ocdp.stream.constant.{DataSourceConstant, TableInfoConstant}
 import com.asiainfo.ocdp.stream.event.Event
 import com.asiainfo.ocdp.stream.label.Label
 import com.asiainfo.ocdp.stream.tools.Json4sUtils
+
 import scala.collection.mutable._
 
 /**
@@ -69,9 +70,12 @@ class DataInterfaceServer extends Logging with Serializable {
   }
 
   def getLabelsByIFId(id: String): Array[Label] = {
-    val sql = "select id, p_label_id, name, class_name, properties " +
+    val sql = "select a.id, a.p_label_id, b.name, b.class_name, a.properties, a.label_id " +
       "from " + TableInfoConstant.LabelTableName +
-      " where diid = '" + id + "' and status = 1"
+      " a, " + TableInfoConstant.LabelDefinitionTableName + " b where a.diid = '" + id + "' and a.status = 1 and a.label_id=b.id"
+
+    logInfo("Get all labels via sql '" + sql + "'")
+
     val dsdata = JDBCUtil.query(sql)
 
     val labelarr = ArrayBuffer[Label]()

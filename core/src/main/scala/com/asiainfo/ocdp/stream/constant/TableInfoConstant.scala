@@ -14,6 +14,8 @@ object TableInfoConstant {
 //  val LabelRuleTableName = "LabelRule"
   val LabelTableName = "STREAM_LABEL"
 
+  val LabelDefinitionTableName = "STREAM_LABEL_DEFINITION"
+
 //  val EventRuleTableName = "EventRule"
   val EventTableName = "STREAM_EVENT"
 
