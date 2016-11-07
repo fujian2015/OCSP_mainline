@@ -15,5 +15,6 @@ class TaskConf() {
   @BeanProperty var total_executor_cores: String = ""
   @BeanProperty var queue: String = ""
   @BeanProperty var status: Int = 0
+  @BeanProperty var diid: String = ""
 
 }

@@ -11,7 +11,7 @@ import com.asiainfo.ocdp.stream.subject.SubjectTask
 object StreamTaskFactory {
 
   def getStreamTask(taskConf: TaskConf): StreamTask = {
-    val id = taskConf.getId
+    val id = taskConf.getDiid
     val interval = taskConf.getReceive_interval
     val taskType = taskConf.getTask_type
     if (TaskConstant.TYPE_DATAINTERFACE == taskType)
