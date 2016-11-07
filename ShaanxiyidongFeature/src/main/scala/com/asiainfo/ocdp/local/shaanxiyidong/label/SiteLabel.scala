@@ -50,20 +50,17 @@ class SiteLabel extends Label {
       match{
         case None => {
           val cacheSiteLabelsMap = mutable.Map[String, String]()
-          //cacheSiteLabelsMap += ("timestamp" -> currentTimestamp_str)
           cacheSiteLabelsMap += ("timestamp" -> currentTimestamp)
           cacheSiteLabelsMap += ("lac_cell" -> lac_cell)
 
           cacheMutableMap += (normal_imsi -> cacheSiteLabelsMap)
           //enhance label to add latest timestamp
-          //labelMap.update("latestTimestamp", currentTimestamp_str)
           labelMap.update(fullPathKey, "true")
           labelMap.update(isLatestSite, "true")
         }
         case Some(cacheSiteLabelsMap) => {
           val latestLacCell = cacheSiteLabelsMap.get("lac_cell").get
           val cacheTime = cacheSiteLabelsMap.get("timestamp").get
-          //val cacheTimeMs = DateFormatUtils.dateStr2Ms(cacheTime_str)
           val cacheTimeMs = cacheTime.toLong
           val currentTimeMs = currentTimestamp.toLong
 
@@ -72,13 +69,13 @@ class SiteLabel extends Label {
             cacheSiteLabelsMap += ("timestamp" -> currentTimestamp)
             cacheSiteLabelsMap += ("lac_cell" -> lac_cell)
 
+            labelMap.update(isLatestSite, "true")
+
             if (!lac_cell.equals(latestLacCell)) {
               // Add the latest path to path cache
               labelMap.update(fullPathKey, "true")
-              labelMap.update(isLatestSite, "true")
             }
 
-            //labelMap.update("latestTimestamp", cacheTime_str)
           }
           else {
             if (cacheTimeMs - currentTimeMs < thresholdValue) {
@@ -86,7 +83,6 @@ class SiteLabel extends Label {
               // Add the latest path to path cache
               labelMap.update(fullPathKey, "true")
             }
-            //labelMap.update("latestTimestamp", cacheTime_str)
           }
 
         }

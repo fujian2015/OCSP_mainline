@@ -41,7 +41,7 @@ class AccumulateLabel extends Label {
     //由于业务需求统计周期为自然日,因此应将currentTime对应的当日时间00:00写入cache
     //currentTime为1970-01-01 08:00:00.000到当前的毫秒数,因此+8个小时的毫秒数(28800000L)得出1970-01-01 00:00:00.000 到当前的毫秒数
     //(currentTime + 28800000L) % (86400000L) 为当日超过00:00的毫秒数,
-    val currentTime_byDay = (currentTime + 28800000L) - (currentTime + 28800000L) % (86400000L)
+    val currentTime_byDay = currentTime  - (currentTime + 28800000L) % (86400000L)
     val tour_area  = line("tour_area")
     val security_area = line("security_area")
     val tour_cache_key = "@tour@" + tour_area
