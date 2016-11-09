@@ -70,7 +70,7 @@ class DataInterfaceServer extends Logging with Serializable {
   }
 
   def getLabelsByIFId(id: String): Array[Label] = {
-    val sql = "select a.id, a.p_label_id, b.name, b.class_name, a.properties, a.label_id " +
+    val sql = "select a.id, a.p_label_id, b.name, b.class_name, b.properties, a.label_id " +
       "from " + TableInfoConstant.LabelTableName +
       " a, " + TableInfoConstant.LabelDefinitionTableName + " b where a.diid = '" + id + "' and a.status = 1 and a.label_id=b.id"
 
