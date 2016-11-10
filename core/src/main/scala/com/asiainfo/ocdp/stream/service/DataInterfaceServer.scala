@@ -6,12 +6,13 @@ import com.asiainfo.ocdp.stream.constant.{DataSourceConstant, TableInfoConstant}
 import com.asiainfo.ocdp.stream.event.Event
 import com.asiainfo.ocdp.stream.label.Label
 import com.asiainfo.ocdp.stream.tools.Json4sUtils
+import org.apache.commons.lang3.StringUtils
 
 import scala.collection.mutable._
 
 /**
- * Created by leo on 9/16/15.
- */
+  * Created by leo on 9/16/15.
+  */
 class DataInterfaceServer extends Logging with Serializable {
 
   def getDataInterfaceInfoById(id: String): DataInterfaceConf = {
@@ -116,26 +117,39 @@ class DataInterfaceServer extends Logging with Serializable {
     resultArray.foreach(id => {
       result += labelIDMap(id)
     })
-    result.toArray
 
-//    labelarr.sortWith((l1, l2) => {
-//      val i1 = l1.conf.getId
-//      val p1 = l1.conf.getPlabelId
-//      val i2 = l2.conf.getId
-//      val p2 = l2.conf.getPlabelId
-//      p1.equals(i2) || p2.equals(i1) || i1.compareTo(i2) < 0
-//    }).toArray
+    logInfo("All labels in order: " + result.toList)
+
+    result.toArray
   }
 
   /**
-   * 根据标签的信赖关系排序
-   */
+    * 根据标签的信赖关系排序
+    */
   def labelSort(labelId: String, result: ArrayBuffer[String], map: scala.collection.immutable.Map[String,Label]) {
-    val pid = map(labelId).conf.plabelId
-    if (pid != null && pid.trim != "") labelSort(pid, result, map)
-    if (!result.contains(labelId)) result += labelId
+    if (map.contains(labelId)){
+      val pid = StringUtils.trim(map(labelId).conf.plabelId)
+      if (StringUtils.isNotEmpty(pid) && pid != labelId) labelSort(pid, result, map)
+      if (!result.contains(labelId)) result += labelId
+    }else{
+      logError("Invalid label id: " + labelId)
+    }
   }
-  
+
+  def eventSort(eventId: String, result: ArrayBuffer[String], map: scala.collection.immutable.Map[String,Event]) {
+    if (map.contains(eventId)){
+      val p_event_id = StringUtils.trim(map(eventId).conf.p_event_id)
+
+      if (StringUtils.isNotEmpty(p_event_id) && p_event_id != eventId) eventSort(p_event_id, result, map)
+
+      if (!result.contains(eventId)) result += eventId
+    }
+    else{
+      logError("Invalid event id: " + eventId)
+    }
+  }
+
+
   def getEventsByIFId(id: String): Array[Event] = {
     /*val sql = "select id, name, select_expr, filter_expr, p_event_id, properties " +
       "from " + TableInfoConstant.EventTableName +
@@ -183,13 +197,23 @@ class DataInterfaceServer extends Logging with Serializable {
       event.init(conf)
       eventarr += event
     })
-    eventarr.sortWith((e1, e2) => {
-      val i1 = e1.conf.id
-      val p1 = e1.conf.p_event_id
-      val i2 = e2.conf.id
-      val p2 = e2.conf.p_event_id
-      i2.equals(p1) || i1.equals(p2) || i1.compareTo(i2) < 0
-    }).toArray
+
+    //根据event的依赖关系排序
+    val eventIDMap = eventarr.map(event => (event.conf.id, event)).toMap
+
+    val resultArray = ArrayBuffer[String]()
+
+    eventarr.foreach(event => eventSort(event.conf.id, resultArray, eventIDMap))
+
+    val result = ArrayBuffer[Event]()
+
+    resultArray.foreach(id => {
+      result += eventIDMap(id)
+    })
+
+    logInfo("All events in order: " + result.toList)
+
+    result.toArray
   }
 
   def getSubjectInfoById(id: String): SubjectConf = {

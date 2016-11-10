@@ -16,5 +16,6 @@ class EventConf(conf: Map[String, String] = null) extends BaseConf(conf) {
   @BeanProperty var interval: Int = 0
   @BeanProperty var delim: String = ""
 
+  override def toString = s"EventConf($id, $name, $p_event_id)"
 }
 

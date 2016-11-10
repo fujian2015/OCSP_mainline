@@ -394,4 +394,6 @@ class Event extends Serializable {
       writer.push(rdd, conf, uniqKeys)
     })
   }
+
+  override def toString = s"Event($conf)"
 }
