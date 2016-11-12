@@ -30,9 +30,9 @@ class TaskStopManager(ssc: StreamingContext, taskId: String) extends Logging {
         "and period of " + periodSeconds + " secs")
     timer.schedule(task, delaySeconds * 1000, periodSeconds * 1000)
   }
-
+  //检测到任务状态为准备停止或准备重启时,均终止ssc
   def checkTaskStop(ssc: StreamingContext, id: String) {
-    if (TaskConstant.PRE_STOP == taskServer.checkTaskStatus(id)) {
+    if (TaskConstant.PRE_STOP == taskServer.checkTaskStatus(id) || TaskConstant.PRE_RESTART == taskServer.checkTaskStatus(id)) {
       ssc.stop()
 //      ssc.sparkContext.stop()
     }

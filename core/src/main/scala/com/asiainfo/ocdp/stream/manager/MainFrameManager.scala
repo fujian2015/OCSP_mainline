@@ -103,7 +103,7 @@ object MainFrameManager extends Logging {
             if (stop_time + startTimeOutSeconds * 1000 >= System.currentTimeMillis()) {
               //              taskServer.stopTask(taskId)
               pre_stop_tasks.remove(taskId)
-              logInfo("Task " + taskId + " prepare stop " + startTimeOutSeconds + " s has time out , stop faile ! please check driver log message !")
+              logInfo("Task " + taskId + " prepare stop " + startTimeOutSeconds + " s has time out , stop fail ! please check driver log message !")
             }
           } else {
             pre_stop_tasks.put(taskId, System.currentTimeMillis())

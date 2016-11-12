@@ -14,6 +14,11 @@ class TaskServer extends Logging {
     JDBCUtil.execute(sql)
   }
 
+  def RestartTask(id: String) {
+    val sql = "update " + TableInfoConstant.TaskTableName + " set status=" + TaskConstant.PRE_START + " where id= '" + id +"'"
+    JDBCUtil.execute(sql)
+  }
+
   def stopTask(id: String) {
     val sql = "update " + TableInfoConstant.TaskTableName + " set status=" + TaskConstant.STOP + " where id='" + id +"'"
     JDBCUtil.execute(sql)

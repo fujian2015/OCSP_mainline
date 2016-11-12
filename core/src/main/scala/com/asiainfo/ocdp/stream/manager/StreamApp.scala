@@ -2,8 +2,9 @@ package com.asiainfo.ocdp.stream.manager
 
 import com.asiainfo.ocdp.stream.common.Logging
 import com.asiainfo.ocdp.stream.config.MainFrameConf
+import com.asiainfo.ocdp.stream.constant.TaskConstant
 import com.asiainfo.ocdp.stream.service.TaskServer
-import org.apache.spark.streaming.{StreamingContextState, Seconds, StreamingContext}
+import org.apache.spark.streaming.{Seconds, StreamingContext, StreamingContextState}
 import org.apache.spark.{SparkConf, SparkContext}
 /**
   * Created by leo on 9/16/15.
@@ -57,10 +58,19 @@ object StreamApp extends Logging {
         e.printStackTrace()
       }
     } finally {
-//      ssc.awaitTermination()
+//    ssc.awaitTermination()
       ssc.stop()
-      taskServer.stopTask(taskConf.getId)
-      logInfo("Stop task " + taskConf.getId + " sucess !")
+      //若task的状态是PRE_RESTART 则将数据库中的task status设为1,准备启动;
+      //否则将数据库中task status设为0,停止状态
+      if (TaskConstant.PRE_START == taskServer.checkTaskStatus(taskConf.getId) || TaskConstant.PRE_RESTART == taskServer.checkTaskStatus(taskConf.getId)){
+      taskServer.RestartTask(taskConf.getId)
+        logInfo("Restarting task " + taskConf.getId + " ...")
+      }
+      else {
+        taskServer.stopTask(taskConf.getId)
+        logInfo("Stop task " + taskConf.getId + " successfully !")
+      }
+
       sys.exit()
     }
 
