@@ -29,6 +29,8 @@ class DataProducer(brokers: String, topic: String) extends Runnable {
 
   private val PHONE_MAX = 100
 
+  private val separator = '|'
+
 
   def run(): Unit = {
     val rand = new Random()
@@ -46,51 +48,54 @@ class DataProducer(brokers: String, topic: String) extends Runnable {
           //begin time & end time
 
           val beginTime = System.currentTimeMillis()
-          val msg = new StringBuilder(msgId.toString)
-          msg.append(",")
-          msg.append(beginTime.toString)
-          msg.append(",")
+          val timeStr = DateFormatUtils.dateMs2Str(beginTime, "yyyyMMddHHmmssSSS")
+          val msg = new StringBuilder(timeStr)
+          msg.append(separator)
           val endTime = beginTime + 1000 * 60
-          msg.append(endTime.toString)
-          msg.append(",")
+          val endtimeStr = DateFormatUtils.dateMs2Str(endTime, "yyyyMMddHHmmssSSS")
+          msg.append(endtimeStr)
+          msg.append(separator)
 
           // phone number, imsi
           val phoneNum1 = rand.nextInt(PHONE_MAX) + 1000
           val phoneNum2 = rand.nextInt(PHONE_MAX) + 2000
           msg.append("139" + phoneNum1.toString() + phoneNum2.toString)
-          msg.append(",")
+          msg.append(separator)
           val long_imsi = "460009269" + (imsi + rand.nextInt(IMSI_MAX)).toString
           //val long_imsi = "4600092691019400"
           msg.append(long_imsi)
-          msg.append(",")
+          msg.append(separator)
 
           msg.append(rand.nextInt(DATA_TYPE) + 1)
-          msg.append(",")
+          msg.append(separator)
+
 
           // start lac, cell, end lac, cell
           msg.append(rand.nextInt(LAC_MAX) + 31250)
-          msg.append(",")
+          msg.append(separator)
           msg.append(5125)
-          msg.append(",")
+          msg.append(separator)
           msg.append(rand.nextInt(LAC_MAX) + 31250)
-          msg.append(",")
+          msg.append(separator)
           msg.append(5125)
-          msg.append(",")
-          msg.append(",")
+          msg.append(separator)
+          msg.append(separator)
           msg.append("0")
-          msg.append(",")
+          msg.append(separator)
           msg.append("111")
-          msg.append(",")
+          msg.append(separator)
 
           val phoneNum3 = rand.nextInt(PHONE_MAX) + 1000
           val phoneNum4 = rand.nextInt(PHONE_MAX) + 2000
           msg.append("137" + phoneNum3.toString() + phoneNum4.toString)
-          msg.append(",")
+          msg.append(separator)
           msg.append(imsi + 1)
-          msg.append(",")
+          msg.append(separator)
           msg.append("00000000000")
-          msg.append(",")
+          msg.append(separator)
           msg.append("1")
+          msg.append(separator)
+          msg.append("2")
 
           println(msg.toString())
           //send the generated message to broker
