@@ -1,13 +1,12 @@
 package com.asiainfo.ocdp.stream.common
 
-import com.asiainfo.ocdp.stream.config.MainFrameConf
+import com.asiainfo.ocdp.stream.config.{SystemProps, MainFrameConf}
 import redis.clients.jedis.{JedisPool, JedisPoolConfig}
 
 /**
  * Created by leo on 8/12/15.
  */
-class CodisCacheManager extends RedisCacheManager {
-
+class CodisCacheManager(sysProps: SystemProps) extends RedisCacheManager(sysProps) {
   private val jedisPool: JedisPool = {
 
     val JedisConfig = new JedisPoolConfig()
@@ -36,5 +35,8 @@ class CodisCacheManager extends RedisCacheManager {
   }
 
   override def getResource = jedisPool.getResource
+
+  def closeCacheConnection = {
+  }
 
 }

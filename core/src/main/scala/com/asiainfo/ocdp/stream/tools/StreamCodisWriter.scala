@@ -2,6 +2,7 @@ package com.asiainfo.ocdp.stream.tools
 
 import java.text.SimpleDateFormat
 
+import com.asiainfo.ocdp.stream.common.BroadcastManager
 import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, EventConf}
 import kafka.producer.KeyedMessage
 import org.apache.spark.rdd.RDD
@@ -37,8 +38,14 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter{
 
     val resultSiteData:mutable.Map[String,mutable.Map[String,String]] = mutable.Map[String,mutable.Map[String,String]]()
 
+    val broadSysProps = BroadcastManager.getBroadSysProps
+    val broadCodisProps = BroadcastManager.getBroadCodisProps
+
     val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys)
     resultRDD.mapPartitions(iter => {
+      //Init Task cache
+     // CacheFactory.setCacheProps(broadSysProps.value, broadCodisProps.value)
+      CacheFactory.initCache(broadSysProps.value, broadCodisProps.value)
       val it = iter.toList.map(line =>
       {
         val key = line._1
@@ -56,7 +63,7 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter{
       })
       //Save cache to Codis
       if (resultSiteData.size > 0) CacheFactory.getManager.hmset(resultSiteData)
-
+      CacheFactory.closeCacheConnection
       it.iterator
     })
   }

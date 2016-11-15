@@ -1,6 +1,6 @@
 package com.asiainfo.ocdp.stream.manager
 
-import com.asiainfo.ocdp.stream.common.Logging
+import com.asiainfo.ocdp.stream.common.{SscManager, Logging}
 import com.asiainfo.ocdp.stream.config.MainFrameConf
 import com.asiainfo.ocdp.stream.constant.TaskConstant
 import com.asiainfo.ocdp.stream.service.TaskServer
@@ -28,6 +28,8 @@ object StreamApp extends Logging {
     val taskConf = taskServer.getTaskInfoById(taskId)
 
     //1 初始化 streamingContext
+
+
     val sparkConf = new SparkConf().setAppName(taskConf.getName)
     // modify by surq at 2015.10.21 start
     // sparkConf.setMaster("local[2]")
@@ -43,6 +45,9 @@ object StreamApp extends Logging {
     val ssc = new StreamingContext(sc, Seconds(taskConf.getReceive_interval))
     //    ssc.addStreamingListener(new ReceiveRecordNumListener())
     new TaskStopManager(ssc, taskConf.getId)
+
+    //将ssc存放到sscManager中
+    SscManager.initSsc(ssc)
 
     try {
       StreamTaskFactory.getStreamTask(taskConf).process(ssc)

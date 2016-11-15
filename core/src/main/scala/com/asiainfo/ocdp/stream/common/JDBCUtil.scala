@@ -11,6 +11,8 @@ import scala.xml.XML
  */
 object JDBCUtil {
 
+  private var conn : Connection = null
+
   private def connection: Connection = {
     //    val spark_home = System.getenv("SPARK_HOME")
     //    val xml = XML.loadFile(spark_home + "/conf/" + CommonConstant.DBConfFile)
@@ -22,7 +24,15 @@ object JDBCUtil {
     val classname = (mysqlNode \ "classname").text
 
     Class.forName(classname)
-    DriverManager.getConnection(url, username, password)
+
+    if (conn == null){
+      conn = DriverManager.getConnection(url, username, password)
+    }
+    conn
+  }
+
+  final def closeConnection = {
+    if (conn != null) conn.close()
   }
 
   def query(sql: String): Array[Map[String, String]] = {
@@ -50,7 +60,7 @@ object JDBCUtil {
     } finally {
       if (rs != null) rs.close()
       if (statement != null) statement.close()
-      if (connection != null) connection.close()
+     // if (connection != null) connection.close()
     }
   }
 
@@ -64,7 +74,7 @@ object JDBCUtil {
       statement.execute(sql)
     } finally {
       if (statement != null) statement.close()
-      if (connection != null) connection.close()
+      //if (connection != null) connection.close()
     }
   }
 

@@ -38,4 +38,6 @@ trait CacheManager {
   def hgetall(keys: List[String],hgetAllService: ExecutorCompletionService[Seq[(String,java.util.Map[String,String])]]): Map[String, Map[String, String]]
 
   def hmset(keyValues: Map[String, Map[String, String]])
+
+  def closeCacheConnection()
 }
