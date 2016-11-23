@@ -5,9 +5,6 @@ package com.asiainfo.ocdp.stream.constant
  */
 object DataSourceConstant {
 
-  //For StreamingContext
-  val BATCH_DURATION_SECONDS_KEY = "batch.duration.seconds"
-
   val KAFKA_TYPE = "kafka"
   val JDBC_TYPE = "jdbc"
   val CODIS_TYPE = "codis"
