@@ -9,7 +9,7 @@ object CommonConstant {
   val jarFilePath = CommonConstant.getClass.getProtectionDomain.getCodeSource.getLocation.getFile
   val baseDir_decode = java.net.URLDecoder.decode(jarFilePath, "UTF-8");
   val baseDir = (new File(baseDir_decode)).getParent
-  val DBConfFile = new File(baseDir, "./common.xml").getCanonicalPath
+  val DBConfFile = new File(baseDir, "../conf/common.xml").getCanonicalPath
   val log4jConfFile = new File(baseDir, "../conf/log4j.properties").getCanonicalPath
   val appLogFile = new File(baseDir, "../logs/Stream_APP").getCanonicalPath
   val appJarsDir = new File(baseDir).getCanonicalPath
