@@ -6,7 +6,7 @@ PROJECT=$1
 
 cd ${HOME_PATH}
 
-mvn clean package
+mvn clean package -Dmaven.test.skip=true
 
 if [ $? -ne 0 ]; then
    echo "Build failed..."
