@@ -2,7 +2,7 @@ package com.asiainfo.ocdp.stream.tools
 
 import java.util.concurrent.Callable
 import java.util.{ List => JList, Map => JMap }
-import com.asiainfo.ocdp.stream.common.{RedisCacheManager, CodisCacheManager, JodisCacheManager}
+import com.asiainfo.ocdp.stream.common.{CacheManager, RedisCacheManager, CodisCacheManager, JodisCacheManager}
 import com.asiainfo.ocdp.stream.config.MainFrameConf
 import org.slf4j.LoggerFactory
 import scala.collection.JavaConverters._
@@ -25,12 +25,13 @@ object CacheQryThreadPool {
   val DEFAULT_CHARACTER_SET = "UTF-8"
 }
 
-class Qry(keyList: List[String]) extends Callable[List[(String, Array[Byte])]] {
+class Qry(keyList: List[String], cacheManager : CacheManager) extends Callable[List[(String, Array[Byte])]] {
   val logger = LoggerFactory.getLogger(this.getClass)
+
   override def call() = {
     val t1 = System.currentTimeMillis()
     val keys = keyList.map(x => x.getBytes).toSeq
-    val conn = CacheFactory.getManager.asInstanceOf[RedisCacheManager].getResource
+    val conn = cacheManager.asInstanceOf[RedisCacheManager].getResource
     var result: JList[Array[Byte]] = null
     try {
       val pipeline = conn.pipelined()
@@ -49,12 +50,12 @@ class Qry(keyList: List[String]) extends Callable[List[(String, Array[Byte])]] {
   }
 }
 
-class QryHashall(keys: Seq[String]) extends Callable[Seq[(String, java.util.Map[String, String])]] {
+class QryHashall(keys: Seq[String], cacheManager :CacheManager) extends Callable[Seq[(String, java.util.Map[String, String])]] {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def call() = {
     val t1 = System.currentTimeMillis()
-    val conn = CacheFactory.getManager.asInstanceOf[RedisCacheManager].getResource
+    val conn = cacheManager.asInstanceOf[RedisCacheManager].getResource
     var result: JList[JMap[String, String]] = null
     try {
       val pgl = conn.pipelined()
@@ -71,12 +72,12 @@ class QryHashall(keys: Seq[String]) extends Callable[Seq[(String, java.util.Map[
   }
 }
 
-class Insert(value: Map[String, Any]) extends Callable[String] {
+class Insert(value: Map[String, Any], cacheManager :CacheManager) extends Callable[String] {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def call() = {
     val t1 = System.currentTimeMillis()
-    val conn = CacheFactory.getManager.asInstanceOf[JodisCacheManager].getResource
+    val conn = cacheManager.asInstanceOf[JodisCacheManager].getResource
     try {
       val pipeline = conn.pipelined()
       val ite = value.iterator
@@ -99,12 +100,12 @@ class Insert(value: Map[String, Any]) extends Callable[String] {
   }
 }
 
-class InsertHash(value: Map[String, Map[String, String]]) extends Callable[String] {
+class InsertHash(value: Map[String, Map[String, String]], cacheManager :CacheManager) extends Callable[String] {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def call() = {
     val t1 = System.currentTimeMillis()
-    val conn = CacheFactory.getManager.asInstanceOf[JodisCacheManager].getResource
+    val conn = cacheManager.asInstanceOf[JodisCacheManager].getResource
 
     try {
       val pgl = conn.pipelined()
@@ -128,49 +129,17 @@ class InsertHash(value: Map[String, Map[String, String]]) extends Callable[Strin
 }
 
 /**
- * 保存 Array[(Row_rowKey,(eventId, Row)] => Map[Row_rowKey, Map(eventId, Row)]
- * @param value
- */
-//class InsertEventRows(value: Array[(String, String, String)]) extends Callable[String] {
-//  val logger = LoggerFactory.getLogger(this.getClass)
-//
-//  override def call() = {
-//    val conn = CacheFactory.getManager.asInstanceOf[CodisCacheManager].getResource
-//
-//    try {
-//      val pgl = conn.pipelined()
-//      val ite = value.iterator
-//      while (ite.hasNext) {
-//        val elem = ite.next()
-//        val rowKey = elem._1
-//        val fieldEventId = elem._2
-//        val jsonRow = elem._3
-//        pgl.hset(rowKey.getBytes, fieldEventId.getBytes, jsonRow.getBytes)
-//      }
-//      pgl.syncAndReturnAll()
-//
-//    } catch {
-//      case ex: Exception =>
-//        logger.error("= = " * 15 + "found error in InsertEventRows.call()")
-//    } finally {
-//      conn.close()
-//    }
-//
-//    ""
-//  }
-//}
-
-/**
  * 存储各业务的结果（等待event复用）
  * value: hset: ( eventCache:unikey1:unikey2,Row:eventId:eventID,time)
  * key: eventCache:unikey1:unikey2 item: Row:eventId:eventID value: time
  */
-class InsertEventRows(value: Array[(String, String, String)]) extends Runnable {
+class InsertEventRows(value: Array[(String, String, String)], cm : CacheFactory) extends Runnable {
   val logger = LoggerFactory.getLogger(this.getClass)
+  val cacheManager = cm
 
   override def run() = {
     val t1 = System.currentTimeMillis()
-    val conn = CacheFactory.getManager.asInstanceOf[JodisCacheManager].getResource
+    val conn = cacheManager.getManager.asInstanceOf[JodisCacheManager].getResource
     try {
       val pgl = conn.pipelined()
       value.foreach(elem => pgl.hset(elem._1.getBytes, elem._2.getBytes, elem._3.getBytes))
@@ -185,60 +154,15 @@ class InsertEventRows(value: Array[(String, String, String)]) extends Runnable {
 }
 
 /**
- * 获取事件缓存
- * Array[(Row_rowKey, Array(eventId/businessEventId)]
- * @param value `Map[Row_rowKey, Map[(eventId/businessEventId, Row/time)]]`
- *
- */
-//class QryEventCache(value: Array[(String, Array[String])]) extends Callable[Map[String, Map[String, String]]] {
-//  val logger = LoggerFactory.getLogger(this.getClass)
-//
-//  override def call() = {
-//    val conn = CacheFactory.getManager.asInstanceOf[CodisCacheManager].getResource
-//
-//    val resultMap = Map[String, Map[String, String]]()
-//
-//    try {
-//      val pgl = conn.pipelined()
-//      val ite = value.iterator
-//      while (ite.hasNext) {
-//        var result: JList[Array[Byte]] = null
-//        val elem = ite.next() //结构：(Row_rowKey,Array(eventId))
-//        val rowKey = elem._1
-//        val fields = elem._2
-//        pgl.hmget(rowKey.getBytes(CacheQryThreadPool.DEFAULT_CHARACTER_SET), fields.map(_.getBytes(CacheQryThreadPool.DEFAULT_CHARACTER_SET)): _*)
-//        result = pgl.syncAndReturnAll().head.asInstanceOf[JList[Array[Byte]]]
-//
-//        if (!resultMap.contains(rowKey)) {
-//          resultMap.put(rowKey, Map[String, String]())
-//        }
-//        fields.zip(result).foreach {
-//          case (k, v) =>
-//            if (v != null) resultMap.get(rowKey).get.put(k, new String(v))
-//        }
-//      }
-//
-//    } catch {
-//      case ex: Exception =>
-//        logger.error("= = " * 15 + "found error in QryEventCache.call()")
-//        ex.printStackTrace()
-//    } finally {
-//      conn.close()
-//    }
-//
-//    resultMap
-//  }
-//}
-
-/**
  * value:(eventCache:eventKeyValue,jsonValue)
  * result: Map[rowKeyList->Tuple2(jsonList->result)]
  */
-class QryEventCache(value: Array[(String, String)], eventId: String) extends Callable[immutable.Map[String, (String, Array[Byte])]] {
+class QryEventCache(value: Array[(String, String)], eventId: String, cm : CacheFactory) extends Callable[immutable.Map[String, (String, Array[Byte])]] {
   val logger = LoggerFactory.getLogger(this.getClass)
+  val cacheManager = cm
 //  import scala.collection.JavaConverters._
   override def call() = {
-    val conn = CacheFactory.getManager.asInstanceOf[JodisCacheManager].getResource
+    val conn = cacheManager.getManager.asInstanceOf[JodisCacheManager].getResource
 
     // 营销业务ID
     val event_id = eventId
@@ -272,49 +196,3 @@ class QryEventCache(value: Array[(String, String)], eventId: String) extends Cal
     resultZip
   }
 }
-
-/**
- * 获取事件缓存
- * Array[(Row_rowKey, Array(eventId/businessEventId)]
- * @param value `Map[Row_rowKey, Map[(eventId/businessEventId, Row/time)]]`
- *
- */
-//class QryAllEventCache(value: mutable.Set[String]) extends Callable[Map[String, Map[String, Array[Byte]]]] {
-//  val logger = LoggerFactory.getLogger(this.getClass)
-//
-//  override def call() = {
-//    val conn = CacheFactory.getManager.asInstanceOf[CodisCacheManager].getResource
-//
-//    val resultMap = Map[String, Map[String, Array[Byte]]]()
-//
-//    try {
-//      val tool = new KryoSerializerStreamAppTool
-//
-//      val pgl = conn.pipelined()
-//      val ite = value.iterator
-//      while (ite.hasNext) {
-//        var result: JMap[Array[Byte], Array[Byte]] = null
-//        val rowKey = ite.next() //结构：(Row_rowKey,Array(eventId))
-//        pgl.hgetAll(rowKey.getBytes(CacheQryThreadPool.DEFAULT_CHARACTER_SET))
-//        result = pgl.syncAndReturnAll().head.asInstanceOf[JMap[Array[Byte], Array[Byte]]]
-//
-//        if (!resultMap.contains(rowKey)) {
-//          resultMap.put(rowKey, Map[String, Array[Byte]]())
-//        }
-//        result.foreach {
-//          case (k, v) =>
-//            resultMap.get(rowKey).get.put(new String(k, CacheQryThreadPool.DEFAULT_CHARACTER_SET), v)
-//        }
-//      }
-//
-//    } catch {
-//      case ex: Exception =>
-//        logger.error("= = " * 15 + "found error in QryAllEventCache.call()")
-//        ex.printStackTrace()
-//    } finally {
-//      conn.close()
-//    }
-//
-//    resultMap
-//  }
-//}

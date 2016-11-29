@@ -36,7 +36,7 @@ class Event extends Serializable {
     val eventDF = df.filter(conf.filte_expr).selectExpr(mix_sel_expr: _*)
 
     // 事件复用的时候会用到，注意做eventDF.persist
-    if (EventConstant.NEEDCACHE == conf.getInt("needcache", 0)) cacheEvent(eventDF, uniqKeys)
+   // if (EventConstant.NEEDCACHE == conf.getInt("needcache", 0)) cacheEvent(eventDF, uniqKeys)
 
     // 如果业务输出周期不为0，那么需要从codis中取出比兑营销时间，满足条件的输出
     val jsonRDD = if (EventConstant.RealtimeTransmission != conf.interval) checkEvent(eventDF, uniqKeys)
@@ -48,7 +48,7 @@ class Event extends Serializable {
    * eventDF:根据业务条件过滤，并查询出的输出字段
    * uniqKeys:主键
    */
-  def cacheEvent(eventDF: DataFrame, uniqKeys: String) {
+/*  def cacheEvent(eventDF: DataFrame, uniqKeys: String) {
     eventDF.toJSON.mapPartitions(iterator => {
       val t1 = System.currentTimeMillis()
       // batchArrayBuffer中盛放最大batchLimit条数据
@@ -79,6 +79,7 @@ class Event extends Serializable {
       keylists.toList.iterator
     }).count()
   }
+  */
 
   /**
    * 过滤营销周期不满足的数据，输出需要营销的数据，并更新codis营销时间
@@ -99,8 +100,8 @@ class Event extends Serializable {
       val conf = broadEventConf.value
 
       //Init Codis cache
-     // CacheFactory.setCacheProps(broadSysProps.value, broadCodisProps.value)
-      CacheFactory.initCache(broadSysProps.value, broadCodisProps.value)
+      //CacheFactory.initCache(broadSysProps.value, broadCodisProps.value)
+      val cacheFactory = new CacheFactory(broadSysProps.value, broadCodisProps.value)
 
       val eventCacheService = new ExecutorCompletionService[immutable.Map[String, (String, Array[Byte])]](CacheQryThreadPool.threadPool)
       val batchList = new ArrayBuffer[Array[(String, String)]]()
@@ -125,10 +126,10 @@ class Event extends Serializable {
         // 把list放入线程池更新codis
         if (index == size - 1) batchList += batchArrayBuffer.toArray
       }
-      val outPutJsonList = eventServer.getEventCache(eventCacheService, batchList.toArray, time_EventId, conf.getInterval)
+      val outPutJsonList = eventServer.getEventCache(eventCacheService, batchList.toArray, time_EventId, conf.getInterval, cacheFactory)
 
-      CacheFactory.closeCacheConnection
-
+   //   CacheFactory.closeCacheConnection
+      cacheFactory.closeCacheConnection
       outPutJsonList.iterator
     })
   }

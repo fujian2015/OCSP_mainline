@@ -6,32 +6,19 @@ import com.asiainfo.ocdp.stream.config.{DataSourceConf, SystemProps, MainFrameCo
 /**
  * Created by tsingfu on 15/8/18.
  */
-object CacheFactory {
+class CacheFactory(sp: SystemProps, cp: DataSourceConf) {
 
-  @volatile private var systemProps : SystemProps = null
-  @volatile private var codisProps : DataSourceConf = null
-  @volatile private var cacheManager : CacheManager = null
-
-  private def setCacheProps(sp: SystemProps, cp: DataSourceConf) = {
-      systemProps = sp
-      codisProps = cp
-  }
-
-  def initCache(sp: SystemProps, cp: DataSourceConf) = {
-    //Set system props and codis props
-    setCacheProps(sp, cp)
-
-    if (cacheManager == null){
-      val manager = systemProps.get("cacheManager")
-      manager match {
-        case "CodisCacheManager" => cacheManager = new CodisCacheManager(systemProps)
-        case "JodisCacheManager" => cacheManager = new JodisCacheManager(systemProps,codisProps)
-        case _ => throw new Exception("cacheManager is not set!")
-      }
+  private var cacheManager : CacheManager = {
+    if ( sp == null || cp == null){
+      throw new Exception("system props is null.")
     }
-
+    val manager = sp.get("cacheManager")
+    manager match {
+      case "CodisCacheManager" => new CodisCacheManager(sp)
+      case "JodisCacheManager" => new JodisCacheManager(sp,cp)
+      case _ => throw new Exception("cacheManager is not set!")
+    }
   }
-
 
   def getManager: CacheManager = {
     if (cacheManager == null){
@@ -39,7 +26,6 @@ object CacheFactory {
     }
     cacheManager
   }
-
 
   // Close cacheManager connections
   def closeCacheConnection = {

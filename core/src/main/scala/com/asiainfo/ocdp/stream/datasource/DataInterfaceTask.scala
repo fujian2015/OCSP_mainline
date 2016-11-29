@@ -62,10 +62,6 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
     BroadcastManager.broadcastSystemProps(MainFrameConf.systemProps)
     BroadcastManager.broadcastCodisProps(MainFrameConf.codisProps)
 
-   // broadDiConf = ssc.sparkContext.broadcast(conf)
-   // broadLabels = ssc.sparkContext.broadcast(labels)
-   // broadEvents = ssc.sparkContext.broadcast(events)
-
     //2 流数据处理
     val transFormRDD = inputStream.foreachRDD(rdd => {
 
@@ -78,8 +74,8 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
 
       if (rowRDD.partitions.size > 0) {
 
-       logError("==========================rdd length:"+ rdd.count())
-       logError("==========================rowRDD length:"+ rowRDD.count())
+    //   logError("==========================rdd length:"+ rdd.count())
+    //   logError("==========================rowRDD length:"+ rowRDD.count())
 
         val t1 = System.currentTimeMillis()
         println("1.kafka RDD 转换成 rowRDD 耗时 (millis):" + (t1 - t0))
@@ -90,7 +86,7 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
         val mixDF = if (filter_expr != null && filter_expr.trim != "") dataFrame.selectExpr(allItemsSchema.fieldNames: _*).filter(filter_expr)
         else dataFrame.selectExpr(allItemsSchema.fieldNames: _*)
 
-        if (mixDF.count > 0) {
+      //  if (mixDF.count > 0) {
           val t3 = System.currentTimeMillis
           println("3.DataFrame 最初过滤不规则数据耗时 (millis):" + (t3 - t2))
           val labelRDD = execLabels(mixDF)
@@ -115,10 +111,10 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
           println("当前时间片内正确输入格式的流数据为空, 不做任何处理.")
         }
 
-      }
-      else{
-        logInfo("Read nothing from data source.")
-      }
+      //}
+    //  else{
+    //    logInfo("Read nothing from data source.")
+    //  }
     })
   }
 
@@ -190,10 +186,10 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
       }
 
       //Init Codis cache
-     // CacheFactory.setCacheProps(broadSysProps.value, broadCodisProps.value)
-      CacheFactory.initCache(broadSysProps.value, broadCodisProps.value)
+      val cacheFactory = new CacheFactory(broadSysProps.value, broadCodisProps.value)
+      //CacheFactory.initCache(broadSysProps.value, broadCodisProps.value)
       try {
-        cachemap_old = CacheFactory.getManager.getMultiCacheByKeys(keyList, qryCacheService).toMap
+        cachemap_old = cacheFactory.getManager.getMultiCacheByKeys(keyList, qryCacheService).toMap
       } catch {
         case ex: Exception =>
           logError("= = " * 15 + " got exception in EventSource while get cache")
@@ -201,7 +197,7 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
       }
       val f2 = System.currentTimeMillis()
       println(" 1. 查取一批数据缓存中的交互状态信息 cost time : " + (f2 - f1) + " millis ! ")
-      val labelQryData = CacheFactory.getManager.hgetall(labelQryKeysSet.toList, hgetAllService)
+      val labelQryData = cacheFactory.getManager.hgetall(labelQryKeysSet.toList, hgetAllService)
       val f3 = System.currentTimeMillis()
       println(" 2. 查取此批数据缓存中的用户相关信息表 cost time : " + (f3 - f2) + " millis ! ")
       // 遍历整个批次的数据，逐条记录打标签
@@ -252,10 +248,12 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
       val f4 = System.currentTimeMillis()
       println(" 3. 遍历一批次数据并打相关联的标签 cost time : " + (f4 - f3) + " millis ! ")
       //update caches to CacheManager
-      CacheFactory.getManager.setMultiCache(cachemap_new)
+      cacheFactory.getManager.setMultiCache(cachemap_new)
       println(" 4. 更新这批数据的缓存中的交互状态信息 cost time : " + (System.currentTimeMillis() - f4) + " millis ! ")
 
-      CacheFactory.closeCacheConnection
+      //CacheFactory.closeCacheConnection
+
+      cacheFactory.closeCacheConnection
 
       jsonList.iterator
 

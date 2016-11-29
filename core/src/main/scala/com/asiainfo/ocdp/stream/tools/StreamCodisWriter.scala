@@ -44,8 +44,7 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter{
     val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys)
     resultRDD.mapPartitions(iter => {
       //Init Task cache
-     // CacheFactory.setCacheProps(broadSysProps.value, broadCodisProps.value)
-      CacheFactory.initCache(broadSysProps.value, broadCodisProps.value)
+      val cacheFactory = new CacheFactory(broadSysProps.value, broadCodisProps.value)
       val it = iter.toList.map(line =>
       {
         val key = line._1
@@ -62,8 +61,8 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter{
         key
       })
       //Save cache to Codis
-      if (resultSiteData.size > 0) CacheFactory.getManager.hmset(resultSiteData)
-      CacheFactory.closeCacheConnection
+      if (resultSiteData.size > 0) cacheFactory.getManager.hmset(resultSiteData)
+      cacheFactory.closeCacheConnection
       it.iterator
     })
   }
