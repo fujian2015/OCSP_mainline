@@ -16,9 +16,8 @@ import scala.collection.mutable.ArrayBuffer
 import scala.collection.{ mutable, immutable }
 import org.apache.spark.rdd.RDD
 import java.text.SimpleDateFormat
-import java.util.concurrent.ExecutorCompletionService
+import java.util.concurrent._
 import com.asiainfo.ocdp.stream.tools.CacheQryThreadPool
-import java.util.concurrent.Callable
 
 /**
  * Created by surq on 12/09/15
@@ -265,6 +264,24 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
    */
   final def makeEvents(df: DataFrame, uniqKeys: String) = {
     println(" Begin exec evets : " + System.currentTimeMillis())
-    events.map(event => event.buildEvent(df, uniqKeys))
+
+    val threadPool: ExecutorService = Executors.newCachedThreadPool
+
+    val eventService = new ExecutorCompletionService[String](threadPool)
+
+    events.map(event => eventService.submit(new buildEvent(event, df, uniqKeys)))
+
+    for (index <- 0 until events.size) {
+      val result = eventService.take.get()
+    }
+
   }
 }
+
+class buildEvent(event: Event, df: DataFrame, uniqKeys: String) extends Callable[String] {
+  override def call() = {
+    event.buildEvent(df, uniqKeys)
+    ""
+  }
+}
+

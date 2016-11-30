@@ -45,7 +45,6 @@ class SiteLabel extends Label {
     //labelMap.update("timestampstr", currentTimestamp_str)
     labelMap.update(isLatestSite, "false")
 
-
       cacheMutableMap.get(normal_imsi)
       match{
         case None => {

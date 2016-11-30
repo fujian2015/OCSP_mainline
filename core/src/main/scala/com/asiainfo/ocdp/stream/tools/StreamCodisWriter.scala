@@ -43,6 +43,7 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter{
 
     val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys)
     resultRDD.mapPartitions(iter => {
+
       //Init Task cache
       val cacheFactory = new CacheFactory(broadSysProps.value, broadCodisProps.value)
       val it = iter.toList.map(line =>

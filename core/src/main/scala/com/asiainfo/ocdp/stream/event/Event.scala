@@ -37,7 +37,6 @@ class Event extends Serializable {
 
     // 事件复用的时候会用到，注意做eventDF.persist
    // if (EventConstant.NEEDCACHE == conf.getInt("needcache", 0)) cacheEvent(eventDF, uniqKeys)
-
     // 如果业务输出周期不为0，那么需要从codis中取出比兑营销时间，满足条件的输出
     val jsonRDD = if (EventConstant.RealtimeTransmission != conf.interval) checkEvent(eventDF, uniqKeys)
     else eventDF.toJSON
@@ -98,7 +97,6 @@ class Event extends Serializable {
 
     eventDF.toJSON.mapPartitions(iter => {
       val conf = broadEventConf.value
-
       //Init Codis cache
       //CacheFactory.initCache(broadSysProps.value, broadCodisProps.value)
       val cacheFactory = new CacheFactory(broadSysProps.value, broadCodisProps.value)
