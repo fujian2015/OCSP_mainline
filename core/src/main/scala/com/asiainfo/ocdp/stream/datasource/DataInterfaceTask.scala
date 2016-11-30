@@ -275,6 +275,8 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
       val result = eventService.take.get()
     }
 
+    threadPool.shutdown()
+
   }
 }
 
