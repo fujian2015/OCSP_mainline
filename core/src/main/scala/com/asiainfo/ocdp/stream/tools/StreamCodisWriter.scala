@@ -2,19 +2,17 @@ package com.asiainfo.ocdp.stream.tools
 
 import java.text.SimpleDateFormat
 
-import com.asiainfo.ocdp.stream.common.BroadcastManager
+import com.asiainfo.ocdp.stream.common.{BroadcastManager, Logging}
 import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, EventConf}
-import kafka.producer.KeyedMessage
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{SaveMode, DataFrame}
+import org.apache.spark.sql.DataFrame
 
 import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
 
 /**
   * Created by gengwang on 16/8/18.
   */
-class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter{
+class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter with Logging{
 
   def push(rdd: RDD[String], conf: EventConf, uniqKeys: String)= setMessage(rdd, conf, uniqKeys).count
   def push(df: DataFrame, conf: EventConf, uniqKeys: String) = setMessage(df.toJSON, conf, uniqKeys).count
@@ -41,7 +39,19 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter{
     val broadSysProps = BroadcastManager.getBroadSysProps
     val broadCodisProps = BroadcastManager.getBroadCodisProps
 
-    val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys)
+    var numPartitions = diConf.numPartitions
+
+    if (numPartitions < 0){
+      numPartitions = jsonRDD.partitions.length/10
+      if(numPartitions < 1){
+        numPartitions = 1
+      }
+    }
+
+    logInfo(s"The number of partitions is $numPartitions")
+
+    val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys).coalesce(numPartitions)
+
     resultRDD.mapPartitions(iter => {
 
       //Init Task cache
