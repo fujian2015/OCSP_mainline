@@ -1,23 +1,22 @@
 package com.asiainfo.ocdp.stream.datasource
 
-import com.asiainfo.ocdp.stream.common.{BroadcastManager, SscManager, StreamingCache}
-import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, MainFrameConf}
-import com.asiainfo.ocdp.stream.event.Event
-import com.asiainfo.ocdp.stream.label.Label
-import com.asiainfo.ocdp.stream.manager.StreamTask
-import com.asiainfo.ocdp.stream.service.DataInterfaceServer
-import com.asiainfo.ocdp.stream.tools.{ CacheFactory, Json4sUtils }
-import org.apache.spark.broadcast.Broadcast
-import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{ DataFrame, Row, SQLContext }
-import org.apache.spark.streaming.StreamingContext
-import org.apache.spark.streaming.dstream.DStream
-import scala.collection.mutable.ArrayBuffer
-import scala.collection.{ mutable, immutable }
-import org.apache.spark.rdd.RDD
 import java.text.SimpleDateFormat
 import java.util.concurrent._
-import com.asiainfo.ocdp.stream.tools.CacheQryThreadPool
+
+import com.asiainfo.ocdp.stream.common.{BroadcastManager, StreamingCache}
+import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, MainFrameConf}
+import com.asiainfo.ocdp.stream.event.Event
+import com.asiainfo.ocdp.stream.manager.StreamTask
+import com.asiainfo.ocdp.stream.service.DataInterfaceServer
+import com.asiainfo.ocdp.stream.tools.{CacheFactory, CacheQryThreadPool, Json4sUtils}
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.{DataFrame, Row, SQLContext}
+import org.apache.spark.streaming.StreamingContext
+import org.apache.spark.streaming.dstream.DStream
+
+import scala.collection.mutable.ArrayBuffer
+import scala.collection.{immutable, mutable}
 
 /**
  * Created by surq on 12/09/15
@@ -62,7 +61,7 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
     BroadcastManager.broadcastCodisProps(MainFrameConf.codisProps)
 
     //2 流数据处理
-    val transFormRDD = inputStream.foreachRDD(rdd => {
+    inputStream.foreachRDD(rdd => {
 
       val t0 = System.currentTimeMillis()
       //2.1 流数据转换
@@ -73,9 +72,6 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
 
       if (rowRDD.partitions.size > 0) {
 
-    //   logError("==========================rdd length:"+ rdd.count())
-    //   logError("==========================rowRDD length:"+ rowRDD.count())
-
         val t1 = System.currentTimeMillis()
         println("1.kafka RDD 转换成 rowRDD 耗时 (millis):" + (t1 - t0))
         val dataFrame = sqlc.createDataFrame(rowRDD, schema)
@@ -85,7 +81,6 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
         val mixDF = if (filter_expr != null && filter_expr.trim != "") dataFrame.selectExpr(allItemsSchema.fieldNames: _*).filter(filter_expr)
         else dataFrame.selectExpr(allItemsSchema.fieldNames: _*)
 
-      //  if (mixDF.count > 0) {
           val t3 = System.currentTimeMillis
           println("3.DataFrame 最初过滤不规则数据耗时 (millis):" + (t3 - t2))
           val labelRDD = execLabels(mixDF)
@@ -110,10 +105,6 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
           println("当前时间片内正确输入格式的流数据为空, 不做任何处理.")
         }
 
-      //}
-    //  else{
-    //    logInfo("Read nothing from data source.")
-    //  }
     })
   }
 
@@ -269,10 +260,10 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
 
     val eventService = new ExecutorCompletionService[String](threadPool)
 
-    events.map(event => eventService.submit(new buildEvent(event, df, uniqKeys)))
+    events.map(event => eventService.submit(new BuildEvent(event, df, uniqKeys)))
 
     for (index <- 0 until events.size) {
-      val result = eventService.take.get()
+      eventService.take.get()
     }
 
     threadPool.shutdown()
@@ -280,7 +271,7 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
   }
 }
 
-class buildEvent(event: Event, df: DataFrame, uniqKeys: String) extends Callable[String] {
+class BuildEvent(event: Event, df: DataFrame, uniqKeys: String) extends Callable[String] {
   override def call() = {
     event.buildEvent(df, uniqKeys)
     ""
