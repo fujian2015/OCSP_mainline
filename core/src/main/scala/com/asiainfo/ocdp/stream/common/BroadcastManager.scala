@@ -1,7 +1,6 @@
 package com.asiainfo.ocdp.stream.common
 
-import com.asiainfo.ocdp.stream.config.{EventConf, DataSourceConf, SystemProps, DataInterfaceConf}
-import com.asiainfo.ocdp.stream.event.Event
+import com.asiainfo.ocdp.stream.config._
 import com.asiainfo.ocdp.stream.label.Label
 import org.apache.spark.broadcast.Broadcast
 
@@ -16,6 +15,7 @@ object BroadcastManager {
   @volatile private var broadSystemProps : Broadcast[SystemProps] = null
   @volatile private var broadCodisProps : Broadcast[DataSourceConf] = null
   @volatile private var broadEventConf : Broadcast[EventConf] = null
+  @volatile private var broadTaskConf : Broadcast[TaskConf] = null
 
   //End: Define the variable to broadcast from driver here.
 
@@ -36,6 +36,12 @@ object BroadcastManager {
   def broadcastLabels(labels: Array[Label]) = {
     if (broadLabels == null) {
       broadLabels = SscManager.getSsc().sparkContext.broadcast(labels)
+    }
+  }
+
+  def broadcastTaskConf(taskConf: TaskConf) = {
+    if (broadTaskConf == null) {
+      broadTaskConf = SscManager.getSsc().sparkContext.broadcast(taskConf)
     }
   }
 
@@ -83,6 +89,13 @@ object BroadcastManager {
       throw new NullPointerException("null broad cast event conf")
     }
     broadEventConf
+  }
+
+  def getBroadTaskConf : Broadcast[TaskConf] = {
+    if (broadTaskConf == null){
+      throw new NullPointerException("null broad cast event conf")
+    }
+    broadTaskConf
   }
 
   //End: Define functions to broadcast and get broadcast variables.

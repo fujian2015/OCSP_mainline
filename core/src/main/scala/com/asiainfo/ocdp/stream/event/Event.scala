@@ -44,43 +44,6 @@ class Event extends Serializable {
   }
 
   /**
-   * eventDF:根据业务条件过滤，并查询出的输出字段
-   * uniqKeys:主键
-   */
-/*  def cacheEvent(eventDF: DataFrame, uniqKeys: String) {
-    eventDF.toJSON.mapPartitions(iterator => {
-      val t1 = System.currentTimeMillis()
-      // batchArrayBuffer中盛放最大batchLimit条数据
-      var batchArrayBuffer: ArrayBuffer[(String, String, String)] = null
-      val jsonList = iterator.toList
-      val size = jsonList.size
-      // 把json按指定的与codis库查询条数（batchLimit），分块更新
-      val keylists = for (index <- 0 until size) yield {
-        if (index % batchLimit == 0) {
-          // 把list放入线程池更新codis
-          if (index != 0) eventServer.cacheEventData(batchArrayBuffer.toArray)
-          batchArrayBuffer = new ArrayBuffer[(String, String, String)]()
-        }
-        // 解析json数据，拼凑eventKey
-        val line = jsonList(index)
-        val current = Json4sUtils.jsonStr2Map(line)
-        val eventKeyValue = uniqKeys.split(":").map(current(_)).mkString(":")
-
-        // ( eventCache:unikey1:unikey2,Row:eventId:eventID,json)
-        batchArrayBuffer += ((EventConstant.EVENT_CACHE_PREFIX_NAME + eventKeyValue,
-          EventConstant.EVENTCACHE_FIELD_ROWEVENTID_PREFIX_KEY + conf.id, line))
-        // 把list放入线程池更新codis
-        if (index == size - 1) eventServer.cacheEventData(batchArrayBuffer.toArray)
-        println("mapPartitions " + size + " key cost " + (System.currentTimeMillis() - t1) + " Millis")
-        // 返回值
-        eventKeyValue
-      }
-      keylists.toList.iterator
-    }).count()
-  }
-  */
-
-  /**
    * 过滤营销周期不满足的数据，输出需要营销的数据，并更新codis营销时间
    */
   import scala.collection.immutable
@@ -94,6 +57,7 @@ class Event extends Serializable {
 
     val broadSysProps = BroadcastManager.getBroadSysProps
     val broadCodisProps = BroadcastManager.getBroadCodisProps
+    val broadTaskConf = BroadcastManager.getBroadTaskConf
 
     eventDF.toJSON.mapPartitions(iter => {
       val conf = broadEventConf.value
@@ -119,7 +83,7 @@ class Event extends Serializable {
         val current = Json4sUtils.jsonStr2Map(line)
         val eventKeyValue = uniqKeys.split(":").map(current(_)).mkString(":")
         // (eventCache:eventKeyValue,jsonValue)
-        batchArrayBuffer += ((EventConstant.EVENT_CACHE_PREFIX_NAME + eventKeyValue, line))
+        batchArrayBuffer += ((s"${EventConstant.EVENT_CACHE_PREFIX_NAME}_${broadTaskConf.value.name}:${eventKeyValue}", line))
 
         // 把list放入线程池更新codis
         if (index == size - 1) batchList += batchArrayBuffer.toArray

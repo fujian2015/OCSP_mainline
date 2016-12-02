@@ -6,6 +6,7 @@ package com.asiainfo.ocdp.stream.constant
 object LabelConstant {
 
   val LABEL_MAP_KEY = "labels"
+  val LABEL_CACHE_PREFIX_NAME = "labelCache"
 
   /**--------------------标签名称------------------------*/
   // --- user static fields ---

@@ -5,7 +5,7 @@ import scala.beans.BeanProperty
 /**
  * Created by leo on 8/24/15.
  */
-class TaskConf() {
+class TaskConf() extends BaseConf{
   @BeanProperty var id: String = ""
   @BeanProperty var task_type: Int = 0
   @BeanProperty var name: String = ""

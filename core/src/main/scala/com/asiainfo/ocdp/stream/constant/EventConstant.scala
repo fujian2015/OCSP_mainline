@@ -10,7 +10,7 @@ object EventConstant {
 
   val RealtimeTransmission = 0
 
-	val EVENT_CACHE_PREFIX_NAME = "eventCache:"
+	val EVENT_CACHE_PREFIX_NAME = "eventCache"
 	val EVENTCACHE_FIELD_ROWEVENTID_PREFIX_KEY = "Row:eventId:"
 	val EVENTCACHE_FIELD_TIME_PREFIX_KEY = "Time:"
 	val EVENTCACHE_FIELD_TIMEBEID_PREFIX_KEY = "Time:beid:"

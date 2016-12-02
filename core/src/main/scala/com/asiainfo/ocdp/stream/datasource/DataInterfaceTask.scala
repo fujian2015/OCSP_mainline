@@ -4,7 +4,8 @@ import java.text.SimpleDateFormat
 import java.util.concurrent._
 
 import com.asiainfo.ocdp.stream.common.{BroadcastManager, StreamingCache}
-import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, MainFrameConf}
+import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, MainFrameConf, TaskConf}
+import com.asiainfo.ocdp.stream.constant.LabelConstant
 import com.asiainfo.ocdp.stream.event.Event
 import com.asiainfo.ocdp.stream.manager.StreamTask
 import com.asiainfo.ocdp.stream.service.DataInterfaceServer
@@ -21,13 +22,16 @@ import scala.collection.{immutable, mutable}
 /**
  * Created by surq on 12/09/15
  */
-class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
+class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
+
+  val taskDiid = taskConf.getDiid
+  val interval = taskConf.getReceive_interval
 
   val dataInterfaceService = new DataInterfaceServer
 
-  val conf = dataInterfaceService.getDataInterfaceInfoById(id)
-  val labels = dataInterfaceService.getLabelsByIFId(id)
-  val events: Array[Event] = dataInterfaceService.getEventsByIFId(id)
+  val conf = dataInterfaceService.getDataInterfaceInfoById(taskDiid)
+  val labels = dataInterfaceService.getLabelsByIFId(taskDiid)
+  val events: Array[Event] = dataInterfaceService.getEventsByIFId(taskDiid)
   conf.setInterval(interval)
   // 原始信令字段个数
   val baseItemSize = conf.getBaseItemsSize
@@ -59,6 +63,7 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
     BroadcastManager.broadcastLabels(labels)
     BroadcastManager.broadcastSystemProps(MainFrameConf.systemProps)
     BroadcastManager.broadcastCodisProps(MainFrameConf.codisProps)
+    BroadcastManager.broadcastTaskConf(taskConf)
 
     //2 流数据处理
     inputStream.foreachRDD(rdd => {
@@ -137,7 +142,7 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
     val broadLabels = BroadcastManager.getBroadLabels
     val broadSysProps = BroadcastManager.getBroadSysProps
     val broadCodisProps = BroadcastManager.getBroadCodisProps
-
+    val broadTaskConf = BroadcastManager.getBroadTaskConf
 
     df.toJSON.mapPartitions(iter => {
       val conf = broadDiConf.value
@@ -153,7 +158,7 @@ class DataInterfaceTask(id: String, interval: Int) extends StreamTask {
       iter.toList.map(jsonStr => {
         val currentLine = Json4sUtils.jsonStr2Map(jsonStr)
         val uk = ukUnion.map(currentLine(_)).mkString(",")
-        busnessKeyList += ("Label:" + uk -> currentLine)
+        busnessKeyList += (s"${LabelConstant.LABEL_CACHE_PREFIX_NAME}_${broadTaskConf.value.name}:${uk}" -> currentLine)
         // 取出本条数据在打所有标签时所用的查询cache用到的key放入labelQryKeysSet
         labels.foreach(label => {
           val qryKeys = label.getQryKeys(currentLine)
