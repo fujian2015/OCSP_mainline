@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat
 
 import com.asiainfo.ocdp.stream.common.{BroadcastManager, Logging}
 import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, EventConf}
+import org.apache.commons.lang.math.NumberUtils
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.DataFrame
 
@@ -39,7 +40,13 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
     val broadSysProps = BroadcastManager.getBroadSysProps
     val broadCodisProps = BroadcastManager.getBroadCodisProps
 
-    var numPartitions = diConf.numPartitions
+    var numPartitions = -1
+
+    val numPartitionsCustom = conf.get("numPartitions", "null")
+
+    if (NumberUtils.isDigits(numPartitionsCustom)){
+      numPartitions = numPartitionsCustom.toInt
+    }
 
     if (numPartitions < 0){
       numPartitions = jsonRDD.partitions.length/10

@@ -16,5 +16,4 @@ class DataInterfaceConf extends BaseConf {
   @BeanProperty var allItemsSchema: StructType = null
 @BeanProperty var baseItemsSize: Int = 0
   @BeanProperty var interval: Int = 1
-  @BeanProperty var numPartitions: Int = -1
 }

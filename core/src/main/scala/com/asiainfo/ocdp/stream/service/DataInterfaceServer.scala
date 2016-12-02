@@ -6,7 +6,6 @@ import com.asiainfo.ocdp.stream.constant.{DataSourceConstant, TableInfoConstant}
 import com.asiainfo.ocdp.stream.event.Event
 import com.asiainfo.ocdp.stream.label.Label
 import com.asiainfo.ocdp.stream.tools.Json4sUtils
-import org.apache.commons.lang.math.NumberUtils
 import org.apache.commons.lang3.StringUtils
 
 import scala.collection.mutable._
@@ -21,7 +20,7 @@ class DataInterfaceServer extends Logging with Serializable {
     val conf = new DataInterfaceConf()
     // modify by surq at 2015.11.09 start
     //    val sql = "select id, name, dsid, type, status, properties " +
-    val sql = "select id, filter_expr,name, dsid, type, delim, status, properties, numPartitions " +
+    val sql = "select id, filter_expr,name, dsid, type, delim, status, properties " +
       // modify by surq at 2015.11.09 end
       "from " + TableInfoConstant.DataInterfaceTableName +
       " where id='" + id + "' and status = 1"
@@ -33,11 +32,6 @@ class DataInterfaceServer extends Logging with Serializable {
       conf.setDiid(interface.get("id").get)
       conf.setName(interface.get("name").get)
       conf.setDiType(interface.get("type").get.toInt)
-      val numPartitions = interface.get("numPartitions").get
-      if (NumberUtils.isDigits(numPartitions)){
-        conf.setNumPartitions(numPartitions.toInt)
-      }
-
       // add by surq at 2015.11.09 start
       conf.set("filter_expr", interface.get("filter_expr").get)
       conf.set("delim", interface.get("delim").get)
