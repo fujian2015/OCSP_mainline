@@ -85,7 +85,7 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
         val filter_expr = conf.get("filter_expr")
         val mixDF = if (filter_expr != null && filter_expr.trim != "") dataFrame.selectExpr(allItemsSchema.fieldNames: _*).filter(filter_expr)
         else dataFrame.selectExpr(allItemsSchema.fieldNames: _*)
-
+        if (labels.size > 0) {
           val t3 = System.currentTimeMillis
           println("3.DataFrame 最初过滤不规则数据耗时 (millis):" + (t3 - t2))
           val labelRDD = execLabels(mixDF)
@@ -105,10 +105,25 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
 
           println("6.所有业务营销 耗时(millis):" + (System.currentTimeMillis - t5))
         }
+        else {
 
-        else{
-          println("当前时间片内正确输入格式的流数据为空, 不做任何处理.")
+          val t3 = System.currentTimeMillis
+          println("3.DataFrame 最初过滤不规则数据耗时 (millis):" + (t3 - t2))
+
+          mixDF.persist()
+          mixDF.count()
+          val t4 = System.currentTimeMillis
+          println("4.mixDF count耗时(millis):" + (t4 - t3))
+
+          makeEvents(mixDF, conf.get("uniqKeys"))
+          mixDF.unpersist()
+          println("6.所有业务营销 耗时(millis):" + (System.currentTimeMillis - t4))
+
         }
+      }
+      else {
+        println("当前时间片内正确输入格式的流数据为空, 不做任何处理.")
+      }
 
     })
   }
