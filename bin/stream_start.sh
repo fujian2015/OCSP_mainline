@@ -14,12 +14,20 @@ do
   CLASSPATH=$CLASSPATH:$jarFile
 done
 
-CLASSPATH=$CLASSPATH:$SPARK_ASSEMBLY_JAR:$FWDIR/conf/common.xml:$FWDIR/conf/log4j.properties
+CLASSPATH=$CLASSPATH:$SPARK_ASSEMBLY_JAR
 
 nohup java -cp $CLASSPATH com.asiainfo.ocdp.stream.manager.MainFrameManager &>> $FWDIR/logs/MainFrameManager.log&
 
+sleep 1
+
 proc_name="MainFrameManager"
 name_suffixx="\>"
-ps -ef|grep -i ${proc_name}${name_suffixx}|grep -v "grep"|awk '{print $2}' > pid.log
+mpid=`ps -ef|grep -i ${proc_name}${name_suffixx}|grep -v "grep"|awk '{print $2}'`
+if [ -z "$mpid" ]; then
+	echo "------FAILED to start the server!------"
+else
+	echo $mpid > pid.log
+	echo "------start the server success !------"
+fi
 
-echo "start the server success ! "
+
