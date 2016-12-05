@@ -126,6 +126,7 @@ CREATE TABLE `STREAM_SYSTEMPROP` (
   `id` int(16) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
   `value` varchar(600) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
   `description` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
