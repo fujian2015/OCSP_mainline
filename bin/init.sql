@@ -189,7 +189,7 @@ CREATE TABLE `STREAM_SYSTEMPROP` (
 
 LOCK TABLES `STREAM_SYSTEMPROP` WRITE;
 /*!40000 ALTER TABLE `STREAM_SYSTEMPROP` DISABLE KEYS */;
-INSERT INTO `STREAM_SYSTEMPROP` VALUES (1,'cacheManager','JodisCacheManager',0,NULL),(7,'checkpoint_dir','streaming/checkpoint',0,NULL),(11,'SPARK_HOME','/usr/hdp/2.4.0.0-169/spark',1,NULL),(12,'master','yarn-client',1,NULL),(13,'supervise','false',0,NULL),(17,'delaySeconds','20',0,NULL),(18,'periodSeconds','10',0,NULL),(19,'appJars','core-1.0-SNAPSHOT.jar',0,NULL),(20,'jars','mysql-connector-java-5.1.34.jar,spark-streaming-kafka-assembly_2.10-1.6.0.jar,common.xml,log4j.properties,commons-pool2-2.0.jar,jodis-0.3.0.jar,ShaanxiyidongFeature-1.0-SNAPSHOT.jar,jedis-2.8.0.jar,core-1.0-SNAPSHOT.jar',0,NULL),(21,'cacheQryBatchSizeLimit','50',0,NULL),(27,'cacheQryTaskSizeLimit','50',0,NULL),(28,'files','/usr/ocsp/OCDP_Stream/lib/common.xml',0,NULL);
+INSERT INTO `STREAM_SYSTEMPROP` VALUES (1,'cacheManager','JodisCacheManager',0,NULL),(7,'checkpoint_dir','streaming/checkpoint',0,NULL),(11,'SPARK_HOME','/usr/hdp/2.4.0.0-169/spark',1,NULL),(12,'master','yarn-client',1,NULL),(13,'supervise','false',0,NULL),(17,'delaySeconds','20',0,NULL),(18,'periodSeconds','10',0,NULL),(21,'cacheQryBatchSizeLimit','1000',0,NULL),(27,'cacheQryTaskSizeLimit','1000',0,NULL);
 /*!40000 ALTER TABLE `STREAM_SYSTEMPROP` ENABLE KEYS */;
 UNLOCK TABLES;
 
