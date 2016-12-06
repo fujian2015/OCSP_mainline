@@ -2,7 +2,7 @@ package com.asiainfo.ocdp.stream.tools
 import java.io.File
 import java.util.Collection
 
-import org.apache.commons.io.git
+import org.apache.commons.io.DirectoryWalker
 import org.apache.commons.io.filefilter.IOFileFilter
 
 import scala.collection.JavaConversions._
