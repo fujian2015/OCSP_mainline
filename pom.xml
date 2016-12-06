@@ -11,8 +11,6 @@
 
     <modules>
         <module>core</module>
-        <!--module>ShanDongFeature</module-->
-        <module>ShaanxiyidongFeature</module>
         <module>web</module>
     </modules>
 
