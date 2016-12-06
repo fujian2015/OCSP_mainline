@@ -1,11 +1,17 @@
 package com.asiainfo.ocdp.stream.manager
 
-import java.util.{ Timer, TimerTask }
-import akka.actor.{ ActorSystem, Props }
+import java.io.File
+import java.util.{Timer, TimerTask}
+
+import akka.actor.{ActorSystem, Props}
 import com.asiainfo.ocdp.stream.common.Logging
-import com.asiainfo.ocdp.stream.config.{ MainFrameConf, TaskConf }
-import com.asiainfo.ocdp.stream.constant.{ CommonConstant, TaskConstant }
+import com.asiainfo.ocdp.stream.config.{MainFrameConf, TaskConf}
+import com.asiainfo.ocdp.stream.constant.{CommonConstant, TaskConstant}
 import com.asiainfo.ocdp.stream.service.TaskServer
+import com.asiainfo.ocdp.stream.tools.ListFileWalker
+import org.apache.commons.io.filefilter.{FileFilterUtils, HiddenFileFilter}
+import org.apache.commons.lang.StringUtils
+
 import scala.collection.mutable
 
 /**
@@ -126,23 +132,25 @@ object MainFrameManager extends Logging {
 
   def makeCMD(conf: TaskConf): (String, String) = {
     val spark_home = MainFrameConf.systemProps.get("SPARK_HOME")
-    val libs_dir = CommonConstant.appJarsDir
     var cmd = spark_home + "/bin/spark-submit "
-    // modify by surq at 2015.10.21 start
-    // val deploy_mode = " --deploy-mode cluster"
     val deploy_mode = " --deploy-mode client"
-
     val master = " --master " + MainFrameConf.systemProps.get("master")
-    //    val jars = MainFrameConf.systemProps.get("jars")
 
-    var jars = " --jars "
-    val jars_conf = MainFrameConf.systemProps.get("jars")
-    jars_conf.split(",").foreach(jar => {
-      jars += libs_dir + "/" + jar + ","
+    var appJars = ""
+
+    var jars = new StringBuilder(" --jars ")
+    ListFileWalker(HiddenFileFilter.VISIBLE, FileFilterUtils.suffixFileFilter(".jar")).list(new File(CommonConstant.baseDir)).foreach(file =>{
+      if (file.getName.startsWith("core")){
+        appJars = file.getAbsolutePath
+      }
+      jars.append(file.getAbsolutePath).append(",")
     })
     jars = jars.dropRight(1)
 
-    val appJars = libs_dir + "/" + MainFrameConf.systemProps.get("appJars")
+    if (StringUtils.isBlank(appJars)){
+      logError("Can not find core jar")
+    }
+
     val streamClass = " --class com.asiainfo.ocdp.stream.manager.StreamApp"
 
     val executor_memory = " --executor-memory " + conf.getExecutor_memory
@@ -159,7 +167,7 @@ object MainFrameManager extends Logging {
     } else if (master.contains("yarn")) {
       val num_executors = " --num-executors " + conf.getNum_executors
       var queue = " --queue "
-      if (conf.getQueue != None && !conf.getQueue.isEmpty) {
+      if (StringUtils.isNotEmpty(conf.getQueue)) {
         queue += conf.getQueue
       } else {
         //如果获取不到queue的配置那么就不添加--queue参数，yarn会自动分配任务到默认队列中
