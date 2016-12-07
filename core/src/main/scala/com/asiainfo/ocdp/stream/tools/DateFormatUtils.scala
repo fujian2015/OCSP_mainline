@@ -13,7 +13,7 @@ object DateFormatUtils {
 
   val defaultSDF = new SimpleDateFormat(DEFAULT_PATTERN)
 
-  //  val sdfTmp = new SimpleDateFormat()
+
   val threadLocalSDF = new ThreadLocal[SimpleDateFormat]{
     override def initialValue() = new SimpleDateFormat()
   }

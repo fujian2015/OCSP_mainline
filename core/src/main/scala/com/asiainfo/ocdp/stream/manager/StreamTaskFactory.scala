@@ -13,8 +13,6 @@ object StreamTaskFactory {
     val taskType = taskConf.getTask_type
     if (TaskConstant.TYPE_DATAINTERFACE == taskType)
       new DataInterfaceTask(taskConf)
-    //else if (TaskConstant.TYPE_SUTJECT == taskType)
-    //  new SubjectTask(id, interval)
     else throw new Exception("Task type " + taskType + " is not supported !")
   }
 

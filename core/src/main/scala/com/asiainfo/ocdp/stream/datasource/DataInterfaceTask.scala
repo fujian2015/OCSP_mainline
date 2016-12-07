@@ -43,9 +43,9 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
     val inputArr = (source + delim + "DummySplitHolder").split(delim).dropRight(1).toSeq
     if (inputArr.size != baseItemSize) None else Some(Row.fromSeq(inputArr))
   }
-  //  val kv = Json4sUtils.jsonStr2ArrMap(propsJsonStr, "fields")
+
   final def process(ssc: StreamingContext) = {
-    //    this.ssc = ssc
+
     val sqlc = new SQLContext(ssc.sparkContext)
     // 用户自定义sql的方法
     registFunction(sqlc)
@@ -180,7 +180,7 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
           if (qryKeys != null && qryKeys.nonEmpty) labelQryKeysSet ++= qryKeys
         })
       })
-      // cachemap_old
+
       val f1 = System.currentTimeMillis()
       var cachemap_old: Map[String, Any] = null
       val keyList = busnessKeyList.map(line => line._1).toList.distinct
@@ -197,7 +197,7 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
 
       //Init Codis cache
       val cacheFactory = new CacheFactory(broadSysProps.value, broadCodisProps.value)
-      //CacheFactory.initCache(broadSysProps.value, broadCodisProps.value)
+
       try {
         cachemap_old = cacheFactory.getManager.getMultiCacheByKeys(keyList, qryCacheService).toMap
       } catch {

@@ -75,14 +75,5 @@ object BusinessConf {
   }
 
 
-  /**
-   * init business config
-   */
-//  def initBusinessConf(): Unit = {
-//    val sql = ""
-//    val
-//  }
-
-
 
 }

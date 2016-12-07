@@ -14,8 +14,6 @@ object JDBCUtil {
   private var conn : Connection = null
 
   private def connection: Connection = {
-    //    val spark_home = System.getenv("SPARK_HOME")
-    //    val xml = XML.loadFile(spark_home + "/conf/" + CommonConstant.DBConfFile)
     val xml = XML.loadFile(CommonConstant.DBConfFile)
     val mysqlNode = (xml \ "db")
     val url = (mysqlNode \ "url").text

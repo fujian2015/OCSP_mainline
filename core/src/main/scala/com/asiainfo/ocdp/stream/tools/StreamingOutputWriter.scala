@@ -36,7 +36,7 @@ object StreamingOutputWriter extends Serializable {
             messages.append(new KeyedMessage[String, String](topic, key, msg))
           }
         }
-        //        KafkaSendTool.sendMessage(messages.toList)
+
         KafkaSendTool.sendMessage(dsConf, messages.toList)
 
 

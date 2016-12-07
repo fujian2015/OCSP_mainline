@@ -62,7 +62,7 @@ class Event extends Serializable {
     eventDF.toJSON.mapPartitions(iter => {
       val conf = broadEventConf.value
       //Init Codis cache
-      //CacheFactory.initCache(broadSysProps.value, broadCodisProps.value)
+
       val cacheFactory = new CacheFactory(broadSysProps.value, broadCodisProps.value)
 
       val eventCacheService = new ExecutorCompletionService[immutable.Map[String, (String, Array[Byte])]](CacheQryThreadPool.threadPool)
@@ -90,7 +90,6 @@ class Event extends Serializable {
       }
       val outPutJsonList = eventServer.getEventCache(eventCacheService, batchList.toArray, time_EventId, conf.getInterval, cacheFactory)
 
-   //   CacheFactory.closeCacheConnection
       cacheFactory.closeCacheConnection
       outPutJsonList.iterator
     })

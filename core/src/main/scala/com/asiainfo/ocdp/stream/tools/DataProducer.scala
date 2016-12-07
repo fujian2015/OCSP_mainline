@@ -41,10 +41,6 @@ class DataProducer(brokers: String, topic: String) extends Runnable {
       try {
         for (i <- 0 to msgNum) {
 
-
-          //val msg = new StringBuilder("A9401120150401093000.AVL")
-          //msg.append(":")
-
           //begin time & end time
 
           val beginTime = System.currentTimeMillis()
@@ -62,7 +58,7 @@ class DataProducer(brokers: String, topic: String) extends Runnable {
           msg.append("139" + phoneNum1.toString() + phoneNum2.toString)
           msg.append(separator)
           val long_imsi = "460009269" + (imsi + rand.nextInt(IMSI_MAX)).toString
-          //val long_imsi = "4600092691019400"
+
           msg.append(long_imsi)
           msg.append(separator)
 

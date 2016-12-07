@@ -171,7 +171,7 @@ class DataInterfaceServer extends Logging with Serializable {
 
       val propsJsonStr = x.get("properties").getOrElse(null)
 
-      //
+
       val propsMap = Json4sUtils.jsonStr2ArrMap(propsJsonStr, "props")
       propsMap.foreach(kvMap => conf.set(kvMap.get("pname").get, kvMap.get("pvalue").get))
 

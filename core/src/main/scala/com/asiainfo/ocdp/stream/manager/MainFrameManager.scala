@@ -41,9 +41,6 @@ object MainFrameManager extends Logging {
       pre_start_tasks.put(taskConf.getId, current_time)
   })
 
-  //taskServer.getAllTaskInfos.filter(taskConf => taskConf.getStatus == TaskConstant.PRE_START).
-  //map(taskConf => pre_start_tasks +=(taskConf.getId -> current_time))
-
   // Create an Akka system
   val system = ActorSystem("TaskSystem")
 

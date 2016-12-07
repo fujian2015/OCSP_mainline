@@ -11,15 +11,12 @@ object TableInfoConstant {
 
   val DataInterfaceTableName = "STREAM_DATAINTERFACE"
 
-//  val LabelRuleTableName = "LabelRule"
   val LabelTableName = "STREAM_LABEL"
 
   val LabelDefinitionTableName = "STREAM_LABEL_DEFINITION"
 
-//  val EventRuleTableName = "EventRule"
   val EventTableName = "STREAM_EVENT"
 
-//  val BusinessEventTableName = "BusinessEvent"
   val BusinessEventTableName = "STREAM_SUBJECT"
 
   val TaskTableName = "STREAM_TASK"

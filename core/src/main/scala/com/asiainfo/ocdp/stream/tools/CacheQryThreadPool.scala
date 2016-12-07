@@ -76,7 +76,7 @@ class Insert(value: Map[String, Any], cacheManager :CacheManager) extends Callab
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def call() = {
-    val t1 = System.currentTimeMillis()
+
     val conn = cacheManager.asInstanceOf[JodisCacheManager].getResource
     try {
       val pipeline = conn.pipelined()
@@ -86,10 +86,10 @@ class Insert(value: Map[String, Any], cacheManager :CacheManager) extends Callab
       while (ite.hasNext) {
         val elem = ite.next()
         pipeline.set(elem._1.getBytes, kryotool.serialize(elem._2).array())
-        //            pipeline.sync()
+
       }
       pipeline.sync()
-      //println("Insert " + value.size + " key cost " + (System.currentTimeMillis() - t1) + " Millis")
+
     } catch {
       case ex: Exception =>
         logger.error("= = " * 15 + "found error in Insert.call()")
@@ -104,7 +104,7 @@ class InsertHash(value: Map[String, Map[String, String]], cacheManager :CacheMan
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def call() = {
-    val t1 = System.currentTimeMillis()
+
     val conn = cacheManager.asInstanceOf[JodisCacheManager].getResource
 
     try {
@@ -114,7 +114,6 @@ class InsertHash(value: Map[String, Map[String, String]], cacheManager :CacheMan
         val elem = ite.next()
         pgl.hmset(elem._1, elem._2.asJava)
       }
-      //      println("InsertHash " + value.size + " key cost " + (System.currentTimeMillis() - t1) + " Millis")
       pgl.sync()
     } catch {
       case ex: Exception =>
@@ -160,7 +159,7 @@ class InsertEventRows(value: Array[(String, String, String)], cm : CacheFactory)
 class QryEventCache(value: Array[(String, String)], eventId: String, cm : CacheFactory) extends Callable[immutable.Map[String, (String, Array[Byte])]] {
   val logger = LoggerFactory.getLogger(this.getClass)
   val cacheManager = cm
-//  import scala.collection.JavaConverters._
+
   override def call() = {
     val conn = cacheManager.getManager.asInstanceOf[JodisCacheManager].getResource
 
