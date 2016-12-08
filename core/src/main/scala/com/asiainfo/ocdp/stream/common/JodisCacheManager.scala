@@ -7,6 +7,7 @@ import redis.clients.jedis.JedisPoolConfig
 /**
  * Created by leo on 8/12/15.
  */
+
 class JodisCacheManager(sysProps: SystemProps, dsf: DataSourceConf) extends RedisCacheManager(sysProps) {
   override def getResource = jedisPool.getResource
 
@@ -36,9 +37,6 @@ class JodisCacheManager(sysProps: SystemProps, dsf: DataSourceConf) extends Redi
                                                .build()
   }
 
-  def closeCacheConnection = {
-     jedisPool.close()
-  }
-
 
 }
+

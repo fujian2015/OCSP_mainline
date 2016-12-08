@@ -25,13 +25,13 @@ object CacheQryThreadPool {
   val DEFAULT_CHARACTER_SET = "UTF-8"
 }
 
-class Qry(keyList: List[String], cacheManager : CacheManager) extends Callable[List[(String, Array[Byte])]] {
+class Qry(keyList: List[String]) extends Callable[List[(String, Array[Byte])]] {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def call() = {
     val t1 = System.currentTimeMillis()
     val keys = keyList.map(x => x.getBytes).toSeq
-    val conn = cacheManager.asInstanceOf[RedisCacheManager].getResource
+    val conn = CacheFactory.getManager.asInstanceOf[RedisCacheManager].getResource
     var result: JList[Array[Byte]] = null
     try {
       val pipeline = conn.pipelined()
@@ -50,12 +50,12 @@ class Qry(keyList: List[String], cacheManager : CacheManager) extends Callable[L
   }
 }
 
-class QryHashall(keys: Seq[String], cacheManager :CacheManager) extends Callable[Seq[(String, java.util.Map[String, String])]] {
+class QryHashall(keys: Seq[String]) extends Callable[Seq[(String, java.util.Map[String, String])]] {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def call() = {
     val t1 = System.currentTimeMillis()
-    val conn = cacheManager.asInstanceOf[RedisCacheManager].getResource
+    val conn = CacheFactory.getManager.asInstanceOf[RedisCacheManager].getResource
     var result: JList[JMap[String, String]] = null
     try {
       val pgl = conn.pipelined()
@@ -72,12 +72,13 @@ class QryHashall(keys: Seq[String], cacheManager :CacheManager) extends Callable
   }
 }
 
-class Insert(value: Map[String, Any], cacheManager :CacheManager) extends Callable[String] {
+class Insert(value: Map[String, Any]) extends Callable[String] {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def call() = {
 
-    val conn = cacheManager.asInstanceOf[JodisCacheManager].getResource
+    val t1 = System.currentTimeMillis()
+    val conn = CacheFactory.getManager.asInstanceOf[JodisCacheManager].getResource
     try {
       val pipeline = conn.pipelined()
       val ite = value.iterator
@@ -100,12 +101,12 @@ class Insert(value: Map[String, Any], cacheManager :CacheManager) extends Callab
   }
 }
 
-class InsertHash(value: Map[String, Map[String, String]], cacheManager :CacheManager) extends Callable[String] {
+class InsertHash(value: Map[String, Map[String, String]]) extends Callable[String] {
   val logger = LoggerFactory.getLogger(this.getClass)
 
   override def call() = {
-
-    val conn = cacheManager.asInstanceOf[JodisCacheManager].getResource
+    val t1 = System.currentTimeMillis()
+    val conn = CacheFactory.getManager.asInstanceOf[JodisCacheManager].getResource
 
     try {
       val pgl = conn.pipelined()
@@ -132,13 +133,12 @@ class InsertHash(value: Map[String, Map[String, String]], cacheManager :CacheMan
  * value: hset: ( eventCache:unikey1:unikey2,Row:eventId:eventID,time)
  * key: eventCache:unikey1:unikey2 item: Row:eventId:eventID value: time
  */
-class InsertEventRows(value: Array[(String, String, String)], cm : CacheFactory) extends Runnable {
+class InsertEventRows(value: Array[(String, String, String)]) extends Runnable {
   val logger = LoggerFactory.getLogger(this.getClass)
-  val cacheManager = cm
 
   override def run() = {
     val t1 = System.currentTimeMillis()
-    val conn = cacheManager.getManager.asInstanceOf[JodisCacheManager].getResource
+    val conn = CacheFactory.getManager.asInstanceOf[JodisCacheManager].getResource
     try {
       val pgl = conn.pipelined()
       value.foreach(elem => pgl.hset(elem._1.getBytes, elem._2.getBytes, elem._3.getBytes))
@@ -156,12 +156,12 @@ class InsertEventRows(value: Array[(String, String, String)], cm : CacheFactory)
  * value:(eventCache:eventKeyValue,jsonValue)
  * result: Map[rowKeyList->Tuple2(jsonList->result)]
  */
-class QryEventCache(value: Array[(String, String)], eventId: String, cm : CacheFactory) extends Callable[immutable.Map[String, (String, Array[Byte])]] {
+class QryEventCache(value: Array[(String, String)], eventId: String) extends Callable[immutable.Map[String, (String, Array[Byte])]] {
   val logger = LoggerFactory.getLogger(this.getClass)
-  val cacheManager = cm
 
+//  import scala.collection.JavaConverters._
   override def call() = {
-    val conn = cacheManager.getManager.asInstanceOf[JodisCacheManager].getResource
+    val conn = CacheFactory.getManager.asInstanceOf[JodisCacheManager].getResource
 
     // 营销业务ID
     val event_id = eventId

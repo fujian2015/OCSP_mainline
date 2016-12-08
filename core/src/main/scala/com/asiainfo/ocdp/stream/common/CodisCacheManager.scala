@@ -36,7 +36,4 @@ class CodisCacheManager(sysProps: SystemProps) extends RedisCacheManager(sysProp
 
   override def getResource = jedisPool.getResource
 
-  def closeCacheConnection = {
-  }
-
 }

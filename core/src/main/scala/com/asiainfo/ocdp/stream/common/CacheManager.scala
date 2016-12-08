@@ -39,5 +39,4 @@ trait CacheManager {
 
   def hmset(keyValues: Map[String, Map[String, String]])
 
-  def closeCacheConnection()
 }

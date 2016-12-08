@@ -1,6 +1,6 @@
 package com.asiainfo.ocdp.stream.event
 
-import com.asiainfo.ocdp.stream.common.BroadcastManager
+import com.asiainfo.ocdp.stream.common.{BroadcastConf, BroadcastManager}
 import com.asiainfo.ocdp.stream.config.{ EventConf, MainFrameConf }
 import com.asiainfo.ocdp.stream.constant.EventConstant
 import com.asiainfo.ocdp.stream.service.EventServer
@@ -61,9 +61,8 @@ class Event extends Serializable {
 
     eventDF.toJSON.mapPartitions(iter => {
       val conf = broadEventConf.value
-      //Init Codis cache
-
-      val cacheFactory = new CacheFactory(broadSysProps.value, broadCodisProps.value)
+      //Init Broadcast conf
+      BroadcastConf.initProp(broadSysProps.value, broadCodisProps.value)
 
       val eventCacheService = new ExecutorCompletionService[immutable.Map[String, (String, Array[Byte])]](CacheQryThreadPool.threadPool)
       val batchList = new ArrayBuffer[Array[(String, String)]]()
@@ -88,9 +87,8 @@ class Event extends Serializable {
         // 把list放入线程池更新codis
         if (index == size - 1) batchList += batchArrayBuffer.toArray
       }
-      val outPutJsonList = eventServer.getEventCache(eventCacheService, batchList.toArray, time_EventId, conf.getInterval, cacheFactory)
+      val outPutJsonList = eventServer.getEventCache(eventCacheService, batchList.toArray, time_EventId, conf.getInterval)
 
-      cacheFactory.closeCacheConnection
       outPutJsonList.iterator
     })
   }

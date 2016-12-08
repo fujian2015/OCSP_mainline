@@ -2,7 +2,7 @@ package com.asiainfo.ocdp.stream.tools
 
 import java.text.SimpleDateFormat
 
-import com.asiainfo.ocdp.stream.common.{BroadcastManager, Logging}
+import com.asiainfo.ocdp.stream.common.{BroadcastConf, BroadcastManager, Logging}
 import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, EventConf}
 import org.apache.commons.lang.math.NumberUtils
 import org.apache.spark.rdd.RDD
@@ -44,6 +44,7 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
 
     val numPartitionsCustom = conf.get("numPartitions", "null")
 
+  /*
     if (NumberUtils.isDigits(numPartitionsCustom)){
       numPartitions = numPartitionsCustom.toInt
     }
@@ -54,15 +55,20 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
         numPartitions = 1
       }
     }
+*/
 
-    logInfo(s"The number of partitions is $numPartitions")
 
-    val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys).coalesce(numPartitions)
+ //   logInfo(s"The number of partitions is $numPartitions")
+
+ //   val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys).coalesce(numPartitions)
+
+
+    val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys)
 
     resultRDD.mapPartitions(iter => {
 
-      //Init Task cache
-      val cacheFactory = new CacheFactory(broadSysProps.value, broadCodisProps.value)
+      //Init Broadcast conf
+      BroadcastConf.initProp(broadSysProps.value, broadCodisProps.value)
       val it = iter.toList.map(line =>
       {
         val key = line._1
@@ -79,8 +85,7 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
         key
       })
       //Save cache to Codis
-      if (resultSiteData.size > 0) cacheFactory.getManager.hmset(resultSiteData)
-      cacheFactory.closeCacheConnection
+      if (resultSiteData.size > 0) CacheFactory.getManager.hmset(resultSiteData)
       it.iterator
     })
   }

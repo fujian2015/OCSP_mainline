@@ -3,7 +3,7 @@ package com.asiainfo.ocdp.stream.datasource
 import java.text.SimpleDateFormat
 import java.util.concurrent._
 
-import com.asiainfo.ocdp.stream.common.{BroadcastManager, StreamingCache}
+import com.asiainfo.ocdp.stream.common.{BroadcastConf, BroadcastManager, StreamingCache}
 import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, MainFrameConf, TaskConf}
 import com.asiainfo.ocdp.stream.constant.LabelConstant
 import com.asiainfo.ocdp.stream.event.Event
@@ -195,11 +195,11 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
         throw new Exception("codis props is not set!")
       }
 
-      //Init Codis cache
-      val cacheFactory = new CacheFactory(broadSysProps.value, broadCodisProps.value)
+      //Init Broadcast conf
+      BroadcastConf.initProp(broadSysProps.value, broadCodisProps.value)
 
       try {
-        cachemap_old = cacheFactory.getManager.getMultiCacheByKeys(keyList, qryCacheService).toMap
+        cachemap_old = CacheFactory.getManager.getMultiCacheByKeys(keyList, qryCacheService).toMap
       } catch {
         case ex: Exception =>
           logError("= = " * 15 + " got exception in EventSource while get cache")
@@ -207,7 +207,7 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
       }
       val f2 = System.currentTimeMillis()
       println(" 1. 查取一批数据缓存中的交互状态信息 cost time : " + (f2 - f1) + " millis ! ")
-      val labelQryData = cacheFactory.getManager.hgetall(labelQryKeysSet.toList, hgetAllService)
+      val labelQryData = CacheFactory.getManager.hgetall(labelQryKeysSet.toList, hgetAllService)
       val f3 = System.currentTimeMillis()
       println(" 2. 查取此批数据缓存中的用户相关信息表 cost time : " + (f3 - f2) + " millis ! ")
       // 遍历整个批次的数据，逐条记录打标签
@@ -258,12 +258,8 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
       val f4 = System.currentTimeMillis()
       println(" 3. 遍历一批次数据并打相关联的标签 cost time : " + (f4 - f3) + " millis ! ")
       //update caches to CacheManager
-      cacheFactory.getManager.setMultiCache(cachemap_new)
+      CacheFactory.getManager.setMultiCache(cachemap_new)
       println(" 4. 更新这批数据的缓存中的交互状态信息 cost time : " + (System.currentTimeMillis() - f4) + " millis ! ")
-
-      //CacheFactory.closeCacheConnection
-
-      cacheFactory.closeCacheConnection
 
       jsonList.iterator
 

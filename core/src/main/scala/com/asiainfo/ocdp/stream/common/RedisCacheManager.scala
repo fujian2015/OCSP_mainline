@@ -114,7 +114,7 @@ abstract class RedisCacheManager(sysProps: SystemProps) extends CacheManager {
 
   override def setMultiCache(keysvalues: Map[String, Any]) {
     val kvSplit = keysvalues.sliding(miniBatch, miniBatch).toList
-    kvSplit.foreach(limitBatch => CacheQryThreadPool.threadPool.submit(new FutureTask[String](new Insert(limitBatch, this))))
+    kvSplit.foreach(limitBatch => CacheQryThreadPool.threadPool.submit(new FutureTask[String](new Insert(limitBatch))))
   }
 
 
@@ -125,7 +125,7 @@ abstract class RedisCacheManager(sysProps: SystemProps) extends CacheManager {
     // 把原数据划分小批次多线程查询
     val keySplit = keys.sliding(miniBatch, miniBatch).toList
     try {
-      keySplit.map(keyList => qryCacheService.submit(new Qry(keyList, this)))
+      keySplit.map(keyList => qryCacheService.submit(new Qry(keyList)))
       for (index <- 0 until keySplit.size) {
         // 把查询的结果集放入multimap
         val result = qryCacheService.take().get
@@ -162,7 +162,7 @@ abstract class RedisCacheManager(sysProps: SystemProps) extends CacheManager {
     // 把原数据划分小批次多线程查询
     val keySplit = keys.sliding(miniBatch, miniBatch).toList
     try {
-      keySplit.map(keyList => hgetAllService.submit(new QryHashall(keyList, this)))
+      keySplit.map(keyList => hgetAllService.submit(new QryHashall(keyList)))
       for (index <- 0 until keySplit.size) {
         // 把查询的结果集放入multimap
         val result = hgetAllService.take().get()
@@ -179,7 +179,7 @@ abstract class RedisCacheManager(sysProps: SystemProps) extends CacheManager {
   }
 
   def hmset(keyValues: Map[String, Map[String, String]]) = keyValues.sliding(miniBatch, miniBatch).toList.foreach(limitBatch =>
-    CacheQryThreadPool.threadPool.submit(new FutureTask[String](new InsertHash(limitBatch, this))))
+    CacheQryThreadPool.threadPool.submit(new FutureTask[String](new InsertHash(limitBatch))))
 
   override def setCommonCacheValue(cacheName: String, key: String, value: String) = getConnection.hset(cacheName, key, value)
   // added by surq at 2015.12.7 end-----------------UPDATA-------------
