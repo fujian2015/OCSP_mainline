@@ -1,0 +1,47 @@
+<div class="row">
+  <div class="col-md-2 well">
+    <div class="list-group">
+      <div class="list-group-item">
+        {{'label_manage' | translate}}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-10 main">
+    <div class="panel panel-oc">
+      <div class="panel-heading">
+        {{'label_manage' | translate}}
+      </div>
+      <div class="panel-body">
+        <table class="table table-striped">
+          <thead>
+          <tr>
+            <th>name</th>
+            <th>class_name</th>
+            <th>properties</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="label in labels">
+              <td class="col-md-3">{{label.name}}</td>
+              <td class="col-md-3">{{label.class_name}}</td>
+              <td class="col-md-6"><textarea ng-model="label.properties" class="form-control" rows="6"/></td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" ng-click="save()">Save</button>
+      </div>
+    </div>
+    <div class="well">
+      <div>
+        <div style="float:right;">
+          <button type="button" ng-click="upload()">Upload</button>
+        </div>
+        <input ngf-select type="file" ng-model="file">
+            <span class="progress" ng-show="file.progress >= 0">
+              <div style="width:{{file.progress}}%"/>
+          </span>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-md-2 well">
+    <div class="list-group">
+      <div class="list-group-item">
+        System Properties
+      </div>
+      <div class="list-group-item">
+        Datasources
+      </div>
+    </div>
+  </div>
+  <div class="col-md-10 main">
+    <div class="panel panel-oc">
+      <div class="panel-heading">
+        Properties
+      </div>
+      <div class="panel-body">
+        <uib-accordion>
+          <div uib-accordion-group class="panel-default" ng-init="isOpen = true" is-open="isOpen">
+            <uib-accordion-heading>
+              System Properties <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i>
+            </uib-accordion-heading>
+            <div ng-repeat="property in prop" class="form-group">
+              <div class="row">
+                <div class="col-md-2">
+                  <label>{{property.name}}</label>
+                </div>
+                <div class="col-md-8">
+                  <input ng-model="property.value" class="form-control" popover-trigger="'mouseenter'"
+                         popover-placement="right"
+                         uib-popover="Description: {{property.description}}" popover-title="{{property.name}}">
+                </div>
+              </div>
+            </div>
+          </div>
+        </uib-accordion>
+        <uib-accordion ng-repeat="data in datasource">
+          <div uib-accordion-group class="panel-default" popover-trigger="'mouseenter'" ng-init="data.isOpen = true" is-open="data.isOpen"
+               popover-placement="right" popover-title="{{data.name}}" uib-popover="Description: {{data.description}}">
+            <uib-accordion-heading>
+              {{data.name}} <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': data.isOpen, 'glyphicon-chevron-right': !status.isOpen}"></i>
+            </uib-accordion-heading>
+            <div ng-repeat="item in data.props" class="form-group">
+              <div class="row" ng-show="data.type === 'kafka' || (data.type === 'codis' && (item.pname === 'zk' || item.pname === 'zkpath'))">
+                <div class="col-md-2">
+                  <label>{{item.pname}}</label>
+                </div>
+                <div class="col-md-8">
+                  <input class="form-control" ng-model="item.pvalue">
+                </div>
+              </div>
+            </div>
+          </div>
+        </uib-accordion>
+        <button type="button" class="btn btn-primary" ng-click="save()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

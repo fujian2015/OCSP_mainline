@@ -1,0 +1,580 @@
+<script type="text/ng-template" id="stackedModal.html">
+  <div class="modal-header">
+    <h3 class="modal-title">Please input your SPARK_HOME first to continue.</h3>
+  </div>
+  <div class="modal-body">
+    <div class="form-group">
+      <label>SPARK_HOME</label>
+      <input type="text" class="form-control" ng-model="spark" required>
+    </div>
+    <div class="form-group">
+      <button type="button" class="btn btn-primary" ng-click="inputSpark()">Continue</button>
+    </div>
+  </div>
+</script>
+<div class="row">
+  <div class="well col-md-2">
+    <wizard title="{{'create_task' | translate}}" width="1020px" name="add_task" submit-method="submitMethod()"
+            task="task">
+      <div class="wizard-card" data-cardname="create_task_1">
+        <div class="form-group">
+          <label>Task name*</label>
+          <input type="text" name="name" class="form-control" ng-model="task.name" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea ng-model="task.description" class="form-control" rows="6"></textarea>
+        </div>
+      </div>
+      <div class="wizard-card" data-cardname="create_task_2">
+        <div class="form-group">
+          <label>Input stream name*</label>
+          <input type="text" class="form-control" ng-model="task.input.name" required>
+        </div>
+        <div class="form-group">
+          <label>Filter</label>
+          <input type="text" class="form-control" ng-model="task.input.filter_expr">
+        </div>
+        <div class="form-group">
+          <label>Delim*</label>
+          <input type="text" class="form-control" ng-model="task.input.delim" required>
+        </div>
+        <div class="form-group">
+          <label>kafka topic</label>
+          <input type="text" class="form-control" ng-model="task.input.topic" required>
+        </div>
+        <div class="form-group">
+          <label>fields</label>
+          <tokenfield ng-model="task.input.fields"></tokenfield>
+        </div>
+        <div class="form-group">
+          <label>uniqueKey</label>
+          <input type="text" class="form-control" ng-model="task.input.uniqueKey" required>
+        </div>
+      </div>
+      <div class="wizard-card" data-cardname="create_task_3">
+        <div class="form-group">
+          <isteven-multi-select
+            input-model="inputLabels"
+            output-model="task.outputLabels"
+            button-label="name"
+            item-label="name"
+            tick-property="tick1"
+            required>
+          </isteven-multi-select>
+        </div>
+        <div class="form-group">
+          <ul dnd-list="task.outputLabels">
+            <li ng-repeat="item in task.outputLabels"
+                dnd-draggable="item"
+                dnd-moved="sortLabels(task.outputLabels, $index)"
+                dnd-effect-allowed="move"
+                dnd-selected="models.selected = item"
+                ng-class="{'selected': models.selected === item}">
+              <dnd-nodrag>
+                <div dnd-handle class="handle"><span class="badge">{{$index+1}}</span>&nbsp;{{item.name}}</div>
+              </dnd-nodrag>
+            </li>
+            <li class="dndPlaceholder">
+              Drop <strong>label</strong> here
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="wizard-card" data-cardname="create_task_4">
+        <button type="button" class="btn btn-primary" ng-click="addOutput()">Add Output
+        </button>
+        <uib-accordion>
+          <div uib-accordion-group class="panel-default" ng-repeat="item in task.events" is-open="item.isOpen">
+            <uib-accordion-heading>
+              <i class="pull-left glyphicon"
+                 ng-class="{'glyphicon-chevron-down': item.isOpen, 'glyphicon-chevron-right': !item.isOpen}"></i>
+              &nbsp;
+              Output {{item.name}} <a class="pull-right"
+                                             ng-click="$event.stopPropagation();$event.preventDefault();removeOutput($index)"><i
+              class="glyphicon glyphicon-remove"></i></a>
+            </uib-accordion-heading>
+            <div class="container-fluid">
+              <div class="panel panel-oc">
+                <div class="panel-heading">
+                  Output Basic Configuration
+                </div>
+                <div class="panel-body">
+                  <div class="form-group">
+                    <label>Event name*</label>
+                    <input type="text" class="form-control" ng-model="item.name" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Delim</label>
+                    <input type="text" class="form-control" ng-model="item.delim" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Filter</label>
+                    <input type="text" class="form-control" ng-model="item.filter_expr">
+                  </div>
+                  <div class="form-group">
+                    <label>select expr</label>
+                    <tokenfield ng-model="item.select_expr"></tokenfield>
+                  </div>
+                  <div class="form-group">
+                    <label>Interval(s)</label>
+                    <input type="text" class="form-control" ng-model="item.interval" required>
+                  </div>
+                </div>
+              </div>
+              <!--For interface-->
+              <div class="panel panel-oc">
+                <div class="panel-heading">
+                  Output Interface Configuration
+                </div>
+                <div class="panel-body">
+                  <div class="form-group">
+                    <label>Delim*</label>
+                    <input type="text" class="form-control" ng-model="item.output.delim" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Filter</label>
+                    <input type="text" class="form-control" ng-model="item.output.filter_expr">
+                  </div>
+                  <div class="form-group">
+                    <label>Output datasource*</label>
+                    <ui-select ng-model="item.output.datasource" ng-required="true">
+                      <ui-select-match>
+                        <span ng-bind="$select.selected.name"></span>
+                      </ui-select-match>
+                      <ui-select-choices
+                        repeat="datasource in (datasources | filter: $select.search) track by datasource.id">
+                        <span ng-bind="datasource.name"></span>
+                      </ui-select-choices>
+                    </ui-select>
+                  </div>
+                  <div class="form-group" ng-show="item.output.datasource.id == 1">
+                    <label>kafka topic*</label>
+                    <input type="text" class="form-control" ng-model="item.output.topic">
+                  </div>
+                  <div class="form-group" ng-show="item.output.datasource.id == 2">
+                    <label>codisKeyPrefix*</label>
+                    <input type="text" class="form-control" ng-model="item.output.codisKeyPrefix">
+                  </div>
+                  <div class="form-group" ng-show="item.output.datasource !== undefined && item.output.datasource.id > 0">
+                    <label>fields</label>
+                    <tokenfield ng-model="item.output.fields"></tokenfield>
+                  </div>
+                  <div class="form-group" ng-show="item.output.datasource !== undefined && item.output.datasource.id > 0">
+                    <label>uniqueKey*</label>
+                    <input type="text" class="form-control" ng-model="item.output.uniqueKey">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </uib-accordion>
+      </div>
+      <div class="wizard-card" data-cardname="create_task_5">
+        <h1 class="page-header">
+          {{task.name}}
+        </h1>
+        <div class="form-group">
+          <label>Input dataInterface:</label>
+          &nbsp;{{task.input.name}}
+        </div>
+        <div class="form-group" ng-show="task.input.topic !== null && task.input.topic !== '' && task.input.topic !== undefined">
+          <label>Topic:</label>
+          &nbsp;{{task.input.topic}}
+        </div>
+        <div ng-show="task.outputLabels !== undefined && task.outputLabels.length > 0" class="form-group">
+          <label>Labels:</label>
+          <ul class="list-group">
+            <li ng-repeat="item in task.outputLabels" class="list-group-item"><span class="badge">{{$index+1}}</span>&nbsp;{{item.name}}</li>
+          </ul>
+        </div>
+        <div ng-show="task.events !== undefined && task.events.length > 0" class="form-group">
+          <label>Output:</label>
+          <ul ng-repeat="item in task.events" class="list-group">
+            <li class="list-group-item"><strong>{{item.name}}</strong>({{item.datasource.type === 1?"kafka":"codis"}})</li>
+          </ul>
+        </div>
+        </p>
+      </div>
+    </wizard>
+    <a ng-repeat="item in jobs" href="" class="list-group-item tasks" ng-click="changeItem(item)"
+       ng-class="{true: 'choose'}[item.id === selectedJob.id]" ng-show="item.type === 1">
+      <i ng-class="statusName(item.status)"></i>
+      &nbsp;&nbsp;{{item.name}}
+    </a>
+  </div>
+  <div class="main col-md-10">
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="" aria-controls="summary" role="tab" data-toggle="tab"
+                                                ng-click="changeTab('summary')">Task
+        Summary</a></li>
+      <li role="presentation"><a href="" aria-controls="config" role="tab" data-toggle="tab"
+                                 ng-click="changeTab('config')">Task
+        Configuration</a></li>
+      <li class="dropdown col-md-offset-2">
+        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+           aria-expanded="false">
+          QuickLinks <span class="caret"></span>
+        </a>
+        <ul id="quick" class="dropdown-menu">
+          <li ng-repeat="link in links"><a target="_blank" href="{{link.value}}">{{link.name}}</a></li>
+        </ul>
+      </li>
+      <li class="dropdown pull-right" ng-show="selectedJob.id !== undefined">
+        <a href="" class="dropdown-toggle btn" data-toggle="dropdown" role="button" aria-haspopup="true"
+           aria-expanded="false">
+          Actions <span class="caret"></span>
+        </a>
+        <ul id="actions" class="dropdown-menu">
+          <li ng-repeat="item in actions" ng-class="{false: 'disabled'}[item.enable]">
+            <a href="" ng-click="changeStatus(item)"><i class="{{item.icon}}"></i> &nbsp;{{item.name}}</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane" id="summary" ng-class="{'summary' : 'active'}[tab]">
+        <div class="container-fluid">
+          <div class="panel panel-oc">
+            <div class="panel-heading">{{'job_manage' | translate}}</div>
+            <div class="panel-body">
+              <div class="alert alert-info alert-dismissible" role="alert" ng-show="selectedJob.id === undefined">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
+                <strong><i class="glyphicon glyphicon-info-sign"></i></strong> Please choose a task first
+              </div>
+              <ul class="list-group" ng-show="selectedJob.id !== undefined">
+                <li class="list-group-item"><h4>Task status:
+                  {{statusText(selectedJob.status)}}
+                </h4></li>
+                <li class="list-group-item"><h4>Task running time:
+                  <!--<span class="badge">{{selectedJob.receive_interval}}</span>-->
+                </h4></li>
+              </ul>
+              <div class="well" ng-show="selectedJob.id !== undefined">
+                <div class="row text-center">
+                  <div class="col-md-12">
+                    <div id="mermaid">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="config" ng-class="{'config' : 'active'}[tab]">
+        <div class="container-fluid">
+          <div class="panel panel-oc">
+            <div class="panel-heading">Configurations</div>
+            <div class="panel-body">
+              <div class="alert alert-danger alert-dismissible" role="alert" ng-show="selectedJob.id === undefined">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                  aria-hidden="true">&times;</span></button>
+                <strong><i class="glyphicon glyphicon-info-sign"></i></strong> Please choose a task first
+              </div>
+              <div ng-show="selectedJob.id !== undefined">
+                <uib-accordion>
+                  <div uib-accordion-group class="panel-default" ng-init="isOpen = true" is-open="isOpen">
+                    <uib-accordion-heading>
+                      <i class="pull-left glyphicon"
+                         ng-class="{'glyphicon-chevron-down': isOpen, 'glyphicon-chevron-right': !isOpen}"></i>
+                      &nbsp; Basic configuration
+                    </uib-accordion-heading>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Task name*</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" name="name" class="form-control" ng-model="selectedJob.name" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Description</label>
+                        </div>
+                        <div class="col-md-8">
+                          <textarea ng-model="selectedJob.description" class="form-control" rows="3"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Receive interval(s)</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.receive_interval">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Num executors</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.num_executors">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Driver memory</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.driver_memory">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Executor memory</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.executor_memory">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Total executor cores</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.total_executor_cores">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Queue</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.queue">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </uib-accordion>
+                <uib-accordion>
+                  <div uib-accordion-group class="panel-default" is-open="isOpen1">
+                    <uib-accordion-heading>
+                      <i class="pull-left glyphicon"
+                         ng-class="{'glyphicon-chevron-down': isOpen1, 'glyphicon-chevron-right': !isOpen1}"></i>
+                      &nbsp; Input dataInterface
+                    </uib-accordion-heading>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Input stream name*</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.input.name" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Filter</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.input.filter_expr">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>Delim*</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.input.delim" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>kafka topic</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.input.topic">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>fields</label>
+                        </div>
+                        <div class="col-md-8">
+                          <tokenfield ng-model="selectedJob.input.fields"></tokenfield>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>uniqueKey</label>
+                        </div>
+                        <div class="col-md-8">
+                          <input type="text" class="form-control" ng-model="selectedJob.input.uniqueKey">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </uib-accordion>
+                <uib-accordion>
+                  <div uib-accordion-group class="panel-default" is-open="isOpen2">
+                    <uib-accordion-heading>
+                      <i class="pull-left glyphicon"
+                         ng-class="{'glyphicon-chevron-down': isOpen2, 'glyphicon-chevron-right': !isOpen2}"></i>
+                      &nbsp; Labels config
+                    </uib-accordion-heading>
+                    <div class="form-group">
+                      <isteven-multi-select
+                        input-model="inputLabels"
+                        output-model="selectedJob.labels"
+                        button-label="name"
+                        item-label="name"
+                        tick-property="tick2">
+                      </isteven-multi-select>
+                    </div>
+                    <div class="form-group">
+                      <ul dnd-list="selectedJob.labels">
+                        <li ng-repeat="item in selectedJob.labels"
+                            dnd-draggable="item"
+                            dnd-moved="sortLabels(selectedJob.labels, $index)"
+                            dnd-effect-allowed="move"
+                            ng-class="{'selected': models.selected === item}">
+                          <dnd-nodrag>
+                            <div dnd-handle class="handle"><span class="badge">{{$index+1}}</span>&nbsp;{{item.name}}
+                            </div>
+                          </dnd-nodrag>
+                        </li>
+                        <li class="dndPlaceholder">
+                          Drop <strong>label</strong> here
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </uib-accordion>
+                <uib-accordion>
+                  <div uib-accordion-group class="panel-default" is-open="isOpen3">
+                    <uib-accordion-heading>
+                      <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': isOpen3, 'glyphicon-chevron-right': !isOpen3}"></i>
+                      &nbsp; Output
+                    </uib-accordion-heading>
+                    <button type="button" class="btn btn-primary" ng-click="addOutput1()">Add Output</button>
+                    <uib-accordion>
+                      <div uib-accordion-group class="panel-default" ng-repeat="item in selectedJob.events" is-open="item.isOpen">
+                        <uib-accordion-heading>
+                          <i class="pull-left glyphicon"
+                             ng-class="{'glyphicon-chevron-down': item.isOpen, 'glyphicon-chevron-right': !item.isOpen}"></i>
+                          &nbsp;
+                          Output {{item.name}} <a class="pull-right"
+                                                  ng-click="$event.stopPropagation();$event.preventDefault();removeOutput1($index)"><i
+                          class="glyphicon glyphicon-remove"></i></a>
+                        </uib-accordion-heading>
+                        <div class="container-fluid">
+                          <div class="panel panel-oc">
+                            <div class="panel-heading">
+                              Output Basic Configuration
+                            </div>
+                            <div class="panel-body">
+                              <div class="form-group">
+                                <div class="row">
+                                  <toggle-switch class="pull-left" ng-model="item.status"><toggle-switch>
+                                </div>
+                              </div>
+                              <div class="form-group">
+                                <label>Event name*</label>
+                                <input type="text" class="form-control" ng-model="item.name" required>
+                              </div>
+                              <div class="form-group">
+                                <label>Delim</label>
+                                <input type="text" class="form-control" ng-model="item.delim" required>
+                              </div>
+                              <div class="form-group">
+                                <label>Filter</label>
+                                <input type="text" class="form-control" ng-model="item.filter_expr">
+                              </div>
+                              <div class="form-group">
+                                <label>select expr</label>
+                                <tokenfield ng-model="item.select_expr"></tokenfield>
+                              </div>
+                              <div class="form-group">
+                                <label>Interval(s)</label>
+                                <input type="text" class="form-control" ng-model="item.interval" required>
+                              </div>
+                            </div>
+                          </div>
+                          <!--For interface-->
+                          <div class="panel panel-oc">
+                            <div class="panel-heading">
+                              Output Interface Configuration
+                            </div>
+                            <div class="panel-body">
+                              <div class="form-group">
+                                <label>Delim*</label>
+                                <input type="text" class="form-control" ng-model="item.output.delim" required>
+                              </div>
+                              <div class="form-group">
+                                <label>Filter</label>
+                                <input type="text" class="form-control" ng-model="item.output.filter_expr">
+                              </div>
+                              <div class="form-group">
+                                <label>Output datasource*</label>
+                                <ui-select ng-model="item.output.datasource" ng-required="true">
+                                  <ui-select-match>
+                                    <span ng-bind="$select.selected.name"></span>
+                                  </ui-select-match>
+                                  <ui-select-choices
+                                    repeat="datasource in (datasources | filter: $select.search) track by datasource.id">
+                                    <span ng-bind="datasource.name"></span>
+                                  </ui-select-choices>
+                                </ui-select>
+                              </div>
+                              <div class="form-group" ng-show="item.output.datasource.id == 1">
+                                <label>kafka topic*</label>
+                                <input type="text" class="form-control" ng-model="item.output.topic" required>
+                              </div>
+                              <div class="form-group" ng-show="item.output.datasource.id == 2">
+                                <label>codisKeyPrefix*</label>
+                                <input type="text" class="form-control" ng-model="item.output.codisKeyPrefix" required>
+                              </div>
+                              <div class="form-group" ng-show="item.output.datasource !== undefined && item.output.datasource.id > 0">
+                                <label>fields</label>
+                                <tokenfield ng-model="item.output.fields"></tokenfield>
+                              </div>
+                              <div class="form-group" ng-show="item.output.datasource !== undefined && item.output.datasource.id > 0">
+                                <label>uniqueKey*</label>
+                                <input type="text" class="form-control" ng-model="item.output.uniqueKey" required>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </uib-accordion>
+                  </div>
+                </uib-accordion>
+                <button class="btn btn-primary" ng-click="update()">Save</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
