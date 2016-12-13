@@ -173,7 +173,7 @@ angular.module('ocspApp')
 
     //TODO: use directive instead
     function drawGraph(item, labels){
-      var graphDefinition = 'graph TB;';
+      var graphDefinition = 'graph LR;';
       graphDefinition += "task[" + item.name + "];";
       graphDefinition += "input((" + item.input.topic + "));";
       graphDefinition += "task-->|" + item.input.name + "|input;";
