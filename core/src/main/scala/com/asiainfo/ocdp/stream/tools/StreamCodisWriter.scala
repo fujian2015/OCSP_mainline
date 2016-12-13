@@ -44,7 +44,6 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
 
     val numPartitionsCustom = conf.get("numPartitions", "null")
 
-  /*
     if (NumberUtils.isDigits(numPartitionsCustom)){
       numPartitions = numPartitionsCustom.toInt
     }
@@ -55,15 +54,10 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
         numPartitions = 1
       }
     }
-*/
 
+    logInfo(s"The number of partitions is $numPartitions")
 
- //   logInfo(s"The number of partitions is $numPartitions")
-
- //   val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys).coalesce(numPartitions)
-
-
-    val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys)
+    val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys).coalesce(numPartitions)
 
     resultRDD.mapPartitions(iter => {
 

@@ -53,7 +53,7 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
 
     val numPartitionsCustom = conf.get("numPartitions", "null")
 
-/*
+
     if (NumberUtils.isDigits(numPartitionsCustom)){
       numPartitions = numPartitionsCustom.toInt
     }
@@ -64,13 +64,11 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
         numPartitions = 1
       }
     }
-    */
 
 
-   // logInfo(s"The number of partitions is $numPartitions")
+    logInfo(s"The number of partitions is $numPartitions")
 
-    //val resultRDD: RDD[(String, String)] = transforEvent2KafkaMessage(jsonRDD, uniqKeys).coalesce(numPartitions)
-    val resultRDD: RDD[(String, String)] = transforEvent2KafkaMessage(jsonRDD, uniqKeys)
+    val resultRDD: RDD[(String, String)] = transforEvent2KafkaMessage(jsonRDD, uniqKeys).coalesce(numPartitions)
     resultRDD.mapPartitions(iter => {
       val diConf = broadDiconf.value
       val messages = ArrayBuffer[KeyedMessage[String, String]]()

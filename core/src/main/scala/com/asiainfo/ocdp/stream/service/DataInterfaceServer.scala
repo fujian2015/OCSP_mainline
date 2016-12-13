@@ -39,7 +39,7 @@ class DataInterfaceServer extends Logging with Serializable {
       val dsconf = getDataSourceInfoById(interface.get("dsid").get)
       conf.setDsConf(dsconf)
 
-      val propsJsonStr = interface.get("properties").getOrElse(null)
+      val propsJsonStr = interface.get("properties").getOrElse("").replace(" ", "")
       conf.setBaseSchema(Json4sUtils.jsonStr2BaseStructType(propsJsonStr, "fields"))
       conf.setBaseItemsSize((Json4sUtils.jsonStr2ArrMap(propsJsonStr, "fields")).size)
       conf.setAllItemsSchema(Json4sUtils.jsonStr2UdfStructType(propsJsonStr, "fields", "userFields"))
@@ -165,7 +165,7 @@ class DataInterfaceServer extends Logging with Serializable {
       conf.setId(x.get("id").get)
       conf.setInIFId(id)
       conf.setName(x.get("name").get)
-      conf.setSelect_expr(x.get("select_expr").get)
+      conf.setSelect_expr(x.get("select_expr").get.replace(" ", ""))
       conf.setFilte_expr(x.get("filter_expr").get)
       conf.setP_event_id(x.get("p_event_id").get)
 
