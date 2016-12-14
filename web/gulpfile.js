@@ -132,7 +132,8 @@ gulp.task('bower', function () {
   return gulp.src(paths.views.main)
     .pipe(wiredep({
       directory: yeoman.app + '/bower_components',
-      ignorePath: '..'
+      ignorePath: '..',
+      exclude: ['bower_components/mermaid/dist/mermaid.slim.js']
     }))
   .pipe(gulp.dest(yeoman.app));
 });

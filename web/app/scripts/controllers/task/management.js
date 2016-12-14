@@ -142,6 +142,9 @@ angular.module('ocspApp')
 
     //Basic functions for page operation
     var parseProperties = function (datainterface, prop){
+      if(datainterface.delim === "\\|"){
+        datainterface.delim = "|";
+      }
       if(prop !== undefined && prop !== null) {
         prop = JSON.parse(prop);
         if(prop.fields !== undefined && prop.fields.length > 0) {
@@ -279,6 +282,9 @@ angular.module('ocspApp')
               if($scope.selectedJob.events[i].PROPERTIES.output_dis !== undefined && $scope.selectedJob.events[i].PROPERTIES.output_dis[0] !== undefined) {
                 $scope.selectedJob.events[i].interval = $scope.selectedJob.events[i].PROPERTIES.output_dis[0].interval;
                 $scope.selectedJob.events[i].delim = $scope.selectedJob.events[i].PROPERTIES.output_dis[0].delim;
+                if($scope.selectedJob.events[i].delim === "\\|"){
+                  $scope.selectedJob.events[i].delim = "|";
+                }
                 for(var j in $scope.selectedJob.output){
                   if($scope.selectedJob.output[j].id === parseInt($scope.selectedJob.events[i].PROPERTIES.output_dis[0].diid)){
                     $scope.selectedJob.events[i].output = $scope.selectedJob.output[j];
@@ -395,6 +401,7 @@ angular.module('ocspApp')
 
     $scope.addOutput1 = function () {
       $scope.selectedJob.events.push({
+        status: 1,
         output:{}
       });
     };

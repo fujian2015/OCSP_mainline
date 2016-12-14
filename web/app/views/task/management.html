@@ -33,22 +33,22 @@
         </div>
         <div class="form-group">
           <label>Filter</label>
-          <input type="text" class="form-control" ng-model="task.input.filter_expr">
+          <input type="text" class="form-control" ng-model="task.input.filter_expr" required>
         </div>
         <div class="form-group">
           <label>Delim*</label>
           <input type="text" class="form-control" ng-model="task.input.delim" required>
         </div>
         <div class="form-group">
-          <label>kafka topic</label>
+          <label>kafka topic*</label>
           <input type="text" class="form-control" ng-model="task.input.topic" required>
         </div>
         <div class="form-group">
-          <label>fields</label>
+          <label>fields*</label>
           <tokenfield ng-model="task.input.fields"></tokenfield>
         </div>
         <div class="form-group">
-          <label>uniqueKey</label>
+          <label>uniqueKey*</label>
           <input type="text" class="form-control" ng-model="task.input.uniqueKey" required>
         </div>
       </div>
@@ -105,15 +105,15 @@
                     <input type="text" class="form-control" ng-model="item.name" required>
                   </div>
                   <div class="form-group">
-                    <label>Delim</label>
+                    <label>Delim*</label>
                     <input type="text" class="form-control" ng-model="item.delim" required>
                   </div>
                   <div class="form-group">
-                    <label>Filter</label>
-                    <input type="text" class="form-control" ng-model="item.filter_expr">
+                    <label>Filter*</label>
+                    <input type="text" class="form-control" ng-model="item.filter_expr" required>
                   </div>
                   <div class="form-group">
-                    <label>select expr</label>
+                    <label>select expr*</label>
                     <tokenfield ng-model="item.select_expr"></tokenfield>
                   </div>
                   <div class="form-group">
@@ -129,14 +129,6 @@
                 </div>
                 <div class="panel-body">
                   <div class="form-group">
-                    <label>Delim*</label>
-                    <input type="text" class="form-control" ng-model="item.output.delim" required>
-                  </div>
-                  <div class="form-group">
-                    <label>Filter</label>
-                    <input type="text" class="form-control" ng-model="item.output.filter_expr">
-                  </div>
-                  <div class="form-group">
                     <label>Output datasource*</label>
                     <ui-select ng-model="item.output.datasource" ng-required="true">
                       <ui-select-match>
@@ -148,21 +140,21 @@
                       </ui-select-choices>
                     </ui-select>
                   </div>
-                  <div class="form-group" ng-show="item.output.datasource.id == 1">
+                  <div class="form-group" ng-if="item.output.datasource.id == 1">
                     <label>kafka topic*</label>
-                    <input type="text" class="form-control" ng-model="item.output.topic">
+                    <input type="text" class="form-control" ng-model="item.output.topic" required>
                   </div>
-                  <div class="form-group" ng-show="item.output.datasource.id == 2">
+                  <div class="form-group" ng-if="item.output.datasource.id == 2">
                     <label>codisKeyPrefix*</label>
-                    <input type="text" class="form-control" ng-model="item.output.codisKeyPrefix">
+                    <input type="text" class="form-control" ng-model="item.output.codisKeyPrefix" required>
                   </div>
-                  <div class="form-group" ng-show="item.output.datasource !== undefined && item.output.datasource.id > 0">
+                  <div class="form-group">
                     <label>fields</label>
                     <tokenfield ng-model="item.output.fields"></tokenfield>
                   </div>
-                  <div class="form-group" ng-show="item.output.datasource !== undefined && item.output.datasource.id > 0">
+                  <div class="form-group">
                     <label>uniqueKey*</label>
-                    <input type="text" class="form-control" ng-model="item.output.uniqueKey">
+                    <input type="text" class="form-control" ng-model="item.output.uniqueKey" required>
                   </div>
                 </div>
               </div>
@@ -191,7 +183,7 @@
         <div ng-show="task.events !== undefined && task.events.length > 0" class="form-group">
           <label>Output:</label>
           <ul ng-repeat="item in task.events" class="list-group">
-            <li class="list-group-item"><strong>{{item.name}}</strong>({{item.datasource.type === 1?"kafka":"codis"}})</li>
+            <li class="list-group-item"><strong>{{item.name}}</strong>({{item.output.datasource.id === 1?"kafka":"codis"}})</li>
           </ul>
         </div>
         </p>
@@ -289,7 +281,9 @@
                           <label>Task name*</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" name="name" class="form-control" ng-model="selectedJob.name" required>
+                          <input type="text" name="name" class="form-control" ng-model="selectedJob.name" required
+                                 popover-trigger="'mouseenter'" popover-placement="right"
+                                 uib-popover="Description: " popover-title="Task name">
                         </div>
                       </div>
                     </div>
@@ -299,7 +293,10 @@
                           <label>Description</label>
                         </div>
                         <div class="col-md-8">
-                          <textarea ng-model="selectedJob.description" class="form-control" rows="3"></textarea>
+                          <textarea ng-model="selectedJob.description" class="form-control" rows="3"
+                                    popover-trigger="'mouseenter'" popover-placement="right"
+                                    uib-popover="Description: " popover-title="Description">
+                          </textarea>
                         </div>
                       </div>
                     </div>
@@ -309,7 +306,9 @@
                           <label>Receive interval(s)</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.receive_interval">
+                          <input type="text" class="form-control" ng-model="selectedJob.receive_interval"
+                                 popover-trigger="'mouseenter'" popover-placement="right"
+                                 uib-popover="Description: " popover-title="Receive interval(s)">
                         </div>
                       </div>
                     </div>
@@ -319,7 +318,9 @@
                           <label>Num executors</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.num_executors">
+                          <input type="text" class="form-control" ng-model="selectedJob.num_executors"
+                                 popover-trigger="'mouseenter'" popover-placement="right"
+                                 uib-popover="Description: " popover-title="Num executors">
                         </div>
                       </div>
                     </div>
@@ -329,7 +330,9 @@
                           <label>Driver memory</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.driver_memory">
+                          <input type="text" class="form-control" ng-model="selectedJob.driver_memory"
+                                 popover-trigger="'mouseenter'" popover-placement="right"
+                                 uib-popover="Description: " popover-title="Driver memory">
                         </div>
                       </div>
                     </div>
@@ -339,7 +342,9 @@
                           <label>Executor memory</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.executor_memory">
+                          <input type="text" class="form-control" ng-model="selectedJob.executor_memory"
+                                 popover-trigger="'mouseenter'" popover-placement="right"
+                                 uib-popover="Description: " popover-title="Executor memory">
                         </div>
                       </div>
                     </div>
@@ -349,7 +354,9 @@
                           <label>Total executor cores</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.total_executor_cores">
+                          <input type="text" class="form-control" ng-model="selectedJob.total_executor_cores"
+                                 popover-trigger="'mouseenter'" popover-placement="right"
+                                 uib-popover="Description: " popover-title="Total executor cores">
                         </div>
                       </div>
                     </div>
@@ -359,7 +366,9 @@
                           <label>Queue</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.queue">
+                          <input type="text" class="form-control" ng-model="selectedJob.queue"
+                                 popover-trigger="'mouseenter'" popover-placement="right"
+                                 uib-popover="Description: " popover-title="Queue">
                         </div>
                       </div>
                     </div>
@@ -385,10 +394,10 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-2">
-                          <label>Filter</label>
+                          <label>Filter*</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.input.filter_expr">
+                          <input type="text" class="form-control" ng-model="selectedJob.input.filter_expr" required>
                         </div>
                       </div>
                     </div>
@@ -405,17 +414,17 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-2">
-                          <label>kafka topic</label>
+                          <label>kafka topic*</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.input.topic">
+                          <input type="text" class="form-control" ng-model="selectedJob.input.topic" required>
                         </div>
                       </div>
                     </div>
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-2">
-                          <label>fields</label>
+                          <label>fields*</label>
                         </div>
                         <div class="col-md-8">
                           <tokenfield ng-model="selectedJob.input.fields"></tokenfield>
@@ -425,10 +434,10 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-2">
-                          <label>uniqueKey</label>
+                          <label>uniqueKey*</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.input.uniqueKey">
+                          <input type="text" class="form-control" ng-model="selectedJob.input.uniqueKey" required>
                         </div>
                       </div>
                     </div>
@@ -502,19 +511,19 @@
                                 <input type="text" class="form-control" ng-model="item.name" required>
                               </div>
                               <div class="form-group">
-                                <label>Delim</label>
+                                <label>Delim*</label>
                                 <input type="text" class="form-control" ng-model="item.delim" required>
                               </div>
                               <div class="form-group">
-                                <label>Filter</label>
-                                <input type="text" class="form-control" ng-model="item.filter_expr">
+                                <label>Filter*</label>
+                                <input type="text" class="form-control" ng-model="item.filter_expr" required>
                               </div>
                               <div class="form-group">
-                                <label>select expr</label>
+                                <label>select expr*</label>
                                 <tokenfield ng-model="item.select_expr"></tokenfield>
                               </div>
                               <div class="form-group">
-                                <label>Interval(s)</label>
+                                <label>Interval(s)*</label>
                                 <input type="text" class="form-control" ng-model="item.interval" required>
                               </div>
                             </div>
@@ -525,14 +534,6 @@
                               Output Interface Configuration
                             </div>
                             <div class="panel-body">
-                              <div class="form-group">
-                                <label>Delim*</label>
-                                <input type="text" class="form-control" ng-model="item.output.delim" required>
-                              </div>
-                              <div class="form-group">
-                                <label>Filter</label>
-                                <input type="text" class="form-control" ng-model="item.output.filter_expr">
-                              </div>
                               <div class="form-group">
                                 <label>Output datasource*</label>
                                 <ui-select ng-model="item.output.datasource" ng-required="true">
@@ -545,19 +546,19 @@
                                   </ui-select-choices>
                                 </ui-select>
                               </div>
-                              <div class="form-group" ng-show="item.output.datasource.id == 1">
+                              <div class="form-group" ng-if="item.output.datasource.id == 1">
                                 <label>kafka topic*</label>
                                 <input type="text" class="form-control" ng-model="item.output.topic" required>
                               </div>
-                              <div class="form-group" ng-show="item.output.datasource.id == 2">
+                              <div class="form-group" ng-if="item.output.datasource.id == 2">
                                 <label>codisKeyPrefix*</label>
                                 <input type="text" class="form-control" ng-model="item.output.codisKeyPrefix" required>
                               </div>
-                              <div class="form-group" ng-show="item.output.datasource !== undefined && item.output.datasource.id > 0">
+                              <div class="form-group">
                                 <label>fields</label>
                                 <tokenfield ng-model="item.output.fields"></tokenfield>
                               </div>
-                              <div class="form-group" ng-show="item.output.datasource !== undefined && item.output.datasource.id > 0">
+                              <div class="form-group">
                                 <label>uniqueKey*</label>
                                 <input type="text" class="form-control" ng-model="item.output.uniqueKey" required>
                               </div>

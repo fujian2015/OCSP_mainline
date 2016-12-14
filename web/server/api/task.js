@@ -66,7 +66,14 @@ function dealDataInterfaceProperties(dataInterface, dsid, type) {
   dataInterface.type = type;
   dataInterface.status = 1;
   dataInterface.properties = {"props": [], "userFields": [], "fields": []};
+  if(dataInterface.delim !== undefined && dataInterface.delim === "|"){
+    dataInterface.delim = "\\|";
+  }
+  if(dataInterface.delim === undefined){
+    dataInterface.delim = "";
+  }
   if (dataInterface.fields !== undefined && dataInterface.fields !== ""){
+    dataInterface.fields = dataInterface.fields.replace(/\s/g, '');
     var splits = dataInterface.fields.split(",");
     for(var i in splits){
       if(splits[i] !== undefined && splits[i] !== "") {
@@ -78,7 +85,7 @@ function dealDataInterfaceProperties(dataInterface, dsid, type) {
     }
     dataInterface.properties.props.push({
       "pname" : "field.numbers",
-      "pvalue" : dataInterface.fields.length
+      "pvalue" : splits.length
     });
   }
   if (dataInterface.topic !== undefined){
@@ -124,6 +131,15 @@ function createEvents(events, i, diid, status) {
   events[i].PROPERTIES = {"props": [], "output_dis": []};
   events[i].diid = diid;
   events[i].status = status;
+  if(events[i].select_expr !== undefined && events[i].select_expr !== "") {
+    events[i].select_expr = events[i].select_expr.replace(/\s/g, '');
+  }
+  if(events[i].delim !== undefined && events[i].delim === "|"){
+    events[i].delim = "\\|";
+  }
+  if(events[i].delim === undefined){
+    events[i].delim = "";
+  }
   events[i].PROPERTIES.props.push({
     "pname" : "userKeyIdx",
     "pvalue" : 2
@@ -142,7 +158,11 @@ function createOrUpdateOutputDataInterface(events, t, promises) {
   var promise = null;
   for(var i in events){
     events[i].output.name = events[i].name + "_" + randomstring.generate(10);
-    dealDataInterfaceProperties(events[i].output, events[i].output.datasource.id, 1);
+    if(events[i].output.datasource !== undefined && events[i].output.datasource.id !== undefined){
+      dealDataInterfaceProperties(events[i].output, events[i].output.datasource.id, 1);
+    }else{
+      dealDataInterfaceProperties(events[i].output, null, 1);
+    }
     if(events[i].output.id === undefined || events[i].output.id === null) {
       promise = Interface.create(events[i].output, {transaction: t});
     }else{
@@ -173,6 +193,7 @@ router.post("/", function(req, res){
       task.diid = di[0].id;
       task.type = 1;
       task.status = 1;
+      task.queue = "default";
       promises.push(Task.create(task, {transaction: t}));
       return sequelize.Promise.all(promises).then(function (result) {
         var eventPromises = [];
@@ -202,7 +223,6 @@ router.put("/", function(req, res) {
     var promises = [];
     promises.push(Label.max("id", {transaction: t}));
     promises.push(Event.findAll({where:{diid : inputInterface.id}, transaction: t}));
-    // promises.push(Interface.findAll({where:{type : 1}, transaction: t}));
     dealDataInterfaceProperties(inputInterface, 1, 0);
     promises.push(Interface.update(inputInterface, {where: {id : inputInterface.id}, transaction: t}));
     promises.push(Task.update(task, {where: {id: task.id}, transaction: t}));
@@ -213,7 +233,10 @@ router.put("/", function(req, res) {
       //create label after delete
       createLabel(labels, inputInterface, t, promises1, result[0]);
       //create or update events
-      for (var i in events) {
+      for (var i = 0 ; i < events.length; i++) {
+        if(result[i+5].dataValues !== undefined && result[i+5].dataValues.id !== undefined){
+          events[i].output.id = result[i+5].dataValues.id;
+        }
         createEvents(events, i, inputInterface.id, events[i].status?1:0);
         if(events[i].id === undefined || events[i].id === null){
           promises1.push(Event.create(events[i], {transaction: t}));
@@ -232,7 +255,13 @@ router.put("/", function(req, res) {
             }
           }
           if(flag){
-            promises1.push(Event.destroy({where: {id: result[1][i].dataValues.id}, transaction: t}))
+            promises1.push(Event.destroy({where: {id: result[1][i].dataValues.id}, transaction: t}));
+            if(result[1][i].dataValues.PROPERTIES !== undefined){
+              var obj = JSON.parse(result[1][i].dataValues.PROPERTIES);
+              if(obj.output_dis !== undefined && obj.output_dis[0] !== undefined && obj.output_dis[0].diid !== undefined) {
+                promises1.push(Interface.destroy({where: {id: obj.output_dis[0].diid}, transaction: t}))
+              }
+            }
           }
         }
       }

@@ -208,6 +208,10 @@ span.invalid-span{
   color: red;
 }
 
+div.ng-invalid{
+  border: 1px solid red;
+}
+
 .wizard-card-container {
   height: 300px;
   overflow-y: scroll;

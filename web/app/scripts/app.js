@@ -27,7 +27,8 @@ angular
     'angularSpinner',
     'ngCookies',
     'ui.select',
-    'toggle-switch'
+    'toggle-switch',
+    'cfp.hotkeys'
   ])
   .config(function ($routeProvider) {
     $routeProvider

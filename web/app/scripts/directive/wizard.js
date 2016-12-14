@@ -46,6 +46,16 @@ angular.module('ocspApp').directive('wizard',['$filter', function($filter){
               flag = false;
             }
           });
+          if(card.name === "create_task_2" || card.name === "create_task_4") {
+            var divs = card.el.find("div.ng-invalid");
+            divs.each(function(){
+              var fields = divs.find("div.token");
+              if(fields.length <= 0){
+                card.wizard.errorPopover($(this), "Cannot be empty");
+                flag = false;
+              }
+            });
+          }
           return flag;
         });
       }
