@@ -25,5 +25,9 @@
       <directory>app/bower_components/bootstrap/fonts</directory>
       <outputDirectory>app/bower_components/bootstrap/fonts</outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>node-v6.9.1</directory>
+      <outputDirectory>/node</outputDirectory>
+    </fileSet>
   </fileSets>
 </assembly>
