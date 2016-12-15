@@ -5,11 +5,14 @@ import java.util.concurrent._
 
 import com.asiainfo.ocdp.stream.common.{BroadcastConf, BroadcastManager, StreamingCache}
 import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, MainFrameConf, TaskConf}
+import com.asiainfo.ocdp.stream.constant.DataSourceConstant
 import com.asiainfo.ocdp.stream.constant.LabelConstant
 import com.asiainfo.ocdp.stream.event.Event
 import com.asiainfo.ocdp.stream.manager.StreamTask
 import com.asiainfo.ocdp.stream.service.DataInterfaceServer
 import com.asiainfo.ocdp.stream.tools.{CacheFactory, CacheQryThreadPool, Json4sUtils}
+import org.apache.commons.lang.StringUtils
+import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
@@ -18,6 +21,7 @@ import org.apache.spark.streaming.dstream.DStream
 
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.{immutable, mutable}
+import scala.util.{Try, Success, Failure}
 
 /**
  * Created by surq on 12/09/15
@@ -44,7 +48,28 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
     if (inputArr.size != baseItemSize) None else Some(Row.fromSeq(inputArr))
   }
 
+  private def conf_check() = {
+    /*
+     * check the conf in Driver
+     * try to get the conf we needed
+     * */
+
+    val topic = conf.get(DataSourceConstant.TOPIC_KEY)
+
+    if (StringUtils.isEmpty(topic)) {
+      throw new Exception("kafka topic is not set!!!")
+    }
+
+    val uniqKeys = conf.get("uniqKeys")
+
+    if (StringUtils.isEmpty(uniqKeys))
+      throw new Exception("uniqueKeys is not set!!!")
+  }
+
   final def process(ssc: StreamingContext) = {
+
+    // check the config first
+    conf_check()
 
     val sqlc = new SQLContext(ssc.sparkContext)
     // 用户自定义sql的方法
@@ -176,8 +201,11 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
         busnessKeyList += (s"${LabelConstant.LABEL_CACHE_PREFIX_NAME}_${broadTaskConf.value.name}:${uk}" -> currentLine)
         // 取出本条数据在打所有标签时所用的查询cache用到的key放入labelQryKeysSet
         labels.foreach(label => {
-          val qryKeys = label.getQryKeys(currentLine)
-          if (qryKeys != null && qryKeys.nonEmpty) labelQryKeysSet ++= qryKeys
+          val qryRes = Try(label.getQryKeys(currentLine))
+          qryRes match {
+            case Success(qryKeys) => if (qryKeys != null && qryKeys.nonEmpty) labelQryKeysSet ++= qryKeys
+            case Failure(t) => logError("Failed to execute datainterface getQryKeys" + label + ".getQryKeys")
+          }
         })
       })
 
@@ -238,16 +266,22 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
              // println("old cache null, key:" + label.conf.getId)
               null
           }
+
           // 传入本记录、往期中间记算结果cache、相关的用户资料表，进行打标签操作
-          val resultTuple = label.attachLabel(value, old_cache, labelQryData)
+          val resAttach = Try(label.attachLabel(value, old_cache, labelQryData))
 
-          // 增强记录信息，加标签字段
-          value = resultTuple._1
+          resAttach match {
+            case Success(resultTuple) => {
+              // 增强记录信息，加标签字段
+              value = resultTuple._1
 
-          // 更新往期中间记算结果cache
-          val newcache = resultTuple._2
-          rule_caches = rule_caches.updated(label.conf.getId, newcache)
-        })
+              // 更新往期中间记算结果cache
+              val newcache = resultTuple._2
+              rule_caches = rule_caches.updated(label.conf.getId, newcache)
+            }
+            case Failure(t) => logError("Failed to execute datainterface attachLabel" + label + ".attachLabel")
+          }
+       })
 
         // 更新往期中间记算结果cache【"Label:" + uk-> {labelId->rule_caches}】
         cachemap_new += (key -> rule_caches.asInstanceOf[Any])

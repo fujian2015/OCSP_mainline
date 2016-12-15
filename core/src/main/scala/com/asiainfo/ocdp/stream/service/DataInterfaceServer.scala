@@ -33,8 +33,8 @@ class DataInterfaceServer extends Logging with Serializable {
       conf.setName(interface.get("name").get)
       conf.setDiType(interface.get("type").get.toInt)
       // add by surq at 2015.11.09 start
-      conf.set("filter_expr", interface.get("filter_expr").get)
-      conf.set("delim", interface.get("delim").get)
+      conf.set("filter_expr", interface.get("filter_expr").get, "")
+      conf.set("delim", interface.get("delim").get, ",")
       // add by surq at 2015.11.09 end
       val dsconf = getDataSourceInfoById(interface.get("dsid").get)
       conf.setDsConf(dsconf)

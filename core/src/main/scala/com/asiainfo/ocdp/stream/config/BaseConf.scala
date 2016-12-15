@@ -24,6 +24,14 @@ abstract class BaseConf(val conf: Map[String, String] = null) extends Serializab
     this
   }
 
+  def set(key: String, value: String, default: String): BaseConf = {
+    if (value == null) {
+      set(key, default)
+    } else {
+      set(key, value)
+    }
+  }
+
   /** Set multiple parameters together */
   def setAll(settings: Map[String, String]) = {
     this.settings.putAll(settings.asJava)
