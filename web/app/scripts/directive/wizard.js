@@ -42,18 +42,23 @@ angular.module('ocspApp').directive('wizard',['$filter', function($filter){
           input.each(function(){
             var name = $(this).val();
             if (name === "") {
+              $(this).addClass("redBlock");
               card.wizard.errorPopover($(this), "Cannot be empty");
               flag = false;
+            }else{
+              $(this).siblings("div.error-popover").remove();
+              $(this).removeClass("redBlock");
             }
           });
           if(card.name === "create_task_2" || card.name === "create_task_4") {
-            var divs = card.el.find("div.ng-invalid");
-            divs.each(function(){
-              var fields = divs.find("div.token");
-              if(fields.length <= 0){
-                card.wizard.errorPopover($(this), "Cannot be empty");
-                flag = false;
-              }
+            card.el.find("div.ng-invalid").each(function(){
+              $(this).addClass("redBlock");
+              card.wizard.errorPopover($(this), "Cannot be empty");
+              flag = false;
+            });
+            card.el.find("div.ng-valid").each(function(){
+              $(this).siblings("div.error-popover").remove();
+              $(this).removeClass("redBlock");
             });
           }
           return flag;
