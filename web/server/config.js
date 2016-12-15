@@ -13,5 +13,5 @@ module.exports = {
     {name: "Spark Streaming", value: "http://103.235.245.156:18080/"},
     {name: "Codis Dashboard", value: "http://103.235.245.156:8099/#codis-demo"}
   ],
-  env: "dev" // By default use dev env
+  env: "prod" // By default use prod env
 };

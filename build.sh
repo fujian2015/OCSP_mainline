@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 HOME_PATH=$(cd `dirname $0`; pwd)
 
 cd ${HOME_PATH}
@@ -28,8 +30,10 @@ cp core/target/core-2.0.1-dist/lib/mysql-connector-java-*.jar build/OCDP_Stream/
 cp core/target/core-2.0.1-dist/lib/spark-streaming-kafka-assembly_*.jar build/OCDP_Stream/lib
 cp core/target/core-2.0.1-dist/lib/scala-library-*.jar build/OCDP_Stream/lib
 
+#cp -r web build/OCDP_Stream
+
 cd build
 
-tar czf OCDP_Stream.tar.gz OCDP_Stream
+tar czf OCDP_Stream.tar.gz -C OCDP_Stream/ .
 
 exit 0
