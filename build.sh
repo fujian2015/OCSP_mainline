@@ -20,14 +20,13 @@ mkdir -p build/OCDP_Stream/logs
 cp -r bin build/OCDP_Stream
 cp -r conf build/OCDP_Stream
 
-cp core/target/core-1.0-SNAPSHOT.jar build/OCDP_Stream/lib
-cp core/target/core-1.0-SNAPSHOT-dist/lib/jedis-*.jar build/OCDP_Stream/lib
-cp core/target/core-1.0-SNAPSHOT-dist/lib/jodis-*.jar build/OCDP_Stream/lib
-cp core/target/core-1.0-SNAPSHOT-dist/lib/commons-pool2-*.jar build/OCDP_Stream/lib
-cp core/target/core-1.0-SNAPSHOT-dist/lib/mysql-connector-java-*.jar build/OCDP_Stream/lib
-cp core/target/core-1.0-SNAPSHOT-dist/lib/spark-streaming-kafka-assembly_*.jar build/OCDP_Stream/lib
-cp core/target/core-1.0-SNAPSHOT-dist/lib/scala-library-*.jar build/OCDP_Stream/lib
-cp ShaanxiyidongFeature/target/ShaanxiyidongFeature-1.0-SNAPSHOT.jar build/OCDP_Stream/lib
+cp core/target/core-2.0.1.jar build/OCDP_Stream/lib
+cp core/target/core-2.0.1-dist/lib/jedis-*.jar build/OCDP_Stream/lib
+cp core/target/core-2.0.1-dist/lib/jodis-*.jar build/OCDP_Stream/lib
+cp core/target/core-2.0.1-dist/lib/commons-pool2-*.jar build/OCDP_Stream/lib
+cp core/target/core-2.0.1-dist/lib/mysql-connector-java-*.jar build/OCDP_Stream/lib
+cp core/target/core-2.0.1-dist/lib/spark-streaming-kafka-assembly_*.jar build/OCDP_Stream/lib
+cp core/target/core-2.0.1-dist/lib/scala-library-*.jar build/OCDP_Stream/lib
 
 cd build
 
