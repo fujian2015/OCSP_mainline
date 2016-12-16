@@ -1,0 +1,81 @@
+#!/bin/bash
+
+#***********************************************************************
+# Script  : quickset
+# Version : 2.0.1
+# OCSP
+#***********************************************************************
+
+STREAM_HOME=$(cd `dirname $0`/..; pwd)
+. ${STREAM_HOME}/bin/Utilities.sh
+
+function print_usage(){
+  echo "Usage: quickset [COMMAND]"
+  echo "  where COMMAND is one of:"
+  echo "  start                                 run the configuration server"
+  echo "  stop                                  shutdown the configuration server"
+}
+
+
+function start(){
+    out "Starting the server..."
+    chmod +x ${STREAM_HOME}/web/node/bin/node
+
+    cd ${STREAM_HOME}/web
+    nohup ./node/bin/node ./server/app.js >> ${STREAM_HOME}/logs/web.log 2>&1 &
+    pid=`echo $!`
+    sleep 1
+
+    ps -p ${pid} > /dev/null 2>&1
+
+    if [ $? -eq 0 ]; then
+        echo ${pid} > ${STREAM_HOME}/logs/web_pid.log
+        success "Start the server successfully."
+        success "Please check log ${STREAM_HOME}/logs/web.log for details."
+    else
+        error "Start the server failed!"
+        error "Please check log ${STREAM_HOME}/logs/web.log for error messages."
+    fi
+}
+
+function stop(){
+    proc_id=`cat ${STREAM_HOME}/logs/web_pid.log`
+    if [[ -z ${proc_id} ]];then
+        out "The server is not running ! "
+    else
+         out "Stopping the server..."
+         for id in ${proc_id[*]}
+         do
+           kill ${id}
+
+           if [ $? -eq 0 ];then
+                success "Stop the server successfully."
+                echo > ${STREAM_HOME}/logs/web_pid.log
+           else
+                error "Stop the server failed! "
+                error "Please check log ${STREAM_HOME}/logs/web.log for error messages."
+           fi
+         done
+    fi
+}
+
+
+if [ $# -eq 0 ]; then
+    print_usage;
+elif [ $# -eq 1 ]; then
+    case $1 in
+    start)
+        start;;
+    stop)
+        stop;;
+    --help|-help|-h)
+        print_usage;;
+    *)
+        error "Invalid argument, please refer to: "
+        print_usage;;
+    esac
+else
+    print_usage
+fi
+
+exit 0;

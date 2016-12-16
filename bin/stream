@@ -24,24 +24,24 @@ function startStream(){
     CLASSPATH=`getClassPath`
 
     nohup java -cp ${CLASSPATH} com.asiainfo.ocdp.stream.manager.MainFrameManager &>> ${STREAM_HOME}/logs/MainFrameManager.log&
+    pid=`echo $!`
 
     sleep 1
 
-    proc_name="MainFrameManager"
-    name_suffixx="\>"
-    mpid=`ps -ef|grep -i ${proc_name}${name_suffixx}|grep -v "grep"|awk '{print $2}'`
-    if [ -z "$mpid" ]; then
-        error "Start the server failed!"
-        error "Please check log ${STREAM_HOME}/logs/MainFrameManager.log for error messages."
-    else
-        echo ${mpid} > pid.log
+    ps -p ${pid} > /dev/null 2>&1
+
+    if [ $? -eq 0 ]; then
+        echo ${pid} > ${STREAM_HOME}/logs/stream_pid.log
         success "Start the server successfully."
         success "Please check log ${STREAM_HOME}/logs/MainFrameManager.log for details."
+    else
+        error "Start the server failed!"
+        error "Please check log ${STREAM_HOME}/logs/MainFrameManager.log for error messages."
     fi
 }
 
 function stopStream(){
-    proc_id=`cat pid.log`
+    proc_id=`cat ${STREAM_HOME}/logs/stream_pid.log`
     if [[ -z ${proc_id} ]];then
         out "The server is not running ! "
     else
@@ -52,7 +52,7 @@ function stopStream(){
 
            if [ $? -eq 0 ];then
                 success "Stop the server successfully."
-                echo > pid.log
+                echo > ${STREAM_HOME}/logs/stream_pid.log
            else
                 error "Stop the server failed! "
                 error "Please check log ${STREAM_HOME}/logs/MainFrameManager.log for error messages."

@@ -37,6 +37,6 @@ tar -xzf web/target/web-2.0.1-bundle.tar.gz -C build/OCDP_Stream/web
 
 cd build
 
-tar czf OCDP_Stream_${version}.tar.gz -C OCDP_Stream/ .
+tar -czf OCDP_Stream_${version}.tar.gz OCDP_Stream
 
 exit 0
