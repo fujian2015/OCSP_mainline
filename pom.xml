@@ -11,6 +11,7 @@
 
     <modules>
         <module>core</module>
+        <module>web</module>
     </modules>
 
     <properties>
@@ -19,6 +20,15 @@
         <spark.version>1.6.0</spark.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>talend</id>
+            <name>talend</name>
+            <url>https://talend-update.talend.com/nexus/content/repositories/libraries/</url>
+            <layout>default</layout>
+            <snapshots><enabled>false</enabled></snapshots>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>
@@ -121,6 +131,11 @@
             <artifactId>spark-streaming-kafka-assembly_2.10</artifactId>
             <version>1.6.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.talend.libraries</groupId>
+            <artifactId>spark-assembly-1.6.0.2.4.0.0-169-hadoop2.7.1.2.4.0.0-169</artifactId>
+            <version>6.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -186,8 +201,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
