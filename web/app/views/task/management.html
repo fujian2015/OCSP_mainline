@@ -32,20 +32,20 @@
           <input type="text" class="form-control" ng-model="task.input.name" required>
         </div>
         <div class="form-group">
-          <label>Filter</label>
-          <input type="text" class="form-control" ng-model="task.input.filter_expr" required>
-        </div>
-        <div class="form-group">
-          <label>Delim*</label>
-          <input type="text" class="form-control" ng-model="task.input.delim" required>
-        </div>
-        <div class="form-group">
           <label>kafka topic*</label>
           <input type="text" class="form-control" ng-model="task.input.topic" required>
         </div>
         <div class="form-group">
           <label>fields*</label>
           <tokenfield ng-model="task.input.fields" required></tokenfield>
+        </div>
+        <div class="form-group">
+          <label>Delim*</label>
+          <input type="text" class="form-control" ng-model="task.input.delim" required>
+        </div>
+        <div class="form-group">
+          <label>Filter</label>
+          <input type="text" class="form-control" ng-model="task.input.filter_expr">
         </div>
         <div class="form-group">
           <label>uniqueKey*</label>
@@ -105,16 +105,16 @@
                     <input type="text" class="form-control" ng-model="item.name" required>
                   </div>
                   <div class="form-group">
+                    <label>select expr*</label>
+                    <tokenfield ng-model="item.select_expr" required></tokenfield>
+                  </div>
+                  <div class="form-group">
                     <label>Delim*</label>
                     <input type="text" class="form-control" ng-model="item.delim" required>
                   </div>
                   <div class="form-group">
-                    <label>Filter*</label>
-                    <input type="text" class="form-control" ng-model="item.filter_expr" required>
-                  </div>
-                  <div class="form-group">
-                    <label>select expr*</label>
-                    <tokenfield ng-model="item.select_expr" required></tokenfield>
+                    <label>Filter</label>
+                    <input type="text" class="form-control" ng-model="item.filter_expr">
                   </div>
                   <div class="form-group">
                     <label>Interval(s)</label>
@@ -147,10 +147,6 @@
                   <div class="form-group" ng-if="item.output.datasource.id == 2">
                     <label>codisKeyPrefix*</label>
                     <input type="text" class="form-control" ng-model="item.output.codisKeyPrefix" required>
-                  </div>
-                  <div class="form-group">
-                    <label>fields</label>
-                    <tokenfield ng-model="item.output.fields" required></tokenfield>
                   </div>
                   <div class="form-group">
                     <label>uniqueKey*</label>
@@ -394,10 +390,20 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-2">
-                          <label>Filter*</label>
+                          <label>kafka topic*</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.input.filter_expr" required>
+                          <input type="text" class="form-control" ng-model="selectedJob.input.topic" required>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
+                          <label>fields*</label>
+                        </div>
+                        <div class="col-md-8">
+                          <tokenfield ng-model="selectedJob.input.fields"></tokenfield>
                         </div>
                       </div>
                     </div>
@@ -414,20 +420,10 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-2">
-                          <label>kafka topic*</label>
+                          <label>Filter</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.input.topic" required>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <div class="row">
-                        <div class="col-md-2">
-                          <label>fields*</label>
-                        </div>
-                        <div class="col-md-8">
-                          <tokenfield ng-model="selectedJob.input.fields"></tokenfield>
+                          <input type="text" class="form-control" ng-model="selectedJob.input.filter_expr">
                         </div>
                       </div>
                     </div>
@@ -502,25 +498,26 @@
                             </div>
                             <div class="panel-body">
                               <div class="form-group">
-                                <div class="row">
-                                  <toggle-switch class="pull-left" ng-model="item.status"><toggle-switch>
-                                </div>
+                                <label>Enable/Disable</label>
+                              </div>
+                              <div class="form-group">
+                                <toggle-switch ng-model="item.status"></toggle-switch>
                               </div>
                               <div class="form-group">
                                 <label>Event name*</label>
                                 <input type="text" class="form-control" ng-model="item.name" required>
                               </div>
                               <div class="form-group">
+                                <label>select expr*</label>
+                                <tokenfield ng-model="item.select_expr"></tokenfield>
+                              </div>
+                              <div class="form-group">
                                 <label>Delim*</label>
                                 <input type="text" class="form-control" ng-model="item.delim" required>
                               </div>
                               <div class="form-group">
-                                <label>Filter*</label>
-                                <input type="text" class="form-control" ng-model="item.filter_expr" required>
-                              </div>
-                              <div class="form-group">
-                                <label>select expr*</label>
-                                <tokenfield ng-model="item.select_expr"></tokenfield>
+                                <label>Filter</label>
+                                <input type="text" class="form-control" ng-model="item.filter_expr">
                               </div>
                               <div class="form-group">
                                 <label>Interval(s)*</label>
@@ -553,10 +550,6 @@
                               <div class="form-group" ng-if="item.output.datasource.id == 2">
                                 <label>codisKeyPrefix*</label>
                                 <input type="text" class="form-control" ng-model="item.output.codisKeyPrefix" required>
-                              </div>
-                              <div class="form-group">
-                                <label>fields</label>
-                                <tokenfield ng-model="item.output.fields"></tokenfield>
                               </div>
                               <div class="form-group">
                                 <label>uniqueKey*</label>

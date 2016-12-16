@@ -27,6 +27,7 @@ app.use('/api/datasource', require('./api/datasource'));
 app.use('/api/datainterface', require('./api/datainterface'));
 app.use('/api/event', require('./api/event'));
 app.use('/api/config', require('./api/globalconfig'));
+app.use('/api/user', require('./api/user'));
 
 app.get('*', function(req, res) {
   res.sendFile(path.join(__dirname, '../',config[env].dist,'/404.html'));// load the single view file (angular will handle the page changes on the front-end)

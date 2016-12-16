@@ -65,6 +65,7 @@
             <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'task']" href="#/task_management">{{'task_manage' | translate}}</a></li>
             <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'label']" href="#/label_management">{{'label_manage' | translate}}</a></li>
             <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'system']" href="#/system_management">{{'system_manage' | translate}}</a></li>
+            <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'user']" href="#/user_management">{{'user_manage' | translate}}</a></li>
           </ul>
         </div>
       </div>
@@ -103,7 +104,7 @@
       r = n.getElementsByTagName(g)[0], a.src = u, r.parentNode.insertBefore(a, r)
   }(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
 
-  ga('create', 'UA-XXXXX-X');
+  ga('create', 'UA-OCSP-ASIA');
   ga('send', 'pageview');
 </script>
 
@@ -147,6 +148,7 @@
 <script src="scripts/controllers/task/management.js"></script>
 <script src="scripts/controllers/label/management.js"></script>
 <script src="scripts/controllers/system/management.js"></script>
+<script src="scripts/controllers/user/management.js"></script>
 <script src="scripts/directive/wizard.js"></script>
 <script src="scripts/directive/tokenfield.js"></script>
 <script src="scripts/services/login.js"></script>

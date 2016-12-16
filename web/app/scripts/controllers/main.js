@@ -11,7 +11,7 @@ angular.module('ocspApp')
   .controller('MainCtrl',['$scope', '$location', 'loginService', 'hotkeys', function ($scope, $location, loginService, hotkeys) {
     $scope.user = {};
     $scope.login = function(){
-      loginService.login($scope.user.name);
+      loginService.login($scope.user.name, $scope.user.pass);
     };
 
     hotkeys.bindTo($scope).add({

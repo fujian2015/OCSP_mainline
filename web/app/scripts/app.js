@@ -48,6 +48,10 @@ angular
         templateUrl: 'views/system/management.html',
         controller: 'SystemManagementCtrl'
       })
+      .when('/user_management',{
+        templateUrl: 'views/user/management.html',
+        controller: 'UserManagementCtrl'
+      })
       .otherwise({
         controller : function(){
           window.location.replace('/404');
@@ -80,7 +84,17 @@ angular
       'create_task_3':'Set label',
       'create_task_4':'Set output',
       'create_task_5':'Review & submit',
-      'add_task':'Add task'
+      'add_task':'Add task',
+      'system_properties':'System properties',
+      'current_password':'Current password',
+      'new_password':'New password',
+      'new_password_again':'Confirm',
+      'change_password':'Change password',
+      'password_wrong':'Password is wrong, please double check.',
+      'username':'Username',
+      'password':'Password',
+      'login':'login',
+      'pass_not_same':'Input passwords are not same'
     });
 
     $translateProvider.translations('zh',{
@@ -94,7 +108,17 @@ angular
       'create_task_3':'设置标签',
       'create_task_4':'设置输出',
       'create_task_5':'检查&提交',
-      'add_task':'新增任务'
+      'add_task':'新增任务',
+      'system_properties':'系统属性',
+      'current_password':'当前密码',
+      'new_password':'新密码',
+      'new_password_again':'再次输入',
+      'change_password':'修改密码',
+      'password_wrong':'密码错误，请重试。',
+      'username':'用户名',
+      'password':'密码',
+      'login':'登录',
+      'pass_not_same':'两次输入的密码不一致'
     });
 
     var window = $windowProvider.$get();
@@ -105,7 +129,9 @@ angular
     }
   }]).run(['$rootScope', 'loginService', function($rootScope, loginService){
     $rootScope.username = null;
-    $rootScope.tab = 'job';
+    $rootScope.tab = null;
+    $rootScope.message = null;
+    $rootScope.styles = null;
     $rootScope.logout = function(){
       loginService.logout();
     };

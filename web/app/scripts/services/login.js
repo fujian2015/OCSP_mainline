@@ -3,15 +3,31 @@
  * login service provider
  */
 angular.module('ocspApp')
-  .service('loginService',['$cookies', '$rootScope', '$location', function($cookies, $rootScope, $location) {
-  this.login = function (username) {
-    $cookies.put("username", username);
-    $location.path("/task_management");
-    $rootScope.changeTab('task');
+  .service('loginService',['$cookies', '$rootScope', '$location', '$http', '$filter', 'usSpinnerService', function($cookies, $rootScope, $location, $http, $filter, usSpinnerService) {
+  this.login = function (username ,password) {
+    usSpinnerService.spin('spinner');
+    $http.post("/api/user/login/" + username, {pass: password}).success(function (user) {
+      usSpinnerService.stop('spinner');
+      if (user.status) {
+        $cookies.put("username", username);
+        $location.path("/task_management");
+        $rootScope.styles = null;
+        $rootScope.changeTab('task');
+      } else {
+        $rootScope.message = $filter('translate')('password_wrong');
+        $rootScope.styles = "redBlock";
+        $cookies.remove("username");
+        $location.path("/");
+      }
+    }).error(function(err){
+      usSpinnerService.stop('spinner');
+    });
   };
   this.logout = function() {
     $cookies.remove("username");
     $rootScope.username = null;
+    $rootScope.message = null;
+    $rootScope.styles = null;
     $location.path("/");
   };
   this.init = function(tab){
