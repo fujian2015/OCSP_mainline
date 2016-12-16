@@ -10,7 +10,8 @@ import com.asiainfo.ocdp.stream.constant.{TaskConstant, TableInfoConstant}
 class TaskServer extends Logging {
 
   def startTask(id: String) {
-    val sql = "update " + TableInfoConstant.TaskTableName + " set status=" + TaskConstant.RUNNING + " where id= '" + id +"'"
+    val startTime = System.currentTimeMillis()
+    val sql = s"update ${TableInfoConstant.TaskTableName} set status=${TaskConstant.RUNNING}, start_time='${startTime}' where id= '${id}'"
     JDBCUtil.execute(sql)
   }
 
@@ -20,7 +21,7 @@ class TaskServer extends Logging {
   }
 
   def stopTask(id: String) {
-    val sql = "update " + TableInfoConstant.TaskTableName + " set status=" + TaskConstant.STOP + " where id='" + id +"'"
+    val sql = s"update ${TableInfoConstant.TaskTableName}  set status=${TaskConstant.STOP}, start_time='' where id='${id}'"
     JDBCUtil.execute(sql)
   }
 
