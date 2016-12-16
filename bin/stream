@@ -14,6 +14,7 @@ function print_usage(){
   echo "  where COMMAND is one of:"
   echo "  start                                 run the stream application"
   echo "  stop                                  shutdown the stream application"
+  echo "  restart                               restart the stream application"
   echo "  version                               print the version"
 }
 
@@ -86,6 +87,9 @@ elif [ $# -eq 1 ]; then
         startStream;;
     stop)
         stopStream;;
+    restart)
+        stopStream
+        startStream;;
     version)
         print_version;;
     --help|-help|-h)
