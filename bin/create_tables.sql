@@ -160,6 +160,21 @@ CREATE TABLE `STREAM_TASK` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `STREAM_USER`
+--
+
+DROP TABLE IF EXISTS `STREAM_USER`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `STREAM_USER` (
+  `id` int(16) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `password` varchar(50) NOT NULL DEFAULT '',
+  `description` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.6.33, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.16, for Linux (x86_64)
 --
 -- Host: localhost    Database: ocsp
 -- ------------------------------------------------------
--- Server version	5.6.33
+-- Server version	5.7.16
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -229,6 +229,32 @@ LOCK TABLES `STREAM_TASK` WRITE;
 INSERT INTO `STREAM_TASK` VALUES (1,'task1',1,30,10,'1g','1g',2,'default',0,NULL,NULL,1);
 /*!40000 ALTER TABLE `STREAM_TASK` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `STREAM_USER`
+--
+
+DROP TABLE IF EXISTS `STREAM_USER`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `STREAM_USER` (
+  `id` int(16) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL,
+  `password` varchar(50) NOT NULL DEFAULT '',
+  `description` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `STREAM_USER`
+--
+
+LOCK TABLES `STREAM_USER` WRITE;
+/*!40000 ALTER TABLE `STREAM_USER` DISABLE KEYS */;
+INSERT INTO `STREAM_USER` VALUES (1,'admin','admin','Administrator');
+/*!40000 ALTER TABLE `STREAM_USER` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -238,5 +264,3 @@ UNLOCK TABLES;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2016-11-09 13:31:05
