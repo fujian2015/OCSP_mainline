@@ -142,6 +142,11 @@ object MainFrameManager extends Logging {
       }
       jars.append(file.getAbsolutePath).append(",")
     })
+
+    ListFileWalker(HiddenFileFilter.VISIBLE, FileFilterUtils.suffixFileFilter(".jar")).list(new File(CommonConstant.baseDir, "../web/uploads").getAbsoluteFile).foreach(file =>{
+      jars.append(file.getAbsolutePath).append(",")
+    })
+
     jars = jars.dropRight(1)
 
     if (StringUtils.isBlank(appJars)){
