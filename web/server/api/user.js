@@ -3,7 +3,8 @@ var sequelize = require('../sequelize');
 var Sequelize = require('sequelize');
 var User = require('../model/STREAM_USER')(sequelize, Sequelize);
 var crypto = require('crypto');
-
+var config = require('../config');
+var trans = config[config.trans || 'zh'];
 
 var router = express.Router();
 
@@ -15,8 +16,8 @@ router.post('/login/:name', function (req, res) {
     }else{
       res.send({status: true});
     }
-  }, function (err) {
-    res.status(500).send(err);
+  }, function () {
+    res.status(500).send(trans.databaseError);
   })
 });
 
@@ -34,8 +35,8 @@ router.post('/change', function(req, res){
     }else{
       res.send({status: false});
     }
-  }, function(err){
-    res.status(500).send(err);
+  }, function(){
+    res.status(500).send(trans.databaseError);
   })
 });
 

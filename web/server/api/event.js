@@ -2,6 +2,8 @@ var express = require('express');
 var sequelize = require('../sequelize');
 var Sequelize = require('sequelize');
 var Event = require('../model/STREAM_EVENT')(sequelize, Sequelize);
+var config = require('../config');
+var trans = config[config.trans || 'zh'];
 
 var router = express.Router();
 
@@ -12,8 +14,8 @@ router.get('/diid/:id', function(req, res){
     }
   }).then(function (events){
     res.send(events);
-  }, function(err){
-    res.status(500).send(err);
+  }, function(){
+    res.status(500).send(trans.databaseError);
   })
 });
 

@@ -17,9 +17,9 @@ angular.module('ocspApp')
         $rootScope.message = $filter('translate')('password_wrong');
         $rootScope.styles = "redBlock";
         $cookies.remove("username");
-        $location.path("/");
       }
     }).error(function(err){
+      $rootScope.message = err;
       usSpinnerService.stop('spinner');
     });
   };

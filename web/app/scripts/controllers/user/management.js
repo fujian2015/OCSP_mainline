@@ -12,7 +12,7 @@ angular.module('ocspApp')
       name: $rootScope.username
     };
     $scope.checkPassword = function(){
-      if($scope.user.password !== undefined && $scope.user.password2 !== undefined && $scope.user.password == $scope.user.password2){
+      if($scope.user.password !== undefined && $scope.user.password2 !== undefined && $scope.user.password === $scope.user.password2){
         $scope.message = null;
         $scope.styles = null;
       }else{
@@ -43,7 +43,7 @@ angular.module('ocspApp')
           usSpinnerService.stop('spinner');
         }).error(function (err) {
           usSpinnerService.stop('spinner');
-          Notification.error(err.message);
+          Notification.error(err);
         });
       }
     };

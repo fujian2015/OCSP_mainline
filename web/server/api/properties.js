@@ -2,22 +2,24 @@ var express = require('express');
 var sequelize = require('../sequelize');
 var Sequelize = require('sequelize');
 var Prop = require('../model/STREAM_SYSTEMPROP')(sequelize, Sequelize);
+var config = require('../config');
+var trans = config[config.trans || 'zh'];
 
 var router = express.Router();
 
 router.get('/', function(req, res){
   Prop.findAll({where : {status: 1}}).then(function (properties){
     res.send(properties);
-  }, function(err){
-    res.status(500).send(err);
+  }, function(){
+    res.status(500).send(trans.databaseError);
   });
 });
 
 router.get('/spark', function(req,res){
   Prop.find({attributes: ['id','value'], where : {name: 'SPARK_HOME'}}).then(function (properties){
     res.send(properties);
-  }, function(err){
-    res.status(500).send(err);
+  }, function(){
+    res.status(500).send(trans.databaseError);
   });
 });
 
@@ -35,10 +37,10 @@ router.post('/spark', function(req, res){
     });
   }).then(function(){
     res.send({success: true});
-  },function(err){
-    res.status(500).send(err);
-  }).catch(function (err) {
-    res.status(500).send(err);
+  },function(){
+    res.status(500).send(trans.databaseError);
+  }).catch(function () {
+    res.status(500).send(trans.databaseError);
   });
 });
 
@@ -50,10 +52,10 @@ router.post('/', function(req, res){
   }
   sequelize.Promise.all(promises).then(function(){
     res.send({success: true});
-  },function(err){
-    res.status(500).send(err);
-  }).catch(function(err){
-    res.status(500).send(err);
+  },function(){
+    res.status(500).send(trans.databaseError);
+  }).catch(function(){
+    res.status(500).send(trans.databaseError);
   })
 });
 

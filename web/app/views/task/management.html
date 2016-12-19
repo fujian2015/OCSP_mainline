@@ -60,6 +60,7 @@
             button-label="name"
             item-label="name"
             tick-property="tick1"
+            helper-elements="filter"
             required>
           </isteven-multi-select>
         </div>
@@ -237,9 +238,9 @@
                 <li class="list-group-item"><h4>Task status:
                   {{statusText(selectedJob.status)}}
                 </h4></li>
-                <li class="list-group-item"><h4>Task running time:
-                  <!--<span class="badge">{{selectedJob.receive_interval}}</span>-->
-                </h4></li>
+                <li class="list-group-item" ng-if="selectedJob.status === 2 && selectedJob.running_time !== undefined">Task running time:
+                  {{selectedJob.running_time | cusDate}}
+                </li>
               </ul>
               <div class="well" ng-show="selectedJob.id !== undefined">
                 <div class="row text-center">
@@ -452,6 +453,7 @@
                         output-model="selectedJob.labels"
                         button-label="name"
                         item-label="name"
+                        helper-elements="filter"
                         tick-property="tick2">
                       </isteven-multi-select>
                     </div>

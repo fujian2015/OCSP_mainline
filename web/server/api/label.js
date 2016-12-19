@@ -3,11 +3,12 @@ var router = express.Router();
 var multer  = require('multer');
 var fs = require('fs');
 var unzip = require('unzip2');
-
 var sequelize = require('../sequelize');
 var Sequelize = require('sequelize');
 var Label = require('../model/STREAM_LABEL_DEFINITION')(sequelize, Sequelize);
 var LabelRefer = require('../model/STREAM_LABEL')(sequelize, Sequelize);
+var config = require('../config');
+var trans = config[config.trans || 'zh'];
 
 var storage = multer.diskStorage({
   destination: './uploads/',
@@ -20,8 +21,8 @@ var upload = multer({ storage: storage });
 router.get('/', function(req, res){
   Label.findAll().then(function (labels){
     res.send(labels);
-  }, function(err){
-    res.status(500).send(err);
+  }, function(){
+    res.status(500).send(trans.databaseError);
   });
 });
 
@@ -33,10 +34,10 @@ router.post('/', function(req, res){
   }
   sequelize.Promise.all(promises).then(function(){
     res.send({success : true});
-  },function(err){
-    res.status(500).send(err);
+  },function(){
+    res.status(500).send(trans.databaseError);
   }).catch(function(err){
-    res.status(500).send(err);
+    res.status(500).send(trans.databaseError);
   });
 
 });
@@ -49,8 +50,8 @@ router.get('/diid/:id', function(req, res){
     order: '`p_label_id` ASC'
   }).then(function (labels){
     res.send(labels);
-  }, function(err){
-    res.status(500).send(err);
+  }, function(){
+    res.status(500).send(trans.databaseError);
   })
 });
 
@@ -71,17 +72,17 @@ router.post('/upload', upload.single('file'), function(req, res){
         fileName = fileName.replace(/\//g, "\.");
         var index = fileName.lastIndexOf(".");
         promises.push(Label.findOrCreate({
-          where: {class_name: fileName},
-          defaults: {name: fileName.substr(index + 1)}
+          where: {name: fileName.substr(index + 1)},
+          defaults: {class_name: fileName}
         }));
       }
     });
   sequelize.Promise.all(promises).then(function(){
     res.send({success: true});
-  }, function(err){
-    res.status(500).send(err);
-  }).catch(function(err){
-    res.status(500).send(err);
+  }, function(){
+    res.status(500).send(trans.databaseError);
+  }).catch(function(){
+    res.status(500).send(trans.databaseError);
   });
 });
 

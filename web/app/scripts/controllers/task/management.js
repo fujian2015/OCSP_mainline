@@ -38,7 +38,7 @@ angular.module('ocspApp')
               modal.close();
               $scope.showModal();
             }).error(function(err){
-              Notification.error(err.message);
+              Notification.error(err);
             });
           };
         }]
@@ -73,6 +73,16 @@ angular.module('ocspApp')
       }
     }
 
+    var timeInterval = $interval(function(){
+      if($scope.jobs !== undefined && $scope.jobs.length > 0){
+        for(var i in $scope.jobs){
+          if($scope.jobs[i].running_time !== undefined) {
+            $scope.jobs[i].running_time += 1;
+          }
+        }
+      }
+    },1000);
+
     var taskInterval = $interval(function () {
       $http.get('/api/task/status').success(function(tasks){
         if($scope.jobs !== undefined && $scope.jobs.length > 0){
@@ -100,6 +110,9 @@ angular.module('ocspApp')
       if(taskInterval) {
         $interval.cancel(taskInterval);
       }
+      if(timeInterval){
+        $interval.cancel(timeInterval);
+      }
     });
     $scope.links = [];
     $http.get('/api/config/links').success(function(data){
@@ -118,7 +131,7 @@ angular.module('ocspApp')
         $scope.inputLabels = arr.labels.data;
         usSpinnerService.stop('spinner');
       },function(err){
-        Notification.error(err.data.message);
+        Notification.error(err.data);
         usSpinnerService.stop('spinner');
       });
     }
@@ -135,7 +148,7 @@ angular.module('ocspApp')
           usSpinnerService.stop('spinner');
         }).error(function(err){
           usSpinnerService.stop('spinner');
-          Notification.error(err.message);
+          Notification.error(err);
         });
       }
     };
@@ -304,7 +317,7 @@ angular.module('ocspApp')
           drawGraph($scope.selectedJob, labels);
           usSpinnerService.stop('spinner');
         }, function(err){
-          Notification.error(err.data.message);
+          Notification.error(err.data);
           usSpinnerService.stop('spinner');
         });
     };
@@ -358,7 +371,7 @@ angular.module('ocspApp')
               usSpinnerService.stop('spinner');
             }).error(function(err){
               usSpinnerService.stop('spinner');
-              Notification.error(err.message);
+              Notification.error(err);
             });
           }
         }
@@ -375,7 +388,7 @@ angular.module('ocspApp')
           usSpinnerService.stop('spinner');
         }).error(function(err){
           usSpinnerService.stop('spinner');
-          Notification.error(err.message);
+          Notification.error(err);
         });
       }
     };
@@ -438,11 +451,7 @@ angular.module('ocspApp')
           defer.resolve();
         }).error(function(err){
           usSpinnerService.stop('spinner');
-          if(err.original !== undefined) {
-            Notification.error(err.message + " " + err.original.code + " " + err.original.sql);
-          }else{
-            Notification.error(err.message);
-          }
+          Notification.error(err);
           defer.reject();
         });
       }

@@ -18,7 +18,7 @@ angular.module('ocspApp')
         }
         usSpinnerService.stop('spinner');
       },function(err){
-        Notification.error(err.data.message);
+        Notification.error(err.data);
         usSpinnerService.stop('spinner');
       });
     }
@@ -42,7 +42,7 @@ angular.module('ocspApp')
           Notification.success("Save success!");
         }, function(err){
           usSpinnerService.stop('spinner');
-          Notification.error(err);
+          Notification.error(err.data);
         });
     };
   }]);

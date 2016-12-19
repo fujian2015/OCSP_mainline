@@ -2,14 +2,16 @@ var express = require('express');
 var sequelize = require('../sequelize');
 var Sequelize = require('sequelize');
 var Datasource = require('../model/STREAM_DATASOURCE')(sequelize, Sequelize);
+var config = require('../config');
+var trans = config[config.trans || 'zh'];
 
 var router = express.Router();
 
 router.get('/', function(req, res){
   Datasource.findAll().then(function (datasource){
     res.send(datasource);
-  }, function(err){
-    res.status(500).send(err);
+  }, function(){
+    res.status(500).send(trans.databaseError);
   });
 });
 
@@ -21,10 +23,10 @@ router.post('/', function (req, res) {
   }
   sequelize.Promise.all(promises).then(function(){
     res.send({success: true});
-  },function(err){
-    res.status(500).send(err);
-  }).catch(function(err){
-    res.status(500).send(err);
+  },function(){
+    res.status(500).send(trans.databaseError);
+  }).catch(function(){
+    res.status(500).send(trans.databaseError);
   })
 });
 

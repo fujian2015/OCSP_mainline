@@ -6,22 +6,37 @@ var Interface = require('../model/STREAM_DATAINTERFACE')(sequelize, Sequelize);
 var Label = require('../model/STREAM_LABEL')(sequelize, Sequelize);
 var Event = require('../model/STREAM_EVENT')(sequelize, Sequelize);
 var randomstring = require("randomstring");
+var config = require('../config');
+var trans = config[config.trans || 'zh'];
 
 var router = express.Router();
 
+var getRunningTime = function (tasks) {
+  if (tasks !== undefined && tasks.length > 0) {
+    var date = new Date();
+    var sss = date.getTime();
+    for (var i = 0; i < tasks.length; i++) {
+      if(tasks[i].dataValues !== undefined && tasks[i].dataValues.start_time !== undefined && tasks[i].dataValues.start_time != null && tasks[i].dataValues.start_time != "") {
+        tasks[i].dataValues.running_time = parseInt((sss - tasks[i].dataValues.start_time)/ 1000);
+      }
+    }
+  }
+};
+
 router.get('/', function(req, res){
   Task.findAll().then(function (tasks){
+    getRunningTime(tasks);
     res.send(tasks);
-  }, function(err){
-    res.status(500).send(err);
+  }, function(){
+    res.status(500).send(trans.databaseError);
   });
 });
 
 router.get('/status', function(req,res){
   Task.findAll({attributes: ['id','status']}).then(function (tasks){
     res.send(tasks);
-  }, function(err){
-    res.status(500).send(err);
+  }, function(){
+    res.status(500).send(trans.databaseError);
   });
 });
 
@@ -35,10 +50,10 @@ router.post('/change/:id', function(req, res){
     });
   }).then(function(){
     res.send({success: true});
-  },function(err){
-    res.status(500).send(err);
-  }).catch(function (err) {
-    res.status(500).send(err);
+  },function(){
+    res.status(500).send(trans.databaseError);
+  }).catch(function () {
+    res.status(500).send(trans.databaseError);
   });
 });
 
@@ -52,10 +67,10 @@ router.post('/delete/:id', function(req, res){
     });
   }).then(function(){
     res.send({success: true});
-  },function(err){
-    res.status(500).send(err);
-  }).catch(function (err) {
-    res.status(500).send(err);
+  },function(){
+    res.status(500).send(trans.databaseError);
+  }).catch(function () {
+    res.status(500).send(trans.databaseError);
   });
 });
 
@@ -207,10 +222,10 @@ router.post("/", function(req, res){
     });
   }).then(function(){
     res.send({success: true});
-  },function(err){
-    res.status(500).send(err);
-  }).catch(function (err) {
-    res.status(500).send(err);
+  },function(){
+    res.status(500).send(trans.databaseError + trans.inputDuplicateKey);
+  }).catch(function () {
+    res.status(500).send(trans.databaseError);
   });
 });
 
@@ -269,10 +284,10 @@ router.put("/", function(req, res) {
     });
   }).then(function(){
     res.send({success: true});
-  },function(err){
-    res.status(500).send(err);
-  }).catch(function (err) {
-    res.status(500).send(err);
+  },function(){
+    res.status(500).send(trans.databaseError);
+  }).catch(function () {
+    res.status(500).send(trans.databaseError);
   });
 });
 
