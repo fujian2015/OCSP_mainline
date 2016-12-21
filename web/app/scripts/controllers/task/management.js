@@ -77,11 +77,11 @@ angular.module('ocspApp')
       if($scope.jobs !== undefined && $scope.jobs.length > 0){
         for(var i in $scope.jobs){
           if($scope.jobs[i].running_time !== undefined) {
-            $scope.jobs[i].running_time += 1;
+            $scope.jobs[i].running_time += 60;
           }
         }
       }
-    },1000);
+    },60000);
 
     var taskInterval = $interval(function () {
       $http.get('/api/task/status').success(function(tasks){

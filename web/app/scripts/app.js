@@ -96,8 +96,7 @@ angular
       'login':'login',
       'pass_not_same':'Input passwords are not same',
       'timeh':'h',
-      'timem':'m',
-      'times':'s'
+      'timem':'m'
     });
 
     $translateProvider.translations('zh',{
@@ -123,8 +122,7 @@ angular
       'login':'登录',
       'pass_not_same':'两次输入的密码不一致',
       'timeh':'时',
-      'timem':'分',
-      'times':'秒'
+      'timem':'分'
     });
 
     var window = $windowProvider.$get();

@@ -11,8 +11,7 @@ angular.module('ocspApp').filter('cusDate',['$filter', function($filter) {
     var h = Math.floor(input / 3600);
     input = input % 3600;
     var m = Math.floor(input / 60);
-    var s = input % 60;
-    return h + $filter('translate')('timeh') + m + $filter('translate')('timem') + s + $filter('translate')('times');
+    return h + $filter('translate')('timeh') + m + $filter('translate')('timem');
   }
 }]);
 
