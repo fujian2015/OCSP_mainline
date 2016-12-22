@@ -54,7 +54,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_007':'Setup label',
     'ocsp_web_streams_manage_008':'Setup output event',
     'ocsp_web_streams_manage_009':'Review&Submit',
-    'ocsp_web_streams_manage_010':'The name of Kafka topic',
+    'ocsp_web_streams_manage_010':'Kafka topic',
     'ocsp_web_streams_manage_011':'Fields',
     'ocsp_web_streams_manage_012':'Delim',
     'ocsp_web_streams_manage_013':'Filter',

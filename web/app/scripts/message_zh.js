@@ -57,7 +57,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_007':'设置标签',
     'ocsp_web_streams_manage_008':'设置输出',
     'ocsp_web_streams_manage_009':'检查&提交',
-    'ocsp_web_streams_manage_010':'Kafka中topic的名字',
+    'ocsp_web_streams_manage_010':'Kafka topic',
     'ocsp_web_streams_manage_011':'输入源的字段',
     'ocsp_web_streams_manage_012':'输入源字段分隔符',
     'ocsp_web_streams_manage_013':'过滤条件',
