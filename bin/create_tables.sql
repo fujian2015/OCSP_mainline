@@ -57,6 +57,16 @@ CREATE TABLE `STREAM_DATASOURCE` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `STREAM_DATASOURCE`
+--
+
+LOCK TABLES `STREAM_DATASOURCE` WRITE;
+/*!40000 ALTER TABLE `STREAM_DATASOURCE` DISABLE KEYS */;
+INSERT INTO `STREAM_DATASOURCE` VALUES (1,'Kafka data source','kafka',NULL,'[{\"pname\":\"zookeeper.connect\",\"pvalue\":\"hostA:2181\"},{\"pname\":\"metadata.broker.list\",\"pvalue\":\"hostA:6667\"}]'),(2,'Codis data source','codis',NULL,'[{\"pname\":\"cacheServers\",\"pvalue\":\"hostB:19000\"},{\"pname\":\"jedisMaxIdle\",\"pvalue\":\"300\"},{\"pname\":\"jedisMaxTotal\",\"pvalue\":\"1000\"},{\"pname\":\"jedisMEM\",\"pvalue\":\"600000\"},{\"pname\":\"jedisMinIdle\",\"pvalue\":\"0\"},{\"pname\":\"zk\",\"pvalue\":\"hostA:2181\"},{\"pname\":\"zkSessionTimeoutMs\",\"pvalue\":\"15000\"},{\"pname\":\"zkpath\",\"pvalue\":\"/zk/codis/db_codis-demo/proxy\"},{\"pname\":\"jedisTimeOut\",\"pvalue\":\"10000\"}]');
+/*!40000 ALTER TABLE `STREAM_DATASOURCE` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `STREAM_EVENT`
 --
 
@@ -134,6 +144,16 @@ CREATE TABLE `STREAM_SYSTEMPROP` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `STREAM_SYSTEMPROP`
+--
+
+LOCK TABLES `STREAM_SYSTEMPROP` WRITE;
+/*!40000 ALTER TABLE `STREAM_SYSTEMPROP` DISABLE KEYS */;
+INSERT INTO `STREAM_SYSTEMPROP` VALUES (1,'cacheManager','JodisCacheManager',0,NULL),(7,'checkpoint_dir','streaming/checkpoint',0,NULL),(11,'SPARK_HOME','/usr/hdp/2.4.0.0-169/spark',1,NULL),(12,'master','yarn-client',1,NULL),(13,'supervise','false',0,NULL),(17,'delaySeconds','20',0,NULL),(18,'periodSeconds','10',0,NULL),(21,'cacheQryBatchSizeLimit','1000',0,NULL),(27,'cacheQryTaskSizeLimit','1000',0,NULL);
+/*!40000 ALTER TABLE `STREAM_SYSTEMPROP` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `STREAM_TASK`
 --
 
@@ -176,6 +196,11 @@ CREATE TABLE `STREAM_USER` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+LOCK TABLES `STREAM_USER` WRITE;
+/*!40000 ALTER TABLE `STREAM_USER` DISABLE KEYS */;
+INSERT INTO `STREAM_USER` VALUES (1,'admin','21232f297a57a5a743894a0e4a801fc3','Administrator');
+/*!40000 ALTER TABLE `STREAM_USER` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
