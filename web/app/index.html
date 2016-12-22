@@ -39,8 +39,10 @@
       <div class="col-md-offset-1 col-md-10">
         <div class="navbar-header">
           <div style="margin-top: 8px;">
-            <img src="/images/logo-white.png" style="height: 32px;" alt="ocsp" title="ocsp">
-            <span class="brand">橘云流处理平台</span>
+            <a href="#/">
+              <img src="/images/logo-white.png" style="height: 32px;" alt="ocsp" title="ocsp">
+              <span class="brand">{{'ocsp_web_common_000' | translate}}</span>
+            </a>
           </div>
           <!--<button type="button" class="navbar-toggle" data-toggle="sidebar" data-target=".sidebar">-->
             <!--<span class="sr-only">Toggle navigation</span>-->
@@ -58,14 +60,14 @@
               {{username}} <span ng-if="username !== null" class="caret"></span>
             </button>
             <ul class="dropdown-menu" ng-if="username !== null">
-              <li><a href="" ng-click="logout()">Logout</a></li>
+              <li><a href="" ng-click="logout()">{{'ocsp_web_common_004' | translate}}</a></li>
             </ul>
           </form>
           <ul class="nav navbar-nav navbar-right">
-            <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'task']" href="#/task_management">{{'task_manage' | translate}}</a></li>
-            <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'label']" href="#/label_management">{{'label_manage' | translate}}</a></li>
-            <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'system']" href="#/system_management">{{'system_manage' | translate}}</a></li>
-            <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'user']" href="#/user_management">{{'user_manage' | translate}}</a></li>
+            <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'task']" href="#/task_management">{{'ocsp_web_streams_manage_000' | translate}}</a></li>
+            <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'label']" href="#/label_management">{{'ocsp_web_label_manage_000' | translate}}</a></li>
+            <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'system']" href="#/system_management">{{'ocsp_web_system_manage_000' | translate}}</a></li>
+            <li ng-if="username !== null"><a ng-class="{true:'active'}[tab === 'user']" href="#/user_management">{{'ocsp_web_user_manage_000' | translate}}</a></li>
           </ul>
         </div>
       </div>

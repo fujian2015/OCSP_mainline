@@ -2,22 +2,22 @@
   <div class="col-md-2 well">
     <div class="list-group">
       <div class="list-group-item">
-        {{'label_manage' | translate}}
+        {{'ocsp_web_label_manage_000' | translate}}
       </div>
     </div>
   </div>
   <div class="col-md-10 main">
     <div class="panel panel-oc">
       <div class="panel-heading">
-        {{'label_manage' | translate}}
+        {{'ocsp_web_label_manage_000' | translate}}
       </div>
       <div class="panel-body">
         <table class="table table-striped">
           <thead>
           <tr>
-            <th>name</th>
-            <th>class_name</th>
-            <th>properties</th>
+            <th>{{'ocsp_web_label_manage_001' | translate}}</th>
+            <th>{{'ocsp_web_label_manage_002' | translate}}</th>
+            <th>{{'ocsp_web_label_manage_003' | translate}}</th>
           </tr>
           </thead>
           <tbody>
@@ -28,13 +28,13 @@
             </tr>
           </tbody>
         </table>
-        <button type="button" class="btn btn-primary" ng-click="save()">Save</button>
+        <button type="button" class="btn btn-primary" ng-click="save()">{{'ocsp_web_common_009' | translate}}</button>
       </div>
     </div>
     <div class="well">
       <div>
         <div style="float:right;">
-          <button type="button" ng-click="upload()">Upload</button>
+          <button type="button" ng-click="upload()">{{'ocsp_web_common_010' | translate}}</button>
         </div>
         <input ngf-select type="file" ng-model="file">
             <span class="progress" ng-show="file.progress >= 0">

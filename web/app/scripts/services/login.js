@@ -14,7 +14,7 @@ angular.module('ocspApp')
         $rootScope.styles = null;
         $rootScope.changeTab('task');
       } else {
-        $rootScope.message = $filter('translate')('password_wrong');
+        $rootScope.message = $filter('translate')('ocsp_web_user_manage_005');
         $rootScope.styles = "redBlock";
         $cookies.remove("username");
       }

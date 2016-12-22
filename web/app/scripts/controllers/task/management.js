@@ -4,17 +4,21 @@
  * For job management main page controller
  */
 angular.module('ocspApp')
-  .controller('TaskManagementCtrl', ['$scope', '$http', 'Notification', '$q', 'usSpinnerService', 'loginService', '$interval', '$uibModal', function ($scope, $http, Notification, $q, usSpinnerService, loginService, $interval, $uibModal) {
+  .controller('TaskManagementCtrl', ['$scope', '$http', 'Notification', '$q', 'usSpinnerService', 'loginService', '$interval', '$uibModal', '$filter', function ($scope, $http, Notification, $q, usSpinnerService, loginService, $interval, $uibModal, $filter) {
     loginService.init('task');
+    $scope.localLang = {
+      search: $filter('translate')('ocsp_web_common_014'),
+      nothingSelected : $filter('translate')('ocsp_web_common_017')
+    };
     $scope.selectedJob = {
       input: {},
       events: []
     };
     $scope.actions = [
-      {name: "start", enable: true, icon : "glyphicon glyphicon-play success"},
-      {name: "stop", enable: true, icon: "glyphicon glyphicon-stop danger"},
-      {name: "restart", enable: true, icon: "glyphicon glyphicon-refresh danger"},
-      {name: "delete", enable: true, icon: "glyphicon glyphicon-remove-sign warning"}
+      {name: $filter('translate')('ocsp_web_streams_manage_024'), enable: true, icon : "glyphicon glyphicon-play success"},
+      {name: $filter('translate')('ocsp_web_streams_manage_025'), enable: true, icon: "glyphicon glyphicon-stop danger"},
+      {name: $filter('translate')('ocsp_web_streams_manage_026'), enable: true, icon: "glyphicon glyphicon-refresh danger"},
+      {name: $filter('translate')('ocsp_web_streams_manage_027'), enable: true, icon: "glyphicon glyphicon-remove-sign warning"}
     ];
     mermaidAPI.initialize({
       startOnLoad:false
@@ -51,24 +55,24 @@ angular.module('ocspApp')
     function dealWith(status) {
       if(status === 0){
         $scope.actions = [
-          {name: "start", enable: true, icon : "glyphicon glyphicon-play success"},
-          {name: "stop", enable: false, icon: "glyphicon glyphicon-stop"},
-          {name: "restart", enable: true, icon: "glyphicon glyphicon-refresh danger"},
-          {name: "delete", enable: true, icon: "glyphicon glyphicon-remove-sign warning"}
+          {name: $filter('translate')('ocsp_web_streams_manage_024'), enable: true, icon : "glyphicon glyphicon-play success"},
+          {name: $filter('translate')('ocsp_web_streams_manage_025'), enable: false, icon: "glyphicon glyphicon-stop"},
+          {name: $filter('translate')('ocsp_web_streams_manage_026'), enable: true, icon: "glyphicon glyphicon-refresh danger"},
+          {name: $filter('translate')('ocsp_web_streams_manage_027'), enable: true, icon: "glyphicon glyphicon-remove-sign warning"}
         ];
       }else if(status === 2){
         $scope.actions = [
-          {name: "start", enable: false, icon : "glyphicon glyphicon-play"},
-          {name: "stop", enable: true, icon: "glyphicon glyphicon-stop danger"},
-          {name: "restart", enable: true, icon: "glyphicon glyphicon-refresh danger"},
-          {name: "delete", enable: false, icon: "glyphicon glyphicon-remove-sign"}
+          {name: $filter('translate')('ocsp_web_streams_manage_024'),  enable: false, icon : "glyphicon glyphicon-play"},
+          {name: $filter('translate')('ocsp_web_streams_manage_025'), enable: true, icon: "glyphicon glyphicon-stop danger"},
+          {name: $filter('translate')('ocsp_web_streams_manage_026'), enable: true, icon: "glyphicon glyphicon-refresh danger"},
+          {name: $filter('translate')('ocsp_web_streams_manage_027'), enable: false, icon: "glyphicon glyphicon-remove-sign"}
         ];
       }else{
         $scope.actions = [
-          {name: "start", enable: false, icon : "glyphicon glyphicon-play"},
-          {name: "stop", enable: false, icon: "glyphicon glyphicon-stop"},
-          {name: "restart", enable: false, icon: "glyphicon glyphicon-refresh"},
-          {name: "delete", enable: false, icon: "glyphicon glyphicon-remove-sign"}
+          {name: $filter('translate')('ocsp_web_streams_manage_024'), enable: false, icon : "glyphicon glyphicon-play"},
+          {name: $filter('translate')('ocsp_web_streams_manage_025'), enable: false, icon: "glyphicon glyphicon-stop"},
+          {name: $filter('translate')('ocsp_web_streams_manage_026'), enable: false, icon: "glyphicon glyphicon-refresh"},
+          {name: $filter('translate')('ocsp_web_streams_manage_027'), enable: false, icon: "glyphicon glyphicon-remove-sign"}
         ];
       }
     }
@@ -192,7 +196,7 @@ angular.module('ocspApp')
       var graphDefinition = 'graph LR;';
       graphDefinition += "task[" + item.name + "];";
       graphDefinition += "input((" + item.input.topic + "));";
-      graphDefinition += "task-->|" + item.input.name + "|input;";
+      graphDefinition += "task-->input;";
       var last = "input";
       if(labels.length > 0) {
         graphDefinition += "subgraph labels;";

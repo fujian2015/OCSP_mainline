@@ -16,7 +16,7 @@ angular.module('ocspApp')
         $scope.message = null;
         $scope.styles = null;
       }else{
-        $scope.message = $filter('translate')('pass_not_same');
+        $scope.message = $filter('translate')('ocsp_web_user_manage_006');
         $scope.styles = "redBlock";
       }
     };

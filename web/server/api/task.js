@@ -196,6 +196,7 @@ router.post("/", function(req, res){
   sequelize.transaction(function(t) {
     //Input datasource is kafka by default
     dealDataInterfaceProperties(inputInterface, 1, 0);
+    inputInterface.name = task.name + "_" + randomstring.generate(10);
     return sequelize.Promise.all([
       Interface.create(inputInterface, {transaction: t}),
       Label.max("id", {transaction: t})]).then(function (di) {
