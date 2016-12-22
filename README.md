@@ -41,7 +41,7 @@ OCSP是基于Spark streaming的处理流数据低延迟、可高度扩展的，�
 * [YARN标签设置](https://github.com/OCSP/OCSP_mainline/wiki/Yarn-Node-Label-%E9%85%8D%E7%BD%AE)### 使用及调优
 
 * 前台界面使用
-* 自定义标签开发
+* [自定义标签开发](https://github.com/OCSP/OCSP_mainline/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE)
 * [OCSP调优](https://github.com/OCSP/OCSP_mainline/wiki/OCSP-%E8%B0%83%E4%BC%98)
 
 ### Milestone
