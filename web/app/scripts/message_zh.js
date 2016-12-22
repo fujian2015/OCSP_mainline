@@ -75,8 +75,8 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_025':'停止',
     'ocsp_web_streams_manage_026':'重启',
     'ocsp_web_streams_manage_027':'删除',
-    'ocsp_web_streams_manage_028':'Stream 运行状态',
-    'ocsp_web_streams_manage_029':'Stream 运行时间',
+    'ocsp_web_streams_manage_028':'作业流运行状态',
+    'ocsp_web_streams_manage_029':'作业流运行时间',
     'ocsp_web_streams_manage_030':'输出源配置',
     'ocsp_web_streams_manage_031':'输出事件'
 
