@@ -72,7 +72,7 @@ CREATE TABLE `STREAM_DATASOURCE` (
 
 LOCK TABLES `STREAM_DATASOURCE` WRITE;
 /*!40000 ALTER TABLE `STREAM_DATASOURCE` DISABLE KEYS */;
-INSERT INTO `STREAM_DATASOURCE` VALUES (1,'ds1_kafka','kafka',NULL,'[{\"pname\":\"zookeeper.connect\",\"pvalue\":\"ochadoop02:2181\"},{\"pname\":\"metadata.broker.list\",\"pvalue\":\"ochadoop02:6667\"}]'),(2,'ds2_codis','codis',NULL,'[{\"pname\":\"cacheServers\",\"pvalue\":\"ochadoop02:19000,ochadoop04:19001\"},{\"pname\":\"jedisMaxIdle\",\"pvalue\":\"300\"},{\"pname\":\"jedisMaxTotal\",\"pvalue\":\"1000\"},{\"pname\":\"jedisMEM\",\"pvalue\":\"600000\"},{\"pname\":\"jedisMinIdle\",\"pvalue\":\"0\"},{\"pname\":\"zk\",\"pvalue\":\"ochadoop02:2181,ochadoop04:2181\"},{\"pname\":\"zkSessionTimeoutMs\",\"pvalue\":\"15\"},{\"pname\":\"zkpath\",\"pvalue\":\"/zk/codis/db_codis-ha-demo/proxy\"},{\"pname\":\"jedisTimeOut\",\"pvalue\":\"10000\"}]');
+INSERT INTO `STREAM_DATASOURCE` VALUES (1,'Kafka data source','kafka',NULL,'[{\"pname\":\"zookeeper.connect\",\"pvalue\":\"ochadoop02:2181\"},{\"pname\":\"metadata.broker.list\",\"pvalue\":\"ochadoop02:6667\"}]'),(2,'Codis data source','codis',NULL,'[{\"pname\":\"cacheServers\",\"pvalue\":\"ochadoop02:19000,ochadoop04:19001\"},{\"pname\":\"jedisMaxIdle\",\"pvalue\":\"300\"},{\"pname\":\"jedisMaxTotal\",\"pvalue\":\"1000\"},{\"pname\":\"jedisMEM\",\"pvalue\":\"600000\"},{\"pname\":\"jedisMinIdle\",\"pvalue\":\"0\"},{\"pname\":\"zk\",\"pvalue\":\"ochadoop02:2181,ochadoop04:2181\"},{\"pname\":\"zkSessionTimeoutMs\",\"pvalue\":\"15\"},{\"pname\":\"zkpath\",\"pvalue\":\"/zk/codis/db_codis-demo/proxy\"},{\"pname\":\"jedisTimeOut\",\"pvalue\":\"10000\"}]');
 /*!40000 ALTER TABLE `STREAM_DATASOURCE` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -161,7 +161,7 @@ CREATE TABLE `STREAM_LABEL_DEFINITION` (
 
 LOCK TABLES `STREAM_LABEL_DEFINITION` WRITE;
 /*!40000 ALTER TABLE `STREAM_LABEL_DEFINITION` DISABLE KEYS */;
-INSERT INTO `STREAM_LABEL_DEFINITION` VALUES (1,'SiteLabel','com.asiainfo.ocdp.local.shaanxiyidong.label.SiteLabel','{\"props\":[{\"pname\":\"userKeyIdx\", \"pvalue\":\"2\"}],\"labelItems\":[{\"pname\":\"phone_no\", \"pvalue\":\"product_no\"}]}'),(2,'AreaLabel','com.asiainfo.ocdp.local.shaanxiyidong.label.AreaLabel','{\"props\":[{\"pname\":\"user_info_cols\", \"pvalue\":\"phone_no,user_id,phone_area\"}],\"labelItems\":[{\"pname\":\"phone_no\", \"pvalue\":\"product_no\"}]}'),(3,'UserBaseInfoLabel','com.asiainfo.ocdp.local.shaanxiyidong.label.UserBaseInfoLabel','{\"props\":[{\"pname\":\"user_info_cols\", \"pvalue\":\"acyc_id,live_lac,area_code,work_lac,work_cellid,stat_date,serial_number,age_level,sex,eparchy_id,city_code,pspt_prov_code,pspt_eparchy_id,fee_level\"}],\"labelItems\":[{\"pname\":\"phone_no\", \"pvalue\":\"product_no\"}]}'),(4,'AccumulateLabel','com.asiainfo.ocdp.local.shaanxiyidong.label.AccumulateLabel','{\"props\":[{\"pname\":\"interval\", \"pvalue\":\"10\"}],\"labelItems\":[{\"pname\":\"interval\", \"pvalue\":\"10\"}]}');
+INSERT INTO `STREAM_LABEL_DEFINITION` VALUES (1,'SiteLabel','com.asiainfo.ocdp.stream.label.examples.SiteLabel','{\"props\":[{\"pname\":\"userKeyIdx\", \"pvalue\":\"2\"}],\"labelItems\":[{\"pname\":\"phone_no\", \"pvalue\":\"product_no\"}]}'),(2,'AreaLabel','com.asiainfo.ocdp.stream.label.examples.AreaLabel','{\"props\":[{\"pname\":\"user_info_cols\", \"pvalue\":\"phone_no,user_id,phone_area\"}],\"labelItems\":[{\"pname\":\"phone_no\", \"pvalue\":\"product_no\"}]}'),(3,'UserBaseInfoLabel','com.asiainfo.ocdp.stream.label.examples.UserBaseInfoLabel','{\"props\":[{\"pname\":\"user_info_cols\", \"pvalue\":\"acyc_id,live_lac,area_code,work_lac,work_cellid,stat_date,serial_number,age_level,sex,eparchy_id,city_code,pspt_prov_code,pspt_eparchy_id,fee_level\"}],\"labelItems\":[{\"pname\":\"phone_no\", \"pvalue\":\"product_no\"}]}'),(4,'AccumulateLabel','com.asiainfo.ocdp.stream.label.examples.AccumulateLabel','{\"props\":[{\"pname\":\"interval\", \"pvalue\":\"10\"}],\"labelItems\":[{\"pname\":\"interval\", \"pvalue\":\"10\"}]}');
 /*!40000 ALTER TABLE `STREAM_LABEL_DEFINITION` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -226,7 +226,7 @@ CREATE TABLE `STREAM_TASK` (
 
 LOCK TABLES `STREAM_TASK` WRITE;
 /*!40000 ALTER TABLE `STREAM_TASK` DISABLE KEYS */;
-INSERT INTO `STREAM_TASK` VALUES (1,'task_demo',1,30,10,'1g','1g',2,'default',0,NULL,NULL,1);
+INSERT INTO `STREAM_TASK` VALUES (1,'Stream Demo',1,30,10,'1g','1g',2,'default',0,NULL,NULL,1);
 /*!40000 ALTER TABLE `STREAM_TASK` ENABLE KEYS */;
 UNLOCK TABLES;
 
