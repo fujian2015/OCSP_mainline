@@ -16,6 +16,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_common_010': '上传',
     'ocsp_web_common_011': '名字',
     'ocsp_web_common_012': '描述',
+    'ocsp_web_common_013': '基础配置',
 
     'ocsp_web_user_manage_000':'用户管理',
     'ocsp_web_user_manage_001':'修改密码',
@@ -27,7 +28,6 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
 
     'ocsp_web_system_manage_000':'系统管理',
     'ocsp_web_system_manage_001':'系统配置',
-    'ocsp_web_system_manage_001':'基础设置',
 
     'ocsp_web_label_manage_000':'标签管理',
     'ocsp_web_label_manage_001':'标签名字',
@@ -40,25 +40,23 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_003':'作业流配置',
     'ocsp_web_streams_manage_004':'请先选择一个作业流',
     'ocsp_web_streams_manage_005':'链接',
-    'ocsp_web_streams_manage_006':'基础配置',
-    'ocsp_web_streams_manage_007':'设置输入',
-    'ocsp_web_streams_manage_008':'设置标签',
-    'ocsp_web_streams_manage_009':'设置输出',
-    'ocsp_web_streams_manage_010':'检查&提交',
-    'ocsp_web_streams_manage_011':'输入流的名字',
-    'ocsp_web_streams_manage_012':'Kafka中topic的名字',
-    'ocsp_web_streams_manage_013':'输入流的字段',
-    'ocsp_web_streams_manage_014':'输入流字段分隔符',
-    'ocsp_web_streams_manage_015':'过滤条件',
-    'ocsp_web_streams_manage_016':'作为主键的字段',
-    'ocsp_web_streams_manage_017':'请选择',
-    'ocsp_web_streams_manage_018':'添加输出事件',
-    'ocsp_web_streams_manage_019':'事件名字',
-    'ocsp_web_streams_manage_020':'需要输出的字段',
-    'ocsp_web_streams_manage_021':'输出字段分隔符',
-    'ocsp_web_streams_manage_022':'输出事件的时间间隔',
-    'ocsp_web_streams_manage_023':'事件输出源',
-    'ocsp_web_streams_manage_024':'输出到Codis中Key的前缀'
+    'ocsp_web_streams_manage_006':'设置输入',
+    'ocsp_web_streams_manage_007':'设置标签',
+    'ocsp_web_streams_manage_008':'设置输出',
+    'ocsp_web_streams_manage_009':'检查&提交',
+    'ocsp_web_streams_manage_010':'Kafka中topic的名字',
+    'ocsp_web_streams_manage_011':'输入源的字段',
+    'ocsp_web_streams_manage_012':'输入源字段分隔符',
+    'ocsp_web_streams_manage_013':'过滤条件',
+    'ocsp_web_streams_manage_014':'作为主键的字段',
+    'ocsp_web_streams_manage_015':'请选择',
+    'ocsp_web_streams_manage_016':'添加输出事件',
+    'ocsp_web_streams_manage_017':'事件名字',
+    'ocsp_web_streams_manage_018':'需要输出的字段',
+    'ocsp_web_streams_manage_019':'输出字段分隔符',
+    'ocsp_web_streams_manage_020':'输出事件的时间间隔',
+    'ocsp_web_streams_manage_021':'事件输出源',
+    'ocsp_web_streams_manage_022':'输出到Codis中Key的前缀'
 
   });
 }]);
