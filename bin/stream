@@ -57,24 +57,33 @@ function setupStream(){
 }
 
 function startStream(){
-    out "Starting the server..."
+    if [ ! -d "${STREAM_HOME}/logs/stream_pid.log" ]; then
+       touch "${STREAM_HOME}/logs/stream_pid.log"
+    fi
 
-    CLASSPATH=`getClassPath`
+    proc_id=`cat ${STREAM_HOME}/logs/stream_pid.log`
+    if [[ -z ${proc_id} ]];then
+        out "Starting the server..."
 
-    nohup java -cp ${CLASSPATH} com.asiainfo.ocdp.stream.manager.MainFrameManager &>> ${STREAM_HOME}/logs/MainFrameManager.log&
-    pid=`echo $!`
+        CLASSPATH=`getClassPath`
 
-    sleep 1
+        nohup java -cp ${CLASSPATH} com.asiainfo.ocdp.stream.manager.MainFrameManager &>> ${STREAM_HOME}/logs/MainFrameManager.log&
+        pid=`echo $!`
 
-    ps -p ${pid} > /dev/null 2>&1
+        sleep 1
 
-    if [ $? -eq 0 ]; then
-        echo ${pid} > ${STREAM_HOME}/logs/stream_pid.log
-        success "Start the server successfully."
-        success "Please check log ${STREAM_HOME}/logs/MainFrameManager.log for details."
+        ps -p ${pid} > /dev/null 2>&1
+
+        if [ $? -eq 0 ]; then
+            echo ${pid} > ${STREAM_HOME}/logs/stream_pid.log
+            success "Start the server successfully."
+            success "Please check log ${STREAM_HOME}/logs/MainFrameManager.log for details."
+        else
+            error "Start the server failed!"
+            error "Please check log ${STREAM_HOME}/logs/MainFrameManager.log for error messages."
+        fi
     else
-        error "Start the server failed!"
-        error "Please check log ${STREAM_HOME}/logs/MainFrameManager.log for error messages."
+         out "The server is running ! "
     fi
 }
 

@@ -19,23 +19,32 @@ function print_usage(){
 
 
 function start(){
-    out "Starting the server..."
-    chmod +x ${STREAM_HOME}/web/node/bin/node
+    if [ ! -d "${STREAM_HOME}/logs/web_pid.log" ]; then
+       touch "${STREAM_HOME}/logs/web_pid.log"
+    fi
 
-    cd ${STREAM_HOME}/web
-    nohup ./node/bin/node ./server/app.js >> ${STREAM_HOME}/logs/web.log 2>&1 &
-    pid=`echo $!`
-    sleep 1
+    proc_id=`cat ${STREAM_HOME}/logs/web_pid.log`
+    if [[ -z ${proc_id} ]];then
+        out "Starting the server..."
+        chmod +x ${STREAM_HOME}/web/node/bin/node
 
-    ps -p ${pid} > /dev/null 2>&1
+        cd ${STREAM_HOME}/web
+        nohup ./node/bin/node ./server/app.js >> ${STREAM_HOME}/logs/web.log 2>&1 &
+        pid=`echo $!`
+        sleep 1
 
-    if [ $? -eq 0 ]; then
-        echo ${pid} > ${STREAM_HOME}/logs/web_pid.log
-        success "Start the server successfully."
-        success "Please check log ${STREAM_HOME}/logs/web.log for details."
+        ps -p ${pid} > /dev/null 2>&1
+
+        if [ $? -eq 0 ]; then
+            echo ${pid} > ${STREAM_HOME}/logs/web_pid.log
+            success "Start the server successfully."
+            success "Please check log ${STREAM_HOME}/logs/web.log for details."
+        else
+            error "Start the server failed!"
+            error "Please check log ${STREAM_HOME}/logs/web.log for error messages."
+        fi
     else
-        error "Start the server failed!"
-        error "Please check log ${STREAM_HOME}/logs/web.log for error messages."
+        out "The server is running ! "
     fi
 }
 
