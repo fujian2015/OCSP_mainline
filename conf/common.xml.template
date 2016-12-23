@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <property>
     <db>
-        <url>jdbc:mysql://localhost:3306/ocdp</url>
-        <username>root</username>
-        <password>123</password>
+        <url>@MYSQL_ADDR@</url>
+        <username>@MYSQL_UNAME@</username>
+        <password>@MYSQL_PWD@</password>
         <classname>com.mysql.jdbc.Driver</classname>
     </db>
 </property>

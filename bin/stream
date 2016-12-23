@@ -12,12 +12,49 @@ STREAM_HOME=$(cd `dirname $0`/..; pwd)
 function print_usage(){
   echo "Usage: stream [COMMAND]"
   echo "  where COMMAND is one of:"
+  echo "  setup                                 setup the environment"
   echo "  start                                 run the stream application"
   echo "  stop                                  shutdown the stream application"
   echo "  restart                               restart the stream application"
   echo "  version                               print the version"
 }
 
+function setupStream(){
+    cp -f ../conf/common.xml.template ../conf/common.xml
+    cp -f ../web/server/config.js.template ../web/server/config.js
+    echo "Please input mysql address(jdbc:\\\<ip>:<port>/<database>): "
+    read MYSQL_ADDR
+    echo "Please input mysql username: "
+    read MYSQL_UNAME
+    echo "Please input mysql password: "
+    read MYSQL_PWD
+    echo "Please input Yarn Resource Manager address(http:\\\<ip>:<port>): "
+    read RM_ADDR
+    echo "Please input Codis Dashboard address(http:\\\<ip>:<port>): "
+    read CODIS_ADDR
+    #替换配置文件中的@@信息
+    if [ -n "$MYSQL_ADDR" ] && [ -n "$RM_ADDR" ] && [ -n "$CODIS_ADDR" ]; then
+        sed -i "s/@MYSQL_ADDR@/$MYSQL_ADDR/g" ../conf/common.xml
+        sed -i "s/@MYSQL_UNAME@/$MYSQL_UNAME/g" ../conf/common.xml
+        sed -i "s/@MYSQL_PWD@/$MYSQL_PWD/g" ../conf/common.xml
+        sed -i "s/@MYSQL_ADDR@/$MYSQL_ADDR/g" ../web/server/config.js
+        sed -i "s/@RM_ADDR@/$RM_ADDR/g" ../web/server/config.js
+        sed -i "s/@CODIS_ADDR@/$CODIS_ADDR/g" ../web/server/config.js
+    fi
+    if [ $? -eq 0 ]; then
+        echo "Init Mysql database"
+        DATABASE=`echo $MYSQL_ADDR | cut -d'\' -f2`
+        mysql -u"${MYSQL_UNAME}" -p"${MYSQL_PWD}" -D"${DATABASE}"<create_tables.sql
+    else
+        error "Set config file error"
+    fi
+    if [ $? -eq 0 ]; then
+        success "Setup successfully."
+    else
+        error "Setup failed"
+        error "Please rerun stream setup"
+    fi
+}
 
 function startStream(){
     out "Starting the server..."
@@ -83,8 +120,17 @@ if [ $# -eq 0 ]; then
     print_usage;
 elif [ $# -eq 1 ]; then
     case $1 in
+    setup)
+        setupStream;;
     start)
-        startStream;;
+        #判断两个配置文件中是否有未替换的字符串"@",若均没有@,则start,否则跳转到setup
+        ISSETUP=`grep -c @ ../web/server/config.js``grep -c @ ../conf/common.xml`
+        if [ 00 != $ISSETUP ]; then
+            echo "Setup incomplete, Please run setup first"
+            setupStream
+        else
+            startStream
+        fi;;
     stop)
         stopStream;;
     restart)

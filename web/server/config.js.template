@@ -1,17 +1,17 @@
 module.exports = {
   dev: {
-    mysql: 'mysql://root:123@127.0.0.1:3306/ocsp',
+    mysql: '@MYSQL_ADDR@',
     dist: 'app',
-    port: 9000
+    port: 9527
   },
   prod: {
-    mysql: 'mysql://root:123@127.0.0.1:3306/ocsp',
+    mysql: '@MYSQL_ADDR@',
     dist: 'dist',
-    port: 9000
+    port: 9527
   },
   quickLinks : [
-    {name: "Spark Streaming", value: "http://103.235.245.156:18080/"},
-    {name: "Codis Dashboard", value: "http://103.235.245.156:8099/#codis-demo"}
+    {name: "Spark Streaming", value: "@RM_ADDR@"},
+    {name: "Codis Dashboard", value: "@CODIS_ADDR@"}
   ],
   env: "prod", // By default use prod env
   trans: "zh",
