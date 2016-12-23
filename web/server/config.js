@@ -16,11 +16,9 @@ module.exports = {
   env: "prod", // By default use prod env
   trans: "zh",
   zh:{
-    databaseError: "请检查数据库配置",
-    inputDuplicateKey: ",输入源的名字已经被使用"
+    databaseError: "请检查数据库配置"
   },
   en:{
-    databaseError: "Please check your database configurations",
-    inputDuplicateKey: ",input data interface name has been used"
+    databaseError: "Please check your database configurations"
   }
 };
