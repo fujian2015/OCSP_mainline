@@ -89,7 +89,8 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_033':'正在启动',
     'ocsp_web_streams_manage_034':'正在运行',
     'ocsp_web_streams_manage_035':'正在停止',
-    'ocsp_web_streams_manage_036':'正在重启'
+    'ocsp_web_streams_manage_036':'正在重启',
+    'ocsp_web_streams_manage_037':'作业流使能'
 
   });
 }]);

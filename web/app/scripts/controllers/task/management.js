@@ -126,14 +126,18 @@ angular.module('ocspApp')
       if($scope.selectedJob.id === undefined || $scope.selectedJob.id === null){
         Notification.error("Cannot update null task");
       }else{
-        usSpinnerService.spin('spinner');
-        $http.put("/api/task", {task: $scope.selectedJob}).success(function(){
-          Notification.success($filter('translate')('ocsp_web_common_026'));
-          usSpinnerService.stop('spinner');
-        }).error(function(err){
-          usSpinnerService.stop('spinner');
-          Notification.error(err);
-        });
+        if($("#mainFrame .ng-invalid").length > 0){
+          Notification.error($filter('translate')('ocsp_web_common_027'));
+        }else {
+          usSpinnerService.spin('spinner');
+          $http.put("/api/task", {task: $scope.selectedJob}).success(function () {
+            Notification.success($filter('translate')('ocsp_web_common_026'));
+            usSpinnerService.stop('spinner');
+          }).error(function (err) {
+            usSpinnerService.stop('spinner');
+            Notification.error(err);
+          });
+        }
       }
     };
 
