@@ -219,7 +219,7 @@
       <div role="tabpanel" class="tab-pane" id="summary" ng-class="{'summary' : 'active'}[tab]">
         <div class="container-fluid">
           <div class="panel panel-oc">
-            <div class="panel-heading">{{'ocsp_web_streams_manage_004' | translate}}</div>
+            <div class="panel-heading">{{'ocsp_web_streams_manage_002' | translate}}</div>
             <div class="panel-body">
               <div class="alert alert-info alert-dismissible" role="alert" ng-show="selectedJob.id === undefined">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -228,7 +228,7 @@
               </div>
               <ul class="list-group" ng-show="selectedJob.id !== undefined">
                 <li class="list-group-item"><h4>{{'ocsp_web_streams_manage_028' | translate}}:
-                  {{statusText(selectedJob.status)}}
+                  <i ng-class="statusName(selectedJob.status)"></i>&nbsp;{{statusText(selectedJob.status)}}
                 </h4></li>
                 <li class="list-group-item">
                   <h4>{{'ocsp_web_streams_manage_029' | translate}}: {{selectedJob.running_time | cusDate}}</h4>
