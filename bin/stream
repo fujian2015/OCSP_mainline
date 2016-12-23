@@ -22,29 +22,34 @@ function print_usage(){
 function setupStream(){
     cp -f ${STREAM_HOME}/conf/common.xml.template ${STREAM_HOME}/conf/common.xml
     cp -f ${STREAM_HOME}/web/server/config.js.template ${STREAM_HOME}/web/server/config.js
-    echo "Please input mysql address(jdbc:\\\<ip>:<port>/<database>): "
+    echo "Please input mysql address(<ip>:<port>): "
     read MYSQL_ADDR
+    echo "Please input mysql database name: "
+    read MYSQL_DATABASE
     echo "Please input mysql username: "
     read MYSQL_UNAME
     echo "Please input mysql password: "
     read MYSQL_PWD
-    echo "Please input Yarn Resource Manager address(http:\\\<ip>:<port>): "
+    echo "Please input Yarn Resource Manager address(<ip>:<port>): "
     read RM_ADDR
-    echo "Please input Codis Dashboard address(http:\\\<ip>:<port>): "
+    echo "Please input Codis Dashboard address(<ip>:<port>): "
     read CODIS_ADDR
     #替换配置文件中的@@信息
     if [ -n "$MYSQL_ADDR" ] && [ -n "$RM_ADDR" ] && [ -n "$CODIS_ADDR" ]; then
-        sed -i "s/@MYSQL_ADDR@/$MYSQL_ADDR/g" ${STREAM_HOME}/conf/common.xml
+        sed -i "s/@MYSQL_ADDR@/${MYSQL_ADDR}/g" ${STREAM_HOME}/conf/common.xml
+        sed -i "s/@MYSQL_DATABASE@/${MYSQL_DATABASE}/g" ${STREAM_HOME}/conf/common.xml
         sed -i "s/@MYSQL_UNAME@/$MYSQL_UNAME/g" ${STREAM_HOME}/conf/common.xml
         sed -i "s/@MYSQL_PWD@/$MYSQL_PWD/g" ${STREAM_HOME}/conf/common.xml
+        sed -i "s/@MYSQL_DATABASE@/${MYSQL_DATABASE}/g" ${STREAM_HOME}/web/server/config.js
+        sed -i "s/@MYSQL_UNAME@/$MYSQL_UNAME/g" ${STREAM_HOME}/web/server/config.js
+        sed -i "s/@MYSQL_PWD@/$MYSQL_PWD/g" ${STREAM_HOME}/web/server/config.js
         sed -i "s/@MYSQL_ADDR@/$MYSQL_ADDR/g" ${STREAM_HOME}/web/server/config.js
         sed -i "s/@RM_ADDR@/$RM_ADDR/g" ${STREAM_HOME}/web/server/config.js
         sed -i "s/@CODIS_ADDR@/$CODIS_ADDR/g" ${STREAM_HOME}/web/server/config.js
     fi
     if [ $? -eq 0 ]; then
         echo "Init Mysql database"
-        DATABASE=`echo $MYSQL_ADDR | cut -d'\' -f2`
-        mysql -u"${MYSQL_UNAME}" -p"${MYSQL_PWD}" -D"${DATABASE}"<${STREAM_HOME}/bin/create_tables.sql
+        mysql -u"${MYSQL_UNAME}" -p"${MYSQL_PWD}" -D"${MYSQL_DATABASE}"<${STREAM_HOME}/bin/create_tables.sql
     else
         error "Set config file error"
     fi

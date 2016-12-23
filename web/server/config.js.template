@@ -1,11 +1,11 @@
 module.exports = {
   dev: {
-    mysql: '@MYSQL_ADDR@',
+    mysql: '',
     dist: 'app',
     port: 9527
   },
   prod: {
-    mysql: '@MYSQL_ADDR@',
+    mysql: 'mysql://@MYSQL_UNAME@:@MYSQL_PWD@@@MYSQL_ADDR@/@MYSQL_DATABASE@',
     dist: 'dist',
     port: 9527
   },
