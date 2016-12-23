@@ -4,7 +4,7 @@
  * For label management main page controller
  */
 angular.module('ocspApp')
-  .controller('LabelManagementCtrl', ['$scope', '$http', 'Upload', 'Notification', '$timeout', 'loginService', function ($scope, $http, Upload, Notification, $timeout, loginService) {
+  .controller('LabelManagementCtrl', ['$scope', '$http', 'Upload', 'Notification', '$timeout', 'loginService', '$filter', function ($scope, $http, Upload, Notification, $timeout, loginService, $filter) {
     loginService.init('label');
     function init() {
       $http.get('/api/label').success(function (data) {
@@ -23,7 +23,7 @@ angular.module('ocspApp')
     $scope.save = function(){
       $http.post("/api/label", {labels: $scope.labels}).success(function(){
         init();
-        Notification.success("Save success!");
+        Notification.success($filter('translate')('ocsp_web_common_026'));
       }).error(function(err){
         Notification.error(err);
       });
@@ -36,7 +36,7 @@ angular.module('ocspApp')
       }).then(function () {
           $timeout(function(){
             init();
-            Notification.success("Upload labels success");
+            Notification.success($filter('translate')('ocsp_web_common_028'));
           }, 1000);
         }, function (err) {
           Notification.error(err.data);

@@ -8,10 +8,18 @@ angular.module('ocspApp').filter('cusDate',['$filter', function($filter) {
     if(isNaN(input)){
       return "";
     }
+    if(input < 0){
+      return "";
+    }
+    input = Math.floor(input / 1000);
     var h = Math.floor(input / 3600);
     input = input % 3600;
     var m = Math.floor(input / 60);
-    return h + $filter('translate')('ocsp_web_common_005') + m + $filter('translate')('ocsp_web_common_006');
+    if(h === 0){
+      return m + $filter('translate')('ocsp_web_common_006');
+    }else {
+      return h + $filter('translate')('ocsp_web_common_005') + m + $filter('translate')('ocsp_web_common_006');
+    }
   }
 }]);
 

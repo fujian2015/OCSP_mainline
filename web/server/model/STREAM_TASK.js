@@ -54,6 +54,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true
     },
+    stop_time: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     description: {
       type: DataTypes.STRING,
       allowNull: true

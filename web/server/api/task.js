@@ -16,8 +16,17 @@ var getRunningTime = function (tasks) {
     var date = new Date();
     var sss = date.getTime();
     for (var i = 0; i < tasks.length; i++) {
-      if(tasks[i].dataValues !== undefined && tasks[i].dataValues.start_time !== undefined && tasks[i].dataValues.start_time != null && tasks[i].dataValues.start_time != "") {
-        tasks[i].dataValues.running_time = parseInt((sss - tasks[i].dataValues.start_time)/ 1000);
+      if(tasks[i].dataValues !== undefined && tasks[i].dataValues.start_time !== undefined &&
+        tasks[i].dataValues.start_time !== null && tasks[i].dataValues.start_time !== "") {
+        if(tasks[i].status === 2) {
+          tasks[i].dataValues.running_time = parseInt(sss - tasks[i].dataValues.start_time);
+        }else if(tasks[i].status === 0 && tasks[i].dataValues.stop_time !== undefined &&
+          tasks[i].dataValues.stop_time !== null &&
+          tasks[i].dataValues.stop_time !== ""){
+          tasks[i].dataValues.running_time = parseInt(tasks[i].dataValues.stop_time - tasks[i].dataValues.start_time);
+        }else{
+          tasks[i].dataValues.running_time = null;
+        }
       }
     }
   }
@@ -33,7 +42,8 @@ router.get('/', function(req, res){
 });
 
 router.get('/status', function(req,res){
-  Task.findAll({attributes: ['id','status']}).then(function (tasks){
+  Task.findAll({attributes: ['id','status','start_time','stop_time']}).then(function (tasks){
+    getRunningTime(tasks);
     res.send(tasks);
   }, function(){
     res.status(500).send(trans.databaseError);
@@ -224,7 +234,7 @@ router.post("/", function(req, res){
   }).then(function(){
     res.send({success: true});
   },function(){
-    res.status(500).send(trans.databaseError + trans.inputDuplicateKey);
+    res.status(500).send(trans.databaseError);
   }).catch(function () {
     res.status(500).send(trans.databaseError);
   });

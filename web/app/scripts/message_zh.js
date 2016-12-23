@@ -32,6 +32,9 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_common_025': '事件',
     'ocsp_web_common_026': '保存成功',
     'ocsp_web_common_027': '不能为空',
+    'ocsp_web_common_028': '上传成功',
+    'ocsp_web_common_029': '删除成功',
+    'ocsp_web_common_030': '保存失败',
 
     'ocsp_web_user_manage_000':'用户管理',
     'ocsp_web_user_manage_001':'修改密码',
@@ -43,6 +46,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
 
     'ocsp_web_system_manage_000':'系统管理',
     'ocsp_web_system_manage_001':'系统配置',
+    'ocsp_web_system_manage_002':'请输入SPARK_HOME',
 
     'ocsp_web_label_manage_000':'标签管理',
     'ocsp_web_label_manage_001':'标签名字',

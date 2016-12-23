@@ -31,6 +31,9 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_common_025': 'Event',
     'ocsp_web_common_026': 'Save successfully',
     'ocsp_web_common_027': 'Cannot be empty',
+    'ocsp_web_common_028': 'Upload successfully',
+    'ocsp_web_common_029': 'Delete successfully',
+    'ocsp_web_common_030': 'Save failed',
 
     'ocsp_web_user_manage_000':'User Management',
     'ocsp_web_user_manage_001':'Change password',
@@ -42,6 +45,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
 
     'ocsp_web_system_manage_000':'System Management',
     'ocsp_web_system_manage_001':'System configuration',
+    'ocsp_web_system_manage_002':'Please input your SPARK_HOME first to continue.',
 
     'ocsp_web_label_manage_000':'Label management',
     'ocsp_web_label_manage_001':'Label Name',

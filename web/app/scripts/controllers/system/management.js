@@ -4,7 +4,7 @@
  * For label management main page controller
  */
 angular.module('ocspApp')
-  .controller('SystemManagementCtrl', ['$scope', '$http', 'Notification', '$q', 'usSpinnerService', 'loginService', function ($scope, $http, Notification, $q, usSpinnerService, loginService) {
+  .controller('SystemManagementCtrl', ['$scope', '$http', 'Notification', '$q', 'usSpinnerService', 'loginService', '$filter', function ($scope, $http, Notification, $q, usSpinnerService, loginService, $filter) {
     loginService.init('system');
     function init() {
       usSpinnerService.spin('spinner');
@@ -39,7 +39,7 @@ angular.module('ocspApp')
       }
       $q.all({prop: $http.post("/api/prop", {data : $scope.prop}), datasource: $http.post("/api/datasource", {data : $scope.datasource})})
         .then(function(){
-          Notification.success("Save success!");
+          Notification.success($filter('translate')('ocsp_web_common_026'));
         }, function(err){
           usSpinnerService.stop('spinner');
           Notification.error(err.data);

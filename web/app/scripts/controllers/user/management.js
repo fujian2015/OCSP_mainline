@@ -36,9 +36,9 @@ angular.module('ocspApp')
             $scope.user = {
               name: $rootScope.username
             };
-            Notification.success("Save user success");
+            Notification.success($filter('translate')('ocsp_web_common_026'));
           }else{
-            Notification.error("Save user error, please check your password");
+            Notification.error($filter('translate')('ocsp_web_common_030'));
           }
           usSpinnerService.stop('spinner');
         }).error(function (err) {

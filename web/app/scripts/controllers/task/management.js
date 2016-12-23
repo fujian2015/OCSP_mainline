@@ -77,16 +77,6 @@ angular.module('ocspApp')
       }
     }
 
-    var timeInterval = $interval(function(){
-      if($scope.jobs !== undefined && $scope.jobs.length > 0){
-        for(var i in $scope.jobs){
-          if($scope.jobs[i].running_time !== undefined) {
-            $scope.jobs[i].running_time += 60;
-          }
-        }
-      }
-    },60000);
-
     var taskInterval = $interval(function () {
       $http.get('/api/task/status').success(function(tasks){
         if($scope.jobs !== undefined && $scope.jobs.length > 0){
@@ -94,28 +84,18 @@ angular.module('ocspApp')
             for(var j in tasks){
               if($scope.jobs[i].id === tasks[j].id){
                 $scope.jobs[i].status = tasks[j].status;
+                $scope.jobs[i].running_time = tasks[j].running_time;
                 break;
               }
             }
           }
         }
-        if($scope.selectedJob !== undefined && $scope.selectedJob.id !== undefined){
-          for(var j in tasks){
-            if($scope.selectedJob.id === tasks[j].id){
-              $scope.selectedJob.status = tasks[j].status;
-              break;
-            }
-          }
-          dealWith($scope.selectedJob.status);
-        }
+        dealWith($scope.selectedJob.status);
       });
     }, 3000);
     $scope.$on('$destroy', function(){
       if(taskInterval) {
         $interval.cancel(taskInterval);
-      }
-      if(timeInterval){
-        $interval.cancel(timeInterval);
       }
     });
     $scope.links = [];
@@ -148,7 +128,7 @@ angular.module('ocspApp')
       }else{
         usSpinnerService.spin('spinner');
         $http.put("/api/task", {task: $scope.selectedJob}).success(function(){
-          Notification.success("Update task success");
+          Notification.success($filter('translate')('ocsp_web_common_026'));
           usSpinnerService.stop('spinner');
         }).error(function(err){
           usSpinnerService.stop('spinner');
@@ -191,7 +171,6 @@ angular.module('ocspApp')
       }
     };
 
-    //TODO: use directive instead
     function drawGraph(item, labels){
       var graphDefinition = 'graph LR;';
       graphDefinition += "task[" + item.name + "];";
@@ -199,7 +178,7 @@ angular.module('ocspApp')
       graphDefinition += "task-->input;";
       var last = "input";
       if(labels.length > 0) {
-        graphDefinition += "subgraph labels;";
+        graphDefinition += "subgraph " + $filter('translate')('ocsp_web_common_024') + ";";
         if (labels.length > 1){
           for (var i = 0 ; i < labels.length - 1 ; i++) {
             graphDefinition += labels[i].name + "-->" + labels[i + 1].name + ";";
@@ -216,7 +195,7 @@ angular.module('ocspApp')
         }
       }
       if(item.events.length > 0) {
-        graphDefinition += "subgraph events;";
+        graphDefinition += "subgraph " + $filter('translate')('ocsp_web_common_025') + ";";
         for(var j in item.events){
           if(item.events[j].output === undefined){
             graphDefinition += item.events[j].name + "((\"" + item.events[j].name + "\"));";
@@ -339,15 +318,15 @@ angular.module('ocspApp')
     $scope.statusText = function(item){
       switch(item) {
         case 0:
-          return "Stop";
+          return $filter('translate')('ocsp_web_streams_manage_032');
         case 1:
-          return "Pre_start";
+          return $filter('translate')('ocsp_web_streams_manage_033');
         case 2:
-          return "Running";
+          return $filter('translate')('ocsp_web_streams_manage_034');
         case 3:
-          return "Pre_stop";
+          return $filter('translate')('ocsp_web_streams_manage_035');
         case 4:
-          return "Pre_restart";
+          return $filter('translate')('ocsp_web_streams_manage_036');
       }
     };
 
@@ -357,13 +336,13 @@ angular.module('ocspApp')
         return;
       }
       var status = 0;
-      if(name === "start"){
+      if(name === $filter('translate')('ocsp_web_streams_manage_024')){
         status = 1;
-      }else if(name === "stop"){
+      }else if(name === $filter('translate')('ocsp_web_streams_manage_025')){
         status = 3;
-      }else if(name === "restart"){
+      }else if(name === $filter('translate')('ocsp_web_streams_manage_026')){
         status = 4;
-      }else if(name === "delete"){
+      }else if(name === $filter('translate')('ocsp_web_streams_manage_027')){
         if(confirm("Are you sure?")){
           if($scope.selectedJob.id === undefined || $scope.selectedJob.id === null){
             Notification.error("Cannot delete null task");
@@ -371,7 +350,7 @@ angular.module('ocspApp')
             usSpinnerService.spin('spinner');
             $http.post("/api/task/delete/" + $scope.selectedJob.id, {type: 0}).success(function(){
               $scope.selectedJob.type = 0;
-              Notification.success("Delete task success");
+              Notification.success($filter('translate')('ocsp_web_common_029'));
               usSpinnerService.stop('spinner');
             }).error(function(err){
               usSpinnerService.stop('spinner');
@@ -388,7 +367,7 @@ angular.module('ocspApp')
         $http.post("/api/task/change/" + $scope.selectedJob.id, {status: status}).success(function(){
           $scope.selectedJob.status = status;
           dealWith(status);
-          Notification.success("Update task status success");
+          Notification.success($filter('translate')('ocsp_web_common_026'));
           usSpinnerService.stop('spinner');
         }).error(function(err){
           usSpinnerService.stop('spinner');
@@ -450,7 +429,7 @@ angular.module('ocspApp')
             input: {},
             events: []
           };
-          Notification.success("Create task success");
+          Notification.success($filter('translate')('ocsp_web_common_026'));
           init();
           defer.resolve();
         }).error(function(err){

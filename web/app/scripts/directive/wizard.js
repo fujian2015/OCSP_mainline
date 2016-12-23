@@ -49,7 +49,7 @@ angular.module('ocspApp').directive('wizard',['$filter', function($filter){
           var name = $(this).val();
           if (name === "") {
             $(this).addClass("redBlock");
-            card.wizard.errorPopover($(this), "Cannot be empty");
+            card.wizard.errorPopover($(this), $filter('translate')('ocsp_web_common_027'));
             flag = false;
           }else{
             $(this).siblings("div.error-popover").remove();
@@ -66,7 +66,7 @@ angular.module('ocspApp').directive('wizard',['$filter', function($filter){
             var name = $(this).val();
             if (name === "") {
               $(this).addClass("redBlock");
-              card.wizard.errorPopover($(this), "Cannot be empty");
+              card.wizard.errorPopover($(this), $filter('translate')('ocsp_web_common_027'));
               flag = false;
             }else{
               $(this).siblings("div.error-popover").remove();
@@ -76,7 +76,7 @@ angular.module('ocspApp').directive('wizard',['$filter', function($filter){
           if(card.name === "ocsp_web_streams_manage_006" || card.name === "ocsp_web_streams_manage_008") {
             card.el.find("div.ng-invalid").each(function(){
               $(this).addClass("redBlock");
-              card.wizard.errorPopover($(this), "Cannot be empty");
+              card.wizard.errorPopover($(this), $filter('translate')('ocsp_web_common_027'));
               flag = false;
             });
             card.el.find("div.ng-valid").each(function(){
