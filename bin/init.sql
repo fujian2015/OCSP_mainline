@@ -212,6 +212,7 @@ CREATE TABLE `STREAM_TASK` (
   `queue` varchar(100) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `start_time` varchar(500) DEFAULT NULL,
+  `stop_time` varchar(500) DEFAULT NULL,
   `description` varchar(500) DEFAULT NULL,
   `diid` int(16) NOT NULL,
   PRIMARY KEY (`id`),
@@ -226,7 +227,7 @@ CREATE TABLE `STREAM_TASK` (
 
 LOCK TABLES `STREAM_TASK` WRITE;
 /*!40000 ALTER TABLE `STREAM_TASK` DISABLE KEYS */;
-INSERT INTO `STREAM_TASK` VALUES (1,'Stream Demo',1,30,10,'1g','1g',2,'default',0,NULL,NULL,1);
+INSERT INTO `STREAM_TASK` VALUES (1,'Stream Demo',1,30,10,'1g','1g',2,'default',0,NULL,NULL,NULL,1);
 /*!40000 ALTER TABLE `STREAM_TASK` ENABLE KEYS */;
 UNLOCK TABLES;
 

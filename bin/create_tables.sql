@@ -172,6 +172,7 @@ CREATE TABLE `STREAM_TASK` (
   `queue` varchar(100) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `start_time` varchar(500) DEFAULT NULL,
+  `stop_time` varchar(500) DEFAULT NULL,
   `description` varchar(500) DEFAULT NULL,
   `diid` int(16) NOT NULL,
   PRIMARY KEY (`id`),

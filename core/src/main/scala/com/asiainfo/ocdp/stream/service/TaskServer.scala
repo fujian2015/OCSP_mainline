@@ -21,7 +21,8 @@ class TaskServer extends Logging {
   }
 
   def stopTask(id: String) {
-    val sql = s"update ${TableInfoConstant.TaskTableName}  set status=${TaskConstant.STOP}, start_time='' where id='${id}'"
+    val stopTime = System.currentTimeMillis()
+    val sql = s"update ${TableInfoConstant.TaskTableName}  set status=${TaskConstant.STOP}, stop_time='${stopTime}' where id='${id}'"
     JDBCUtil.execute(sql)
   }
 
