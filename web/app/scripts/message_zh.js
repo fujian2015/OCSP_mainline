@@ -30,6 +30,8 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_common_023': '秒',
     'ocsp_web_common_024': '标签',
     'ocsp_web_common_025': '事件',
+    'ocsp_web_common_026': '保存成功',
+    'ocsp_web_common_027': '不能为空',
 
     'ocsp_web_user_manage_000':'用户管理',
     'ocsp_web_user_manage_001':'修改密码',
@@ -78,7 +80,12 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_028':'作业流运行状态',
     'ocsp_web_streams_manage_029':'作业流运行时间',
     'ocsp_web_streams_manage_030':'输出源配置',
-    'ocsp_web_streams_manage_031':'输出事件'
+    'ocsp_web_streams_manage_031':'输出事件',
+    'ocsp_web_streams_manage_032':'已经停止',
+    'ocsp_web_streams_manage_033':'正在启动',
+    'ocsp_web_streams_manage_034':'正在运行',
+    'ocsp_web_streams_manage_035':'正在停止',
+    'ocsp_web_streams_manage_036':'正在重启'
 
   });
 }]);

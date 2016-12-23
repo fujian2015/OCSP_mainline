@@ -27,6 +27,10 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_common_021': 'Submit',
     'ocsp_web_common_022': 'Submitting...',
     'ocsp_web_common_023': 's',
+    'ocsp_web_common_024': 'Label',
+    'ocsp_web_common_025': 'Event',
+    'ocsp_web_common_026': 'Save successfully',
+    'ocsp_web_common_027': 'Cannot be empty',
 
     'ocsp_web_user_manage_000':'User Management',
     'ocsp_web_user_manage_001':'Change password',
@@ -75,6 +79,11 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_028':'Stream status',
     'ocsp_web_streams_manage_029':'Stream running time',
     'ocsp_web_streams_manage_030':'Output Interface Configuration',
-    'ocsp_web_streams_manage_031':'Output'
+    'ocsp_web_streams_manage_031':'Output',
+    'ocsp_web_streams_manage_032':'Stopped',
+    'ocsp_web_streams_manage_033':'Starting',
+    'ocsp_web_streams_manage_034':'Running',
+    'ocsp_web_streams_manage_035':'Stopping',
+    'ocsp_web_streams_manage_036':'Restarting'
   });
 }]);
