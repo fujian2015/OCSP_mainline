@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <property>
     <db>
-        <url>jdbc:\\@MYSQL_ADDR@\@MYSQL_DATABASE@</url>
+        <url>jdbc:mysql://@MYSQL_ADDR@/@MYSQL_DATABASE@</url>
         <username>@MYSQL_UNAME@</username>
         <password>@MYSQL_PWD@</password>
         <classname>com.mysql.jdbc.Driver</classname>

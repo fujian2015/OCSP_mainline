@@ -47,18 +47,20 @@ function setupStream(){
         sed -i "s/@RM_ADDR@/$RM_ADDR/g" ${STREAM_HOME}/web/server/config.js
         sed -i "s/@CODIS_ADDR@/$CODIS_ADDR/g" ${STREAM_HOME}/web/server/config.js
     fi
-    if [ $? -eq 0 ]; then
-        echo "Init Mysql database"
-        mysql -u"${MYSQL_UNAME}" -p"${MYSQL_PWD}" -D"${MYSQL_DATABASE}"<${STREAM_HOME}/bin/create_tables.sql
-    else
-        error "Set config file error"
-    fi
-    if [ $? -eq 0 ]; then
-        success "Setup successfully."
-    else
-        error "Setup failed"
-        error "Please rerun stream setup"
-    fi
+
+    success "Setup successfully."
+#    if [ $? -eq 0 ]; then
+#        echo "Init Mysql database"
+#        mysql -u"${MYSQL_UNAME}" -p"${MYSQL_PWD}" -D"${MYSQL_DATABASE}"<${STREAM_HOME}/bin/create_tables.sql
+#    else
+#        error "Set config file error"
+#    fi
+#    if [ $? -eq 0 ]; then
+#        success "Setup successfully."
+#    else
+#        error "Setup failed"
+#        error "Please rerun stream setup"
+#    fi
 }
 
 function startStream(){
