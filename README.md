@@ -53,7 +53,7 @@ OCSP是基于Spark streaming的处理流数据低延迟、可高度扩展的，�
 
 * [编译方法](https://github.com/OCSP/OCSP_mainline/wiki/编译OCSP源代码方法)
 
-* 安装部署
+* [安装部署](https://github.com/OCSP/OCSP_mainline/wiki/安装部署)
 
 * [Codis部署](https://github.com/OCSP/OCSP_mainline/wiki/Codis-%E9%83%A8%E7%BD%B2)
 
