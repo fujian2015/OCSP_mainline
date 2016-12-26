@@ -32,21 +32,21 @@ OCSP是基于Spark streaming的处理流数据低延迟、可高度扩展的，�
 
    OCSP由数据接入层，流平台核心层，配置管理层，基础组件层等四部分组成。如图所示：
 
-   ![OCSP架构图](http://ohpsj3ec3.bkt.clouddn.com/overview.png)
+   ![OCSP架构图](http://ohpsj3ec3.bkt.clouddn.com/overview.png?imageView/2/w/500/q/100)
    
 * 前台界面
  
      * 作业状态界面
  
-      ![前台页面展示1](http://ohpsj3ec3.bkt.clouddn.com/web1.png)
+      ![前台页面展示1](http://ohpsj3ec3.bkt.clouddn.com/web1.png?imageView/2/w/500/q/100)
 
      * 作业配置界面
      
-      ![前台页面展示2](http://ohpsj3ec3.bkt.clouddn.com/web2.png)
+      ![前台页面展示2](http://ohpsj3ec3.bkt.clouddn.com/web2.png?imageView/2/w/500/q/100)
 
      * 作业创建界面
   
-         ![前台页面展示3](http://ohpsj3ec3.bkt.clouddn.com/web3.png)
+         ![前台页面展示3](http://ohpsj3ec3.bkt.clouddn.com/web3.png?imageView/2/w/500/q/100)
 
 
 ### 安装部署方法
