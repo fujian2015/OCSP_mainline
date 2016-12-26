@@ -61,7 +61,7 @@ OCSP是基于Spark streaming的处理流数据低延迟、可高度扩展的，�
 
 ### 使用及调优
 
-* 前台界面使用
+* [使用文档](https://github.com/OCSP/OCSP_mainline/wiki/使用文档)
 * [自定义标签开发](https://github.com/OCSP/OCSP_mainline/wiki/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE)
 * [OCSP调优](https://github.com/OCSP/OCSP_mainline/wiki/OCSP-%E8%B0%83%E4%BC%98)
 
