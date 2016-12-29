@@ -1,3 +1,4 @@
+'use strict';
 /**
  * Resource file for en g18n
  */

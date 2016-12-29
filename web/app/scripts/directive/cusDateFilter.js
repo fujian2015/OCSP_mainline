@@ -20,6 +20,6 @@ angular.module('ocspApp').filter('cusDate',['$filter', function($filter) {
     }else {
       return h + $filter('translate')('ocsp_web_common_005') + m + $filter('translate')('ocsp_web_common_006');
     }
-  }
+  };
 }]);
 

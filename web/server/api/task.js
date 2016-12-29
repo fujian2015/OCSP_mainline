@@ -218,7 +218,7 @@ router.post("/", function(req, res){
       // create task
       task.diid = di[0].id;
       task.type = 1;
-      task.status = 1;
+      task.status = 0;
       task.queue = "default";
       promises.push(Task.create(task, {transaction: t}));
       return sequelize.Promise.all(promises).then(function (result) {
