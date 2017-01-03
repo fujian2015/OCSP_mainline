@@ -49,6 +49,7 @@ CREATE TABLE `STREAM_DATASOURCE` (
   `id` int(16) NOT NULL AUTO_INCREMENT,
   `name` varchar(30) NOT NULL,
   `type` varchar(20) NOT NULL,
+  `status` int(11) NOT NULL DEFAULT '0',
   `description` varchar(500) DEFAULT NULL,
   `properties` text NOT NULL,
   PRIMARY KEY (`id`),
