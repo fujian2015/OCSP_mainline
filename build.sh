@@ -33,7 +33,7 @@ cp core/target/core-${version}-dist/lib/spark-streaming-kafka-assembly_*.jar bui
 cp core/target/core-${version}-dist/lib/scala-library-*.jar build/OCDP_Stream/lib
 cp core/target/core-${version}-dist/lib/spark-assembly-1.6.0.2.4.0.0-169-hadoop2.7.1.2.4.0.0-169*.jar build/OCDP_Stream/lib
 
-tar -xzf web/target/web-2.0.1-bundle.tar.gz -C build/OCDP_Stream/web
+tar -xzf web/target/web-${version}-bundle.tar.gz -C build/OCDP_Stream/web
 
 cd build
 

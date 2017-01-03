@@ -56,15 +56,22 @@ function stop(){
          out "Stopping the server..."
          for id in ${proc_id[*]}
          do
-           kill ${id}
-
+           ps -ef|grep ${id}|grep -v grep
            if [ $? -eq 0 ];then
-                success "Stop the server successfully."
-                echo > ${STREAM_HOME}/logs/web_pid.log
+               kill ${id}
+
+               if [ $? -eq 0 ];then
+                    success "Stop the server successfully."
+                    echo > ${STREAM_HOME}/logs/web_pid.log
+               else
+                    error "Stop the server failed! "
+                    error "Please check log ${STREAM_HOME}/logs/web.log for error messages."
+               fi
            else
-                error "Stop the server failed! "
-                error "Please check log ${STREAM_HOME}/logs/web.log for error messages."
+                out "The server which process id ${id} is not running ! "
+                echo > ${STREAM_HOME}/logs/web_pid.log
            fi
+
          done
     fi
 }
