@@ -40,15 +40,17 @@ angular.module('ocspApp')
         size: 'lg',
         scope: $scope,
         controller: ['$scope', 'Notification', function($scope, Notification) {
-          $scope.saveDatasource = function(){
-            $http.post("/api/datasource", {data : $scope.newDatasource}).success(function(){
-              modal.close();
-              $scope.newDatasource = {};
-              Notification.success($filter('translate')('ocsp_web_common_026'));
-              init();
-            }).error(function(err){
-              Notification.error(err);
-            });
+          $scope.saveDatasource = function () {
+            if(confirm($filter('translate')('ocsp_web_system_manage_004'))) {
+              $http.post("/api/datasource", {data: $scope.newDatasource}).success(function () {
+                modal.close();
+                $scope.newDatasource = {};
+                Notification.success($filter('translate')('ocsp_web_common_026'));
+                init();
+              }).error(function (err) {
+                Notification.error(err);
+              });
+            }
           };
         }]
       });
@@ -58,12 +60,16 @@ angular.module('ocspApp')
       for (var i in $scope.datasource) {
         $scope.datasource[i].properties = JSON.stringify($scope.datasource[i].props);
       }
-      $q.all({prop: $http.post("/api/prop", {data : $scope.prop}), datasource: $http.put("/api/datasource", {data : $scope.datasource})})
-        .then(function(){
+      $q.all({
+          prop: $http.post("/api/prop", {data: $scope.prop}),
+          datasource: $http.put("/api/datasource", {data: $scope.datasource})
+        })
+        .then(function () {
           Notification.success($filter('translate')('ocsp_web_common_026'));
-        }, function(err){
+        }, function (err) {
           usSpinnerService.stop('spinner');
           Notification.error(err.data);
         });
-    };
+    }
+
   }]);

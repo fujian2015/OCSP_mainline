@@ -20,19 +20,19 @@
       </ui-select>
     </div>
     <div class="form-group" ng-if="newDatasource.type === 'kafka'">
-      <label>zookeeper.connect</label>
+      <label>zookeeper.connect*</label>
       <input type="text" name="name" class="form-control" ng-model="newDatasource.zk" required>
     </div>
     <div class="form-group" ng-if="newDatasource.type === 'kafka'">
-      <label>metadata.broker.list</label>
+      <label>metadata.broker.list*</label>
       <input type="text" name="name" class="form-control" ng-model="newDatasource.blist" required>
     </div>
     <div class="form-group" ng-if="newDatasource.type === 'codis'">
-      <label>zk</label>
+      <label>zk*</label>
       <input type="text" name="name" class="form-control" ng-model="newDatasource.zk" required>
     </div>
     <div class="form-group" ng-if="newDatasource.type === 'codis'">
-      <label>zkpath</label>
+      <label>zkpath*</label>
       <input type="text" name="name" class="form-control" ng-model="newDatasource.zkpath" required>
     </div>
     <div class="form-group">
@@ -49,9 +49,6 @@
     <div class="list-group">
       <div class="list-group-item">
         <button class="wizard-button btn btn-default btn-block" ng-click="openSparkModal()">{{'ocsp_web_system_manage_003' | translate}}</button>
-      </div>
-      <div class="list-group-item">
-        {{'ocsp_web_system_manage_001' | translate}}
       </div>
     </div>
   </div>
@@ -89,11 +86,21 @@
               &nbsp;{{data.name}}
               <span ng-if="data.type === 'kafka'" class="label label-danger">Kafka</span>
               <span ng-if="data.type === 'codis'" class="label label-success">Codis</span>
-              <a class="pull-right" ng-if="data.status === 2"
-                 ng-click="$event.stopPropagation();$event.preventDefault();remove($index)">
-                <i class="glyphicon glyphicon-remove"></i>
-              </a>
+              <!--<a class="pull-right" ng-if="data.status === 2"-->
+                 <!--ng-click="$event.stopPropagation();$event.preventDefault();remove($index)">-->
+                <!--<i class="glyphicon glyphicon-remove"></i>-->
+              <!--</a>-->
             </uib-accordion-heading>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-md-2">
+                  <label>{{'ocsp_web_common_011' | translate}}</label>
+                </div>
+                <div class="col-md-8">
+                  <input class="form-control" ng-model="data.name">
+                </div>
+              </div>
+            </div>
             <div ng-repeat="item in data.props track by $index" class="form-group">
               <div class="row" ng-show="data.type === 'kafka' || (data.type === 'codis' && (item.pname === 'zk' || item.pname === 'zkpath'))">
                 <div class="col-md-2">

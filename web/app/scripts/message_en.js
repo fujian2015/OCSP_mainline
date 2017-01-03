@@ -49,6 +49,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_system_manage_001':'System configuration',
     'ocsp_web_system_manage_002':'Please input your SPARK_HOME first to continue.',
     'ocsp_web_system_manage_003':'New datasource',
+    'ocsp_web_system_manage_004':'New datasource cannot be deleted, confirm?',
 
     'ocsp_web_label_manage_000':'Label management',
     'ocsp_web_label_manage_001':'Label Name',
