@@ -35,6 +35,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_common_028': '上传成功',
     'ocsp_web_common_029': '删除成功',
     'ocsp_web_common_030': '保存失败',
+    'ocsp_web_common_031': '类型',
 
     'ocsp_web_user_manage_000':'用户管理',
     'ocsp_web_user_manage_001':'修改密码',
@@ -47,6 +48,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_system_manage_000':'系统管理',
     'ocsp_web_system_manage_001':'系统配置',
     'ocsp_web_system_manage_002':'请输入SPARK_HOME',
+    'ocsp_web_system_manage_003':'新建数据源',
 
     'ocsp_web_label_manage_000':'标签管理',
     'ocsp_web_label_manage_001':'标签名字',
@@ -90,7 +92,8 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_034':'正在运行',
     'ocsp_web_streams_manage_035':'正在停止',
     'ocsp_web_streams_manage_036':'正在重启',
-    'ocsp_web_streams_manage_037':'作业流使能'
+    'ocsp_web_streams_manage_037':'作业流使能',
+    'ocsp_web_streams_manage_038':'输入源'
 
   });
 }]);

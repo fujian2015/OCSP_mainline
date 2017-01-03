@@ -4,7 +4,7 @@
  * For label management main page controller
  */
 angular.module('ocspApp')
-  .controller('SystemManagementCtrl', ['$scope', '$http', 'Notification', '$q', 'usSpinnerService', 'loginService', '$filter', function ($scope, $http, Notification, $q, usSpinnerService, loginService, $filter) {
+  .controller('SystemManagementCtrl', ['$scope', '$http', 'Notification', '$q', 'usSpinnerService', 'loginService', '$filter', '$uibModal', function ($scope, $http, Notification, $q, usSpinnerService, loginService, $filter, $uibModal) {
     loginService.init('system');
     function init() {
       usSpinnerService.spin('spinner');
@@ -25,19 +25,40 @@ angular.module('ocspApp')
 
     init();
 
-    $scope.add = function (name) {
-      $scope[name].push({});
+    $scope.remove = function($index){
+      $scope.datasource.splice($index,1);
     };
 
-    $scope.delete = function (name, index){
-      $scope[name].splice(index,1);
+    $scope.newDatasource = {};
+
+    $scope.openSparkModal = function(){
+      var modal = $uibModal.open({
+        animation: true,
+        ariaLabelledBy: 'modal-title-bottom',
+        ariaDescribedBy: 'modal-body-bottom',
+        templateUrl: 'stackedModal.html',
+        size: 'lg',
+        scope: $scope,
+        controller: ['$scope', 'Notification', function($scope, Notification) {
+          $scope.saveDatasource = function(){
+            $http.post("/api/datasource", {data : $scope.newDatasource}).success(function(){
+              modal.close();
+              $scope.newDatasource = {};
+              Notification.success($filter('translate')('ocsp_web_common_026'));
+              init();
+            }).error(function(err){
+              Notification.error(err);
+            });
+          };
+        }]
+      });
     };
 
     $scope.save = function(){
       for (var i in $scope.datasource) {
         $scope.datasource[i].properties = JSON.stringify($scope.datasource[i].props);
       }
-      $q.all({prop: $http.post("/api/prop", {data : $scope.prop}), datasource: $http.post("/api/datasource", {data : $scope.datasource})})
+      $q.all({prop: $http.post("/api/prop", {data : $scope.prop}), datasource: $http.put("/api/datasource", {data : $scope.datasource})})
         .then(function(){
           Notification.success($filter('translate')('ocsp_web_common_026'));
         }, function(err){

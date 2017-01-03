@@ -112,6 +112,12 @@ angular.module('ocspApp')
       $q.all({job: $http.get('/api/task'), datasource: $http.get('/api/datasource'), labels: $http.get('/api/label')}).then(function(arr){
         $scope.jobs = arr.job.data;
         $scope.datasources = arr.datasource.data;
+        $scope.inputDatasources = [];
+        for(var i in $scope.datasources){
+          if($scope.datasources[i].type === 'kafka'){
+            $scope.inputDatasources.push($scope.datasources[i]);
+          }
+        }
         $scope.inputLabels = arr.labels.data;
         usSpinnerService.stop('spinner');
       },function(err){
@@ -224,6 +230,15 @@ angular.module('ocspApp')
       mermaidAPI.render('graphDiv', graphDefinition, insertSvg);
     }
 
+    var parseDatasource = function (dataInterface){
+      for(var i in $scope.datasources){
+        if($scope.datasources[i].id === dataInterface.dsid){
+          dataInterface.datasource = $scope.datasources[i];
+          break;
+        }
+      }
+    };
+
     $scope.changeItem = function(item){
       $scope.selectedJob = item;
       usSpinnerService.spin('spinner');
@@ -238,6 +253,7 @@ angular.module('ocspApp')
           $scope.selectedJob.events = arr.events.data;
           var labels = [];
           //Deal with input properties
+          parseDatasource($scope.selectedJob.input);
           parseProperties($scope.selectedJob.input, $scope.selectedJob.input.properties);
           //Deal with labels
           for (var j in $scope.inputLabels) {
@@ -289,11 +305,7 @@ angular.module('ocspApp')
                   if($scope.selectedJob.output[j].id === parseInt($scope.selectedJob.events[i].PROPERTIES.output_dis[0].diid)){
                     $scope.selectedJob.events[i].output = $scope.selectedJob.output[j];
                     parseProperties($scope.selectedJob.events[i].output, $scope.selectedJob.events[i].output.properties);
-                    if($scope.selectedJob.events[i].output.dsid === 1){
-                      $scope.selectedJob.events[i].output.datasource = $scope.datasources[0];
-                    }else{
-                      $scope.selectedJob.events[i].output.datasource = $scope.datasources[1];
-                    }
+                    parseDatasource($scope.selectedJob.events[i].output);
                     break;
                   }
                 }

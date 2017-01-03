@@ -32,6 +32,18 @@
           <input type="text" class="form-control" ng-model="task.input.topic" required>
         </div>
         <div class="form-group">
+          <label>{{'ocsp_web_streams_manage_038' | translate}}*</label>
+          <ui-select ng-model="task.input.datasource" ng-required="true">
+            <ui-select-match>
+              <span ng-bind="$select.selected.name"></span>
+            </ui-select-match>
+            <ui-select-choices
+              repeat="datasource in (inputDatasources | filter: $select.search) track by datasource.id">
+              <span ng-bind="datasource.name"></span>
+            </ui-select-choices>
+          </ui-select>
+        </div>
+        <div class="form-group">
           <label>{{'ocsp_web_streams_manage_011' | translate}}*</label>
           <tokenfield ng-model="task.input.fields" required></tokenfield>
         </div>
@@ -138,11 +150,11 @@
                       </ui-select-choices>
                     </ui-select>
                   </div>
-                  <div class="form-group" ng-if="item.output.datasource.id == 1">
+                  <div class="form-group" ng-if="item.output.datasource.type == 'kafka'">
                     <label>{{'ocsp_web_streams_manage_010' | translate}}*</label>
                     <input type="text" class="form-control" ng-model="item.output.topic" required>
                   </div>
-                  <div class="form-group" ng-if="item.output.datasource.id == 2">
+                  <div class="form-group" ng-if="item.output.datasource.type == 'codis'">
                     <label>{{'ocsp_web_streams_manage_022' | translate}}*</label>
                     <input type="text" class="form-control" ng-model="item.output.codisKeyPrefix" required>
                   </div>
@@ -173,7 +185,7 @@
         <div ng-show="task.events !== undefined && task.events.length > 0" class="form-group">
           <label>{{'ocsp_web_common_025' | translate}}:</label>
           <ul ng-repeat="item in task.events" class="list-group">
-            <li class="list-group-item"><strong>{{item.name}}</strong>({{item.output.datasource.id === 1?"kafka":"codis"}})</li>
+            <li class="list-group-item"><strong>{{item.name}}</strong>({{item.output.datasource.type}})</li>
           </ul>
         </div>
         </p>
@@ -378,6 +390,24 @@
                     <div class="form-group">
                       <div class="row">
                         <div class="col-md-2">
+                          <label>{{'ocsp_web_streams_manage_038' | translate}}*</label>
+                        </div>
+                        <div class="col-md-8">
+                          <ui-select ng-model="selectedJob.input.datasource" ng-required="true">
+                            <ui-select-match>
+                              <span ng-bind="$select.selected.name"></span>
+                            </ui-select-match>
+                            <ui-select-choices
+                              repeat="datasource in (inputDatasources | filter: $select.search) track by datasource.id">
+                              <span ng-bind="datasource.name"></span>
+                            </ui-select-choices>
+                          </ui-select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-2">
                           <label>{{'ocsp_web_streams_manage_011' | translate}}*</label>
                         </div>
                         <div class="col-md-8">
@@ -532,12 +562,12 @@
                                   </ui-select-choices>
                                 </ui-select>
                               </div>
-                              <div class="form-group" ng-if="item.output.datasource.id == 1">
+                              <div class="form-group" ng-if="item.output.datasource.type === 'kafka'">
                                 <label>{{'ocsp_web_streams_manage_010' | translate}}*</label>
                                 <input type="text" class="form-control" ng-model="item.output.topic" required>
                                 <span class="notnull" ng-if="item.output.topic === undefined">{{'ocsp_web_common_027' | translate}}</span>
                               </div>
-                              <div class="form-group" ng-if="item.output.datasource.id == 2">
+                              <div class="form-group" ng-if="item.output.datasource.type === 'codis'">
                                 <label>{{'ocsp_web_streams_manage_022' | translate}}*</label>
                                 <input type="text" class="form-control" ng-model="item.output.codisKeyPrefix" required>
                                 <span class="notnull" ng-if="item.output.codisKeyPrefix === undefined">{{'ocsp_web_common_027' | translate}}</span>

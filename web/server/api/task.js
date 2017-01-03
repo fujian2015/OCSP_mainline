@@ -204,8 +204,11 @@ router.post("/", function(req, res){
   var events = req.body.task.events;
   // create input data interface
   sequelize.transaction(function(t) {
-    //Input datasource is kafka by default
-    dealDataInterfaceProperties(inputInterface, 1, 0);
+    if(inputInterface.datasource !== undefined && inputInterface.datasource.id !== undefined){
+      dealDataInterfaceProperties(inputInterface, inputInterface.datasource.id, 0);
+    }else{
+      dealDataInterfaceProperties(inputInterface, null, 0);
+    }
     inputInterface.name = task.name + "_" + randomstring.generate(10);
     return sequelize.Promise.all([
       Interface.create(inputInterface, {transaction: t}),
@@ -249,7 +252,11 @@ router.put("/", function(req, res) {
     var promises = [];
     promises.push(Label.max("id", {transaction: t}));
     promises.push(Event.findAll({where:{diid : inputInterface.id}, transaction: t}));
-    dealDataInterfaceProperties(inputInterface, 1, 0);
+    if(inputInterface.datasource !== undefined && inputInterface.datasource.id !== undefined){
+      dealDataInterfaceProperties(inputInterface, inputInterface.datasource.id, 0);
+    }else{
+      dealDataInterfaceProperties(inputInterface, null, 0);
+    }
     promises.push(Interface.update(inputInterface, {where: {id : inputInterface.id}, transaction: t}));
     promises.push(Task.update(task, {where: {id: task.id}, transaction: t}));
     promises.push(Label.destroy({where: {diid: inputInterface.id}, transaction: t}));

@@ -35,6 +35,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_common_028': 'Upload successfully',
     'ocsp_web_common_029': 'Delete successfully',
     'ocsp_web_common_030': 'Save failed',
+    'ocsp_web_common_031': 'Category',
 
     'ocsp_web_user_manage_000':'User Management',
     'ocsp_web_user_manage_001':'Change password',
@@ -47,6 +48,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_system_manage_000':'System Management',
     'ocsp_web_system_manage_001':'System configuration',
     'ocsp_web_system_manage_002':'Please input your SPARK_HOME first to continue.',
+    'ocsp_web_system_manage_003':'New datasource',
 
     'ocsp_web_label_manage_000':'Label management',
     'ocsp_web_label_manage_001':'Label Name',
@@ -90,6 +92,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_034':'Running',
     'ocsp_web_streams_manage_035':'Stopping',
     'ocsp_web_streams_manage_036':'Restarting',
-    'ocsp_web_streams_manage_037':'Stream Enable'
+    'ocsp_web_streams_manage_037':'Stream Enable',
+    'ocsp_web_streams_manage_038':'Input Datasource'
   });
 }]);
