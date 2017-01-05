@@ -17,7 +17,9 @@ angular.module('ocspApp')
     init();
 
     $scope.upload = function(){
-      $scope.uploadFile($scope.file);
+      if($scope.file !== undefined && $scope.file !== "") {
+        $scope.uploadFile($scope.file);
+      }
     };
 
     $scope.save = function(){

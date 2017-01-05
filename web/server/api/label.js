@@ -80,9 +80,9 @@ router.post('/upload', upload.single('file'), function(req, res){
   sequelize.Promise.all(promises).then(function(){
     res.send({success: true});
   }, function(){
-    res.status(500).send(trans.databaseError);
+    res.status(500).send(trans.uploadError);
   }).catch(function(){
-    res.status(500).send(trans.databaseError);
+    res.status(500).send(trans.uploadError);
   });
 });
 
