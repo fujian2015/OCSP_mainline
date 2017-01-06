@@ -254,7 +254,11 @@ a:hover, a:focus {
   text-decoration: none;
 }
 
-#mainFrame input.ng-invalid {
+#mainFrame input.ng-invalid.ng-touched {
+  border: 1px solid red;
+}
+
+#mainFrame div.ng-invalid.ng-touched {
   border: 1px solid red;
 }
 

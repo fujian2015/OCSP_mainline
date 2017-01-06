@@ -3,45 +3,70 @@
     <h3 class="modal-title">{{'ocsp_web_system_manage_003' | translate}}</h3>
   </div>
   <div class="modal-body">
-    <div class="form-group">
-      <label>{{'ocsp_web_common_011' | translate}}*</label>
-      <input type="text" name="name" class="form-control" ng-model="newDatasource.name" required>
-    </div>
-    <div class="form-group">
-      <label>{{'ocsp_web_common_031' | translate}}*</label>
-      <ui-select ng-model="newDatasource.type" ng-required="true">
-        <ui-select-match>
-          <span ng-bind="$select.selected"></span>
-        </ui-select-match>
-        <ui-select-choices
-          repeat="item in (['kafka','codis'] | filter: $select.search) track by item">
-          <span ng-bind="item"></span>
-        </ui-select-choices>
-      </ui-select>
-    </div>
-    <div class="form-group" ng-if="newDatasource.type === 'kafka'">
-      <label>zookeeper.connect*</label>
-      <input type="text" name="name" class="form-control" ng-model="newDatasource.zk" required>
-    </div>
-    <div class="form-group" ng-if="newDatasource.type === 'kafka'">
-      <label>metadata.broker.list*</label>
-      <input type="text" name="name" class="form-control" ng-model="newDatasource.blist" required>
-    </div>
-    <div class="form-group" ng-if="newDatasource.type === 'codis'">
-      <label>zk*</label>
-      <input type="text" name="name" class="form-control" ng-model="newDatasource.zk" required>
-    </div>
-    <div class="form-group" ng-if="newDatasource.type === 'codis'">
-      <label>zkpath*</label>
-      <input type="text" name="name" class="form-control" ng-model="newDatasource.zkpath" required>
-    </div>
-    <div class="form-group">
-      <label>{{'ocsp_web_common_012' | translate}}</label>
-      <textarea ng-model="newDatasource.description" class="form-control" rows="6"></textarea>
-    </div>
-    <div class="form-group">
-      <button type="button" class="btn btn-primary" ng-click="saveDatasource()">{{'ocsp_web_common_009' | translate}}</button>
-    </div>
+    <form name="myForm" id="mainFrame">
+      <div class="form-group">
+        <label>{{'ocsp_web_common_011' | translate}}*</label>
+        <input type="text" name="name" class="form-control" ng-model="newDatasource.name" required>
+        <span class="notnull" ng-messages="myForm.name.$error"
+             ng-if="myForm.name.$touched">
+          <div ng-message="required">{{'ocsp_web_common_027' | translate}}</div>
+        </span>
+      </div>
+      <div class="form-group">
+        <label>{{'ocsp_web_common_031' | translate}}*</label>
+        <ui-select name="sourceType" ng-model="newDatasource.type" ng-required="true">
+          <ui-select-match>
+            <span ng-bind="$select.selected"></span>
+          </ui-select-match>
+          <ui-select-choices
+            repeat="item in (['kafka','codis'] | filter: $select.search) track by item">
+            <span ng-bind="item"></span>
+          </ui-select-choices>
+        </ui-select>
+        <span class="notnull" ng-messages="myForm.sourceType.$error" ng-if="myForm.sourceType.$touched">
+          <div ng-message="required">{{'ocsp_web_common_027' | translate}}</div>
+        </span>
+      </div>
+      <div class="form-group" ng-if="newDatasource.type === 'kafka'">
+        <label>zookeeper.connect*</label>
+        <input type="text" name="zk" class="form-control" ng-model="newDatasource.zk" required>
+        <span class="notnull" ng-messages="myForm.zk.$error"
+              ng-if="myForm.zk.$touched">
+          <div ng-message="required">{{'ocsp_web_common_027' | translate}}</div>
+        </span>
+      </div>
+      <div class="form-group" ng-if="newDatasource.type === 'kafka'">
+        <label>metadata.broker.list*</label>
+        <input type="text" name="blist" class="form-control" ng-model="newDatasource.blist" required>
+        <span class="notnull" ng-messages="myForm.blist.$error"
+              ng-if="myForm.blist.$touched">
+          <div ng-message="required">{{'ocsp_web_common_027' | translate}}</div>
+        </span>
+      </div>
+      <div class="form-group" ng-if="newDatasource.type === 'codis'">
+        <label>zk*</label>
+        <input type="text" name="zkco" class="form-control" ng-model="newDatasource.zk" required>
+        <span class="notnull" ng-messages="myForm.zkco.$error"
+              ng-if="myForm.zkco.$touched">
+          <div ng-message="required">{{'ocsp_web_common_027' | translate}}</div>
+        </span>
+      </div>
+      <div class="form-group" ng-if="newDatasource.type === 'codis'">
+        <label>zkpath*</label>
+        <input type="text" name="zkpath" class="form-control" ng-model="newDatasource.zkpath" required>
+        <span class="notnull" ng-messages="myForm.zkpath.$error"
+              ng-if="myForm.zkpath.$touched">
+          <div ng-message="required">{{'ocsp_web_common_027' | translate}}</div>
+        </span>
+      </div>
+      <div class="form-group">
+        <label>{{'ocsp_web_common_012' | translate}}</label>
+        <textarea ng-model="newDatasource.description" class="form-control" rows="6"></textarea>
+      </div>
+      <div class="form-group">
+        <button type="button" class="btn btn-primary" ng-click="saveDatasource()">{{'ocsp_web_common_009' | translate}}</button>
+      </div>
+    </form>
   </div>
 </script>
 <div class="row">

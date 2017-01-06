@@ -41,15 +41,17 @@ angular.module('ocspApp')
         scope: $scope,
         controller: ['$scope', 'Notification', function($scope, Notification) {
           $scope.saveDatasource = function () {
-            if(confirm($filter('translate')('ocsp_web_system_manage_004'))) {
-              $http.post("/api/datasource", {data: $scope.newDatasource}).success(function () {
-                modal.close();
-                $scope.newDatasource = {};
-                Notification.success($filter('translate')('ocsp_web_common_026'));
-                init();
-              }).error(function (err) {
-                Notification.error(err);
-              });
+            if($("#mainFrame .ng-invalid").length === 0) {
+              if (confirm($filter('translate')('ocsp_web_system_manage_004'))) {
+                $http.post("/api/datasource", {data: $scope.newDatasource}).success(function () {
+                  modal.close();
+                  $scope.newDatasource = {};
+                  Notification.success($filter('translate')('ocsp_web_common_026'));
+                  init();
+                }).error(function (err) {
+                  Notification.error(err);
+                });
+              }
             }
           };
         }]
