@@ -29,8 +29,6 @@ angular.module('ocspApp')
       $scope.datasource.splice($index,1);
     };
 
-    $scope.newDatasource = {};
-
     $scope.openSparkModal = function(){
       var modal = $uibModal.open({
         animation: true,
@@ -72,6 +70,6 @@ angular.module('ocspApp')
           usSpinnerService.stop('spinner');
           Notification.error(err.data);
         });
-    }
+    };
 
   }]);
