@@ -17,10 +17,10 @@ module.exports = {
   trans: "zh",
   zh:{
     databaseError: "请检查数据库配置",
-    uploadError: "上传失败, 请手动上传到${OCSP_HOME}/web/upload目录下"
+    uploadError: "上传失败, 请手动将jar包放到"
   },
   en:{
     databaseError: "Please check your database configurations",
-    uploadError: "Upload failed, please upload jar to ${OCSP_Home}/web/upload directory manually"
+    uploadError: "Upload failed, please upload manually jar to"
   }
 };

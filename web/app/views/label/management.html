@@ -37,10 +37,10 @@
           <button type="button" ng-click="upload()">{{'ocsp_web_common_010' | translate}}</button>
         </div>
         <input ngf-select type="file" ng-model="file">
-            <span class="progress" ng-show="file.progress >= 0">
-              <div style="width:{{file.progress}}%"/>
-          </span>
       </div>
+    </div>
+    <div class="alert alert-danger" ng-if="message !== null">
+      {{message}}
     </div>
   </div>
 

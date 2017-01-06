@@ -59,24 +59,10 @@ router.put('/', function (req, res) {
   var datasources = req.body.data;
   sequelize.transaction(function(t) {
     var promises = [];
-    return Datasource.findAll({where: {status: 2}, transaction: t}).then(function (items) {
+    return Datasource.findAll({where: {status: 2}, transaction: t}).then(function () {
       for (var i in datasources) {
         promises.push(Datasource.update(datasources[i], {where: {id: datasources[i].id}, transaction: t}));
       }
-      // Delete used data sources
-      // for (var i in items) {
-      //   var flag = false;
-      //   for (var j in datasources) {
-      //     if (items[i].dataValues.id === datasources[j].id) {
-      //       flag = true;
-      //       break;
-      //     }
-      //   }
-      //   if (!flag) {
-      //     items[i].dataValues.status = 0;
-      //     promises.push(Datasource.update(items[i].dataValues, {where: {id: items[i].dataValues.id}, transaction: t}));
-      //   }
-      // }
       return sequelize.Promise.all(promises);
     });
   }).then(function(){
