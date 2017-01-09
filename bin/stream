@@ -16,6 +16,7 @@ function print_usage(){
   echo "  start                                 run the stream application"
   echo "  stop                                  shutdown the stream application"
   echo "  restart                               restart the stream application"
+  echo "  admin                                 system operation tool"
   echo "  version                               print the version"
 }
 
@@ -134,6 +135,12 @@ function getClassPath(){
     echo ${CLASSPATH}
 }
 
+function sys_admin(){
+    CLASSPATH=`getClassPath`
+
+    java -cp ${CLASSPATH} com.asiainfo.ocdp.stream.admin.AdminCLI $*
+}
+
 function print_version(){
     CLASSPATH=`getClassPath`
 
@@ -142,7 +149,7 @@ function print_version(){
 
 if [ $# -eq 0 ]; then
     print_usage;
-elif [ $# -eq 1 ]; then
+else
     case $1 in
     setup)
         setupStream;;
@@ -159,6 +166,8 @@ elif [ $# -eq 1 ]; then
     restart)
         stopStream
         startStream;;
+    admin)
+        sys_admin $*;;
     version)
         print_version;;
     --help|-help|-h)
@@ -167,8 +176,6 @@ elif [ $# -eq 1 ]; then
         error "Invalid argument, please refer to: "
         print_usage;;
     esac
-else
-    print_usage
 fi
 
 exit 0;
