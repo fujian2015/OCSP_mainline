@@ -94,7 +94,19 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_035':'正在停止',
     'ocsp_web_streams_manage_036':'正在重启',
     'ocsp_web_streams_manage_037':'作业流使能',
-    'ocsp_web_streams_manage_038':'输入源'
+    'ocsp_web_streams_manage_038':'输入源',
+
+    'ocsp_web_common_property_zookeeperConnect': 'zookeeper的连接地址',
+    'ocsp_web_common_property_zk': 'zookeeper的连接地址',
+    'ocsp_web_common_property_zkPath': 'Codis的proxy在zookeeper中路径',
+    'ocsp_web_common_property_metadataBrokerList': 'Broker列表',
+    'ocsp_web_common_property_receiveInterval': '流数据划分批次的时间间隔',
+    'ocsp_web_common_property_numExecutors': 'executor的数量',
+    'ocsp_web_common_property_driverMemory': 'driver的内存',
+    'ocsp_web_common_property_executorMemory': '每个executor的内存',
+    'ocsp_web_common_property_queue': 'Spark streaming应用程序运行在Yarn上的队列',
+    'ocsp_web_common_property_filter': '过滤条件，必须符合Spark DateFrame过滤条件表达式的格式'
+
 
   });
 }]);

@@ -95,5 +95,16 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_036':'Restarting',
     'ocsp_web_streams_manage_037':'Stream Enable',
     'ocsp_web_streams_manage_038':'Input Datasource'
+
+    'ocsp_web_common_property_zookeeperConnect': 'Zookeeper address',
+    'ocsp_web_common_property_zk': 'Zookeeper address',
+    'ocsp_web_common_property_zkPath': 'The proxy path for Codis in zookeeper',
+    'ocsp_web_common_property_metadataBrokerList': 'Broker list',
+    'ocsp_web_common_property_receiveInterval': 'The time interval at which streaming data will be divided into batches',
+    'ocsp_web_common_property_numExecutors': 'The number of executor',
+    'ocsp_web_common_property_driverMemory': 'The memory of driver',
+    'ocsp_web_common_property_executorMemory': 'The memory of executor',
+    'ocsp_web_common_property_queue': 'The queue for running spark application on Yarn',
+    'ocsp_web_common_property_filter': 'The condition expression for DataFrame'
   });
 }]);
