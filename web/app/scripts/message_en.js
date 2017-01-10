@@ -94,12 +94,12 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_035':'Stopping',
     'ocsp_web_streams_manage_036':'Restarting',
     'ocsp_web_streams_manage_037':'Stream Enable',
-    'ocsp_web_streams_manage_038':'Input Datasource'
+    'ocsp_web_streams_manage_038':'Input Datasource',
 
-    'ocsp_web_common_property_zookeeperConnect': 'Zookeeper address',
+    'ocsp_web_common_property_zookeeper_connect': 'Zookeeper address',
     'ocsp_web_common_property_zk': 'Zookeeper address',
-    'ocsp_web_common_property_zkPath': 'The proxy path for Codis in zookeeper',
-    'ocsp_web_common_property_metadataBrokerList': 'Broker list',
+    'ocsp_web_common_property_zkpath': 'The proxy path for Codis in zookeeper',
+    'ocsp_web_common_property_metadata_broker_list': 'Broker list',
     'ocsp_web_common_property_receiveInterval': 'The time interval at which streaming data will be divided into batches',
     'ocsp_web_common_property_numExecutors': 'The number of executor',
     'ocsp_web_common_property_driverMemory': 'The memory of driver',

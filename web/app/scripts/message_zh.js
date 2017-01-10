@@ -96,10 +96,10 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_streams_manage_037':'作业流使能',
     'ocsp_web_streams_manage_038':'输入源',
 
-    'ocsp_web_common_property_zookeeperConnect': 'zookeeper的连接地址',
+    'ocsp_web_common_property_zookeeper_connect': 'zookeeper的连接地址',
     'ocsp_web_common_property_zk': 'zookeeper的连接地址',
-    'ocsp_web_common_property_zkPath': 'Codis的proxy在zookeeper中路径',
-    'ocsp_web_common_property_metadataBrokerList': 'Broker列表',
+    'ocsp_web_common_property_zkpath': 'Codis的proxy在zookeeper中路径',
+    'ocsp_web_common_property_metadata_broker_list': 'Broker列表',
     'ocsp_web_common_property_receiveInterval': '流数据划分批次的时间间隔',
     'ocsp_web_common_property_numExecutors': 'executor的数量',
     'ocsp_web_common_property_driverMemory': 'driver的内存',

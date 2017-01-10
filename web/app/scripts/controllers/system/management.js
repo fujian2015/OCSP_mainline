@@ -29,6 +29,9 @@ angular.module('ocspApp')
       $scope.datasource.splice($index,1);
     };
 
+    $scope.trans = function(str){
+      return str.replace(/\./g, '_');
+    };
     $scope.openSparkModal = function(){
       var modal = $uibModal.open({
         animation: true,

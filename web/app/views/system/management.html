@@ -96,16 +96,15 @@
                 </div>
                 <div class="col-md-8">
                   <input ng-model="property.value" class="form-control" popover-trigger="'mouseenter'"
-                         popover-placement="right"
-                         uib-popover="Description: {{property.description}}" popover-title="{{property.name}}">
+                         popover-placement="right" popover-append-to-body=true
+                         uib-popover="{{property.description}}" popover-title="{{property.name}}">
                 </div>
               </div>
             </div>
           </div>
         </uib-accordion>
         <uib-accordion ng-repeat="data in datasource">
-          <div uib-accordion-group class="panel-default" popover-trigger="'mouseenter'" ng-init="data.isOpen = true" is-open="data.isOpen"
-               popover-placement="right" popover-title="{{data.name}}" uib-popover="Description: {{data.description}}">
+          <div uib-accordion-group class="panel-default" ng-init="data.isOpen = true" is-open="data.isOpen">
             <uib-accordion-heading>
               <i class="glyphicon" ng-class="{'glyphicon-chevron-down': data.isOpen, 'glyphicon-chevron-right': !status.isOpen}"></i>
               &nbsp;{{data.name}}
@@ -122,13 +121,15 @@
                 </div>
               </div>
             </div>
-            <div ng-repeat="item in data.props track by $index" class="form-group">
-              <div class="row" ng-show="data.type === 'kafka' || (data.type === 'codis' && (item.pname === 'zk' || item.pname === 'zkpath'))">
+            <div class="form-group" ng-repeat="item in data.props track by $index" ng-if="data.type === 'kafka' || item.pname === 'zk' || item.pname === 'zkpath'">
+              <div class="row">
                 <div class="col-md-2">
                   <label>{{item.pname}}</label>
                 </div>
                 <div class="col-md-8">
-                  <input class="form-control" ng-model="item.pvalue">
+                  <input class="form-control" ng-model="item.pvalue" popover-append-to-body=true
+                         popover-trigger="'mouseenter'" popover-placement="right" popover-title="{{item.pname}}"
+                         uib-popover="{{'ocsp_web_common_property_' + trans(item.pname) | translate}}">
                 </div>
               </div>
             </div>

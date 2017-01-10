@@ -282,9 +282,7 @@
                           <label>{{'ocsp_web_common_011' | translate}}*</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" name="name" class="form-control" ng-model="selectedJob.name" required
-                                 popover-trigger="'mouseenter'" popover-placement="right"
-                                 uib-popover="Description: " popover-title="Task name">
+                          <input type="text" name="name" class="form-control" ng-model="selectedJob.name" required>
                           <span class="notnull" ng-if="selectedJob.name === undefined">{{'ocsp_web_common_027' | translate}}</span>
                         </div>
                       </div>
@@ -295,9 +293,7 @@
                           <label>{{'ocsp_web_common_012' | translate}}</label>
                         </div>
                         <div class="col-md-8">
-                          <textarea ng-model="selectedJob.description" class="form-control" rows="3"
-                                    popover-trigger="'mouseenter'" popover-placement="right"
-                                    uib-popover="Description: " popover-title="Description">
+                          <textarea ng-model="selectedJob.description" class="form-control" rows="3">
                           </textarea>
                         </div>
                       </div>
@@ -309,8 +305,8 @@
                         </div>
                         <div class="col-md-8">
                           <input type="text" class="form-control" ng-model="selectedJob.receive_interval" required
-                                 popover-trigger="'mouseenter'" popover-placement="right"
-                                 uib-popover="Description: " popover-title="Receive interval(s)">
+                                 popover-trigger="'mouseenter'" popover-placement="right" popover-append-to-body=true
+                                 uib-popover="{{'ocsp_web_common_property_receiveInterval' | translate}}" popover-title="Receive interval(s)">
                           <span class="notnull" ng-if="selectedJob.receive_interval === undefined">{{'ocsp_web_common_027' | translate}}</span>
                         </div>
                       </div>
@@ -322,8 +318,8 @@
                         </div>
                         <div class="col-md-8">
                           <input type="text" class="form-control" ng-model="selectedJob.num_executors" required
-                                 popover-trigger="'mouseenter'" popover-placement="right"
-                                 uib-popover="Description: " popover-title="Num executors">
+                                 popover-trigger="'mouseenter'" popover-placement="right" popover-append-to-body=true
+                                 uib-popover="{{'ocsp_web_common_property_numExecutors' | translate}}" popover-title="Num executors">
                           <span class="notnull" ng-if="selectedJob.num_executors === undefined">{{'ocsp_web_common_027' | translate}}</span>
                         </div>
                       </div>
@@ -335,8 +331,8 @@
                         </div>
                         <div class="col-md-8">
                           <input type="text" class="form-control" ng-model="selectedJob.driver_memory" required
-                                 popover-trigger="'mouseenter'" popover-placement="right"
-                                 uib-popover="Description: " popover-title="Driver memory">
+                                 popover-trigger="'mouseenter'" popover-placement="right" popover-append-to-body=true
+                                 uib-popover="{{'ocsp_web_common_property_driverMemory' | translate}}" popover-title="Driver memory">
                           <span class="notnull" ng-if="selectedJob.driver_memory === undefined">{{'ocsp_web_common_027' | translate}}</span>
                         </div>
                       </div>
@@ -348,8 +344,8 @@
                         </div>
                         <div class="col-md-8">
                           <input type="text" class="form-control" ng-model="selectedJob.executor_memory" required
-                                 popover-trigger="'mouseenter'" popover-placement="right"
-                                 uib-popover="Description: " popover-title="Executor memory">
+                                 popover-trigger="'mouseenter'" popover-placement="right" popover-append-to-body=true
+                                 uib-popover="{{'ocsp_web_common_property_executorMemory' | translate}}" popover-title="Executor memory">
                           <span class="notnull" ng-if="selectedJob.executor_memory === undefined">{{'ocsp_web_common_027' | translate}}</span>
                         </div>
                       </div>
@@ -361,8 +357,8 @@
                         </div>
                         <div class="col-md-8">
                           <input type="text" class="form-control" ng-model="selectedJob.queue" required
-                                 popover-trigger="'mouseenter'" popover-placement="right"
-                                 uib-popover="Description: " popover-title="Queue">
+                                 popover-trigger="'mouseenter'" popover-placement="right" popover-append-to-body=true
+                                 uib-popover="{{'ocsp_web_common_property_queue' | translate}}" popover-title="Queue">
                           <span class="notnull" ng-if="selectedJob.queue === undefined">{{'ocsp_web_common_027' | translate}}</span>
                         </div>
                       </div>
@@ -434,7 +430,9 @@
                           <label>{{'ocsp_web_streams_manage_013' | translate}}</label>
                         </div>
                         <div class="col-md-8">
-                          <input type="text" class="form-control" ng-model="selectedJob.input.filter_expr">
+                          <input type="text" class="form-control" ng-model="selectedJob.input.filter_expr"
+                                 popover-trigger="'mouseenter'" popover-placement="right" popover-append-to-body=true
+                                 uib-popover="{{'ocsp_web_common_property_filter' | translate}}" popover-title="{{'ocsp_web_streams_manage_013' | translate}}">
                         </div>
                       </div>
                     </div>
