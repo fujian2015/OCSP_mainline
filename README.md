@@ -71,7 +71,7 @@ OCSP是基于Spark streaming的处理流数据低延迟、可高度扩展的，�
 *   2017 Jan 13. [V2.0.1](https://github.com/OCSP/OCSP_mainline/releases/tag/2.0.1)
 
 ### Downloads
-*   V2.0.1 RPM builds based on Spark1.6 [v2.0.1](https://pan.baidu.com/s/1dF7Q2cT)
+*   V2.0.1 RPM builds based on Spark1.6.x [v2.0.1](https://pan.baidu.com/s/1dF7Q2cT)
 
 ### FAQ
 * [常见问题](https://github.com/OCSP/OCSP_mainline/wiki/常见问题)
