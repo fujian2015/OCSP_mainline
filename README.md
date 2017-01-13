@@ -68,6 +68,7 @@ OCSP是基于Spark streaming的处理流数据低延迟、可高度扩展的，�
 ### Milestone
 
 *   2016 Nov. [V2.0.0](https://github.com/OCSP/OCSP_mainline/releases/tag/2.0.0) 
+*   2017 Jan 13. [V2.0.1](https://github.com/OCSP/OCSP_mainline/releases/tag/2.0.1)
 
 ### FAQ
 * [常见问题](https://github.com/OCSP/OCSP_mainline/wiki/常见问题)
