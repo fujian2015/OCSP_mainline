@@ -37,7 +37,7 @@
               </goals>
               <!-- Optional configuration which provides for running any npm command -->
               <configuration>
-                <arguments>--registry=https://registry.npm.taobao.org install</arguments>
+                <arguments>install</arguments>
               </configuration>
             </execution>
 

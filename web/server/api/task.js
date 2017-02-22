@@ -55,6 +55,9 @@ router.post('/change/:id', function(req, res){
   sequelize.transaction(function(t) {
     return Task.find({where: {id: req.params.id}, transaction: t}).then(function (task) {
       var result = task.dataValues;
+      if(result.status === 0 && status === 4){// When task is in stop status, it cannot be restart.
+        return sequelize.Promise.reject();
+      }
       result.status = status;
       return Task.update(result, {where: {id: req.params.id}, transaction: t});
     });
@@ -158,9 +161,6 @@ function createEvents(events, i, diid, status) {
   events[i].status = status;
   if(events[i].select_expr !== undefined && events[i].select_expr !== "") {
     events[i].select_expr = events[i].select_expr.replace(/\s/g, '');
-  }
-  if(events[i].delim !== undefined && events[i].delim === "|"){
-    events[i].delim = "\\|";
   }
   if(events[i].delim === undefined){
     events[i].delim = "";

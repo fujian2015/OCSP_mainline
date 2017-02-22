@@ -63,7 +63,7 @@ CREATE TABLE `STREAM_DATASOURCE` (
 
 LOCK TABLES `STREAM_DATASOURCE` WRITE;
 /*!40000 ALTER TABLE `STREAM_DATASOURCE` DISABLE KEYS */;
-INSERT INTO `STREAM_DATASOURCE` VALUES (1,'Kafka data source','kafka',NULL,'[{\"pname\":\"zookeeper.connect\",\"pvalue\":\"hostA:2181\"},{\"pname\":\"metadata.broker.list\",\"pvalue\":\"hostA:6667\"}]'),(2,'Codis data source','codis',NULL,'[{\"pname\":\"cacheServers\",\"pvalue\":\"hostB:19000\"},{\"pname\":\"jedisMaxIdle\",\"pvalue\":\"300\"},{\"pname\":\"jedisMaxTotal\",\"pvalue\":\"1000\"},{\"pname\":\"jedisMEM\",\"pvalue\":\"600000\"},{\"pname\":\"jedisMinIdle\",\"pvalue\":\"0\"},{\"pname\":\"zk\",\"pvalue\":\"hostA:2181\"},{\"pname\":\"zkSessionTimeoutMs\",\"pvalue\":\"15000\"},{\"pname\":\"zkpath\",\"pvalue\":\"/zk/codis/db_codis-demo/proxy\"},{\"pname\":\"jedisTimeOut\",\"pvalue\":\"10000\"}]');
+INSERT INTO `STREAM_DATASOURCE` VALUES (1,'Kafka data source','kafka',1,NULL,'[{\"pname\":\"zookeeper.connect\",\"pvalue\":\"hostA:2181\"},{\"pname\":\"metadata.broker.list\",\"pvalue\":\"hostA:6667\"}]'),(2,'Codis data source','codis',1,NULL,'[{\"pname\":\"cacheServers\",\"pvalue\":\"hostB:19000\"},{\"pname\":\"jedisMaxIdle\",\"pvalue\":\"300\"},{\"pname\":\"jedisMaxTotal\",\"pvalue\":\"1000\"},{\"pname\":\"jedisMEM\",\"pvalue\":\"600000\"},{\"pname\":\"jedisMinIdle\",\"pvalue\":\"0\"},{\"pname\":\"zk\",\"pvalue\":\"hostA:2181\"},{\"pname\":\"zkSessionTimeoutMs\",\"pvalue\":\"15000\"},{\"pname\":\"zkpath\",\"pvalue\":\"/zk/codis/db_codis-demo/proxy\"},{\"pname\":\"jedisTimeOut\",\"pvalue\":\"10000\"}]');
 /*!40000 ALTER TABLE `STREAM_DATASOURCE` ENABLE KEYS */;
 UNLOCK TABLES;
 

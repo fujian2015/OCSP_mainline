@@ -57,7 +57,7 @@ angular.module('ocspApp')
         $scope.actions = [
           {name: $filter('translate')('ocsp_web_streams_manage_024'), enable: true, icon : "glyphicon glyphicon-play success"},
           {name: $filter('translate')('ocsp_web_streams_manage_025'), enable: false, icon: "glyphicon glyphicon-stop"},
-          {name: $filter('translate')('ocsp_web_streams_manage_026'), enable: true, icon: "glyphicon glyphicon-refresh danger"},
+          {name: $filter('translate')('ocsp_web_streams_manage_026'), enable: false, icon: "glyphicon glyphicon-refresh"},
           {name: $filter('translate')('ocsp_web_streams_manage_027'), enable: true, icon: "glyphicon glyphicon-remove-sign warning"}
         ];
       }else if(status === 2){
