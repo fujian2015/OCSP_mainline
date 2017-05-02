@@ -1,14 +1,15 @@
 %global         _prefix /usr
 
-Name:           OCDP_Stream
-Version:        2.0
-Release:        1_beta_k
+Name:           OCSP
+Version:        2.1
+Release:        0
 Summary:        OCSP from asiainfo.com
 
 Group:          Applications/Productivity
 License:        GPL
 URL:            https://github.com/OCSP/OCSP_mainline
-Prefix:         %{_prefix}
+Source:         OCSP_2.1.0.tar.gz
+
 
 %description
 OCSP from ASIAINFO
@@ -18,18 +19,20 @@ OCSP from ASIAINFO
 %install
 rm -rf %{buildroot}
 %{__install} -d %{buildroot}%{_prefix}
-tar -xzf %{_sourcedir}/OCDP_Stream_2.0.1_beta_k.tar.gz -C %{buildroot}%{_prefix}
-mkdir -p %{buildroot}%{_prefix}/ocsp
-mv %{buildroot}%{_prefix}/OCDP_Stream/* %{buildroot}%{_prefix}/ocsp
+tar -xzf %{_sourcedir}/OCSP_2.1.0.tar.gz -C %{buildroot}%{_prefix}
+mv %{buildroot}%{_prefix}/OCSP %{buildroot}%{_prefix}/ocsp
 
 %post
 
 %preun
-rpm_name="OCDP_Stream-2.0-1_beta_k.x86_64"
-rpm_path=`rpm -ql  ${rpm_name} | head -n 1 | awk -F/ 'NF-=1' OFS=/`
 # stop the service
-sh ${rpm_path}/ocsp/bin/stream stop
-sh ${rpm_path}/ocsp/bin/fountain stop
+sh %{_prefix}/ocsp/bin/stream stop
+sh %{_prefix}/ocsp/bin/fountain stop
+
+%postun
+echo "Start to remove %{_prefix}/ocsp"
+    rm -rf %{prefix}/ocsp
+echo "%{_prefix}/ocsp had been removed"
 
 %files
 %dir %{_prefix}/ocsp
@@ -39,6 +42,7 @@ sh ${rpm_path}/ocsp/bin/fountain stop
 %{_prefix}/ocsp/logs
 %{_prefix}/ocsp/web
 %defattr (755,root,root)
+/*
 %doc
 
 %changelog
