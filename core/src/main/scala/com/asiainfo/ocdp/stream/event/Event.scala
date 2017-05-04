@@ -28,8 +28,7 @@ class Event extends Serializable with Logging{
   def buildEvent(df: DataFrame, uniqKeys: String) = {
     // 用户配置的本业务输出字段
     var mix_sel_expr = conf.select_expr.split(",")
-    // 把主键追加到业务输出字段列中。查看用户配置的本业务输出字段中是否包括主键字段，如果没有则追加
-    uniqKeys.split(":").map(key => mix_sel_expr = if (!mix_sel_expr.contains(key)) mix_sel_expr :+ key else mix_sel_expr)
+
     // 向输出字段中追加用字户定义字段，如固定字段“1”，“xxx”
     if (conf.get("ext_fields", null) != null)
       mix_sel_expr = mix_sel_expr ++ conf.get("ext_fields", null).split(",")
