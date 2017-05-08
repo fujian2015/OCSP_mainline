@@ -140,6 +140,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_common_property_numExecutors': 'The number of executor',
     'ocsp_web_common_property_driverMemory': 'The memory of driver',
     'ocsp_web_common_property_executorMemory': 'The memory of executor',
+    'ocsp_web_common_property_executorCores': 'The executor cores',
     'ocsp_web_common_property_queue': 'The queue for running spark application on Yarn',
     'ocsp_web_common_property_filter': 'The condition expression for DataFrame',
     'ocsp_web_common_property_retry': 'Number of retries after stream crashed',

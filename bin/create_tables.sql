@@ -173,7 +173,7 @@ CREATE TABLE `STREAM_TASK` (
   `num_executors` int(11) NOT NULL DEFAULT '2',
   `driver_memory` varchar(5) NOT NULL DEFAULT '2g',
   `executor_memory` varchar(5) NOT NULL DEFAULT '2g',
-  `total_executor_cores` int(11) NOT NULL DEFAULT '2',
+  `executor_cores` int(11) NOT NULL DEFAULT '2',
   `queue` varchar(100) DEFAULT NULL,
   `status` int(11) NOT NULL DEFAULT '0',
   `start_time` varchar(500) DEFAULT NULL,

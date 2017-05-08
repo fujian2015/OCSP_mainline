@@ -98,7 +98,7 @@ router.get('/', function(req, res) {
   let limit = page_size;
   let offset = (page-1)*page_size;
   Task.findAll({
-    attributes: [['id', 'streamid'], 'name', 'type', 'cur_retry', 'receive_interval', 'num_executors', 'driver_memory', 'executor_memory', 'total_executor_cores', 'queue', 'status', 'start_time', 'stop_time', 'description', 'diid'],
+    attributes: [['id', 'streamid'], 'name', 'type', 'cur_retry', 'receive_interval', 'num_executors', 'driver_memory', 'executor_memory', 'executor_cores', 'queue', 'status', 'start_time', 'stop_time', 'description', 'diid'],
     limit: limit,
     offset: offset
   }).then((AllStreamData)=> {
@@ -122,7 +122,7 @@ router.get('/', function(req, res) {
 //根据流任务id获取流任务信息
 router.get('/:id', function(req, res) {
   Task.find({
-    attributes: [['id', 'streamid'], 'name', 'type', 'cur_retry', 'receive_interval', 'num_executors', 'driver_memory', 'executor_memory', 'total_executor_cores', 'queue', 'status', 'start_time', 'stop_time', 'description', 'diid'],
+    attributes: [['id', 'streamid'], 'name', 'type', 'cur_retry', 'receive_interval', 'num_executors', 'driver_memory', 'executor_memory', 'executor_cores', 'queue', 'status', 'start_time', 'stop_time', 'description', 'diid'],
     where: {
       id: req.params.id
     }

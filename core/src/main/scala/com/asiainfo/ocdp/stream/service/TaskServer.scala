@@ -146,7 +146,7 @@ class TaskServer extends Logging {
   }
   def getAllTaskInfos(): Array[TaskConf] = {
 
-    val sql = "select id,appID,type,receive_interval,status,num_executors,executor_memory,driver_memory,total_executor_cores,queue,retry,cur_retry,start_time,diid,owner from " + TableInfoConstant.TaskTableName
+    val sql = "select id,appID,type,receive_interval,status,num_executors,executor_memory,driver_memory,executor_cores,queue,retry,cur_retry,start_time,diid,owner from " + TableInfoConstant.TaskTableName
     val res = Try(JDBCUtil.query(sql))
     res match {
       case Success(data) => {
@@ -159,7 +159,7 @@ class TaskServer extends Logging {
           taskConf.setNum_executors(x.get("num_executors").get)
           taskConf.setExecutor_memory(x.get("executor_memory").get)
           taskConf.setDriver_memory(x.get("driver_memory").get)
-          taskConf.setTotal_executor_cores(x.get("total_executor_cores").get)
+          taskConf.setExecutor_cores(x.get("executor_cores").get)
           taskConf.setQueue(x.get("queue").get)
           taskConf.setRetry(getNumeric(x,"retry","0").toInt)
           taskConf.setDiid(x.get("diid").get)

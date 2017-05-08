@@ -212,8 +212,11 @@ object MainFrameManager extends Logging {
 
     val tid = conf.getId
 
+    val executor_cores_value = if(StringUtils.isEmpty(conf.getExecutor_cores)) "2" else conf.getExecutor_cores
+    val executor_cores = " --executor-cores " + executor_cores_value
+
     if (master.contains("spark")) {
-      val total_executor_cores = " --total-executor-cores " + conf.getTotal_executor_cores
+      val total_executor_cores = " --total-executor-cores " + executor_cores_value
       var supervise = ""
       if (MainFrameConf.systemProps.get("supervise", "false").eq("true"))
         supervise = " --supervise "
@@ -229,7 +232,7 @@ object MainFrameManager extends Logging {
         logInfo("The value of queue is invalid, remove --queue parameter")
         queue = ""
       }
-			cmd += streamClass + master + deploy_mode + executor_memory + driver_memory + num_executors + queue + jars + " " + appJars + " " + tid
+			cmd += streamClass + master + deploy_mode + executor_memory + executor_cores + driver_memory + num_executors + queue + jars + " " + appJars + " " + tid
     }
     logInfo("Executor submit shell : " + cmd)
     TaskCommand(tid, cmd)

@@ -40,7 +40,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: "2g"
     },
-    total_executor_cores: {
+    executor_cores: {
       type: DataTypes.INTEGER(11),
       allowNull: false,
       defaultValue: "2"

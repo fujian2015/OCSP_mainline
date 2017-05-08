@@ -138,6 +138,7 @@ angular.module('ocspApp').config(['$translateProvider', function($translateProvi
     'ocsp_web_common_property_numExecutors': 'executor的数量',
     'ocsp_web_common_property_driverMemory': 'driver的内存',
     'ocsp_web_common_property_executorMemory': '每个executor的内存',
+    'ocsp_web_common_property_executorCores': '每个executor的core数量',
     'ocsp_web_common_property_queue': 'Spark streaming应用程序运行在Yarn上的队列',
     'ocsp_web_common_property_filter': '过滤条件，必须符合Spark DateFrame过滤条件表达式的格式',
     'ocsp_web_common_property_retry': '作业流异常重启次数',
