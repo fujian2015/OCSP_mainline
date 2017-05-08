@@ -13,6 +13,7 @@ class TaskConf() extends BaseConf{
   @BeanProperty var receive_interval: Int = 0
   @BeanProperty var num_executors: String = ""
   @BeanProperty var executor_memory: String = ""
+  @BeanProperty var driver_memory: String = ""
   @BeanProperty var total_executor_cores: String = ""
   @BeanProperty var queue: String = ""
   @BeanProperty var status: Int = 0

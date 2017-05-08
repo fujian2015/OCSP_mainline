@@ -204,9 +204,11 @@ object MainFrameManager extends Logging {
       logError("Can not find core jar")
     }
 
-    val spark_version = MainFrameConf.versionInfo.getProperty("spark_version", "1.6")
     val streamClass = " --class com.asiainfo.ocdp.stream.manager.StreamApp"
     val executor_memory = " --executor-memory " + conf.getExecutor_memory
+
+    val driver_memory_value = if(StringUtils.isEmpty(conf.getDriver_memory)) "1g" else conf.getDriver_memory
+    val driver_memory = " --driver-memory " + driver_memory_value
 
     val tid = conf.getId
 
@@ -216,7 +218,7 @@ object MainFrameManager extends Logging {
       if (MainFrameConf.systemProps.get("supervise", "false").eq("true"))
         supervise = " --supervise "
 
-			cmd += streamClass + master + deploy_mode + supervise + executor_memory + total_executor_cores + jars + " " + appJars + " " + tid
+			cmd += streamClass + master + deploy_mode + supervise + executor_memory + driver_memory + total_executor_cores + jars + " " + appJars + " " + tid
     } else if (master.contains("yarn")) {
       val num_executors = " --num-executors " + conf.getNum_executors
       var queue = " --queue "
@@ -227,7 +229,7 @@ object MainFrameManager extends Logging {
         logInfo("The value of queue is invalid, remove --queue parameter")
         queue = ""
       }
-			cmd += streamClass + master + deploy_mode + executor_memory + num_executors + queue + jars + " " + appJars + " " + tid
+			cmd += streamClass + master + deploy_mode + executor_memory + driver_memory + num_executors + queue + jars + " " + appJars + " " + tid
     }
     logInfo("Executor submit shell : " + cmd)
     TaskCommand(tid, cmd)
