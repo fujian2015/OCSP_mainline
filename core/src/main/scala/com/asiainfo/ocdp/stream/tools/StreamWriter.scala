@@ -67,6 +67,10 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
 
     logInfo(s"The number of partitions is $numPartitions")
     val extraID = MainFrameConf.systemProps.getBoolean(MainFrameConf.EXTRAID, false)
+    val jsonFormatEvtIds = MainFrameConf.systemProps.get(MainFrameConf.jsonFormat, "")
+    logInfo(s"json_ids="+jsonFormatEvtIds+",this evt_id="+conf.id)
+    val isJsonFormat=if(jsonFormatEvtIds.split(",").contains(conf.id)) true else false
+    logInfo(s"isJsonFormat="+isJsonFormat)
 
     jsonRDD.coalesce(numPartitions).mapPartitions(iter => {
       val diConf = broadDiconf.value
@@ -75,13 +79,24 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
         {
           val line = Json4sUtils.jsonStr2Map(jsonstr)
           val key = uniqKeys.split(diConf.uniqKeysDelim).map(item=>line(item.trim)).mkString(diConf.uniqKeyValuesDelim)
-          //val msg_json = line._2
-          val msg_head = Json4sUtils.jsonStr2String(jsonstr, fildList, delim)
-          // 加入当前msg输出时间戳
-          val msg = { if (extraID)
+
+          var msg=""
+          if(isJsonFormat){//1-如果输出json格式的数据
+            val outMap=line.+("inst_id"-> conf.id ).asInstanceOf[Map[String,String]]
+            //line+("process_dt"->sdf.format(System.currentTimeMillis))
+            msg=Json4sUtils.map2JsonStr(outMap)
+            logInfo(msg)
+          }else{//2-如果只输出数据
+            //val msg_json = line._2
+            val msg_head = Json4sUtils.jsonStr2String(jsonstr, fildList, delim)
+
+            // 加入当前msg输出时间戳
+            msg = { if (extraID)
               conf.id + delim + msg_head + delim + sdf.format(System.currentTimeMillis)
             else
               msg_head + delim + sdf.format(System.currentTimeMillis) }
+          }
+
           if (key == null) messages.append(new KeyedMessage[String, String](topic, msg))
           else messages.append(new KeyedMessage[String, String](topic, key, msg))
           key

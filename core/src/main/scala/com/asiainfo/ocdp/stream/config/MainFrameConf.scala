@@ -21,6 +21,7 @@ object MainFrameConf {
 
   val MONITOR_TASK_MONITOR_ENABLE = "ocsp.monitor.task-monitor.enable"
   val EXTRAID = "ocsp.event.append-id.enable"
+  val jsonFormat="ocsp.event.output.record.json_format.ids"
 
   initMainFrameConf()
 
