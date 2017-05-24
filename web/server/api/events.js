@@ -220,6 +220,12 @@ router.get('/', function(req, res) {
   let page = parseInt(req.query.page);
   let limit = page_size;
   let offset = (page-1)*page_size;
+  if (isNaN(page_size)){
+    page_size = 15;
+  }
+  if (isNaN(page)){
+    page = 1;
+  }
   Event_Model.findAll({
          attributes: [['id', 'eventid'], 'diid', 'name', 'select_expr', 'filter_expr', 'p_event_id', 'PROPERTIES', 'status', 'description'],
          limit: limit,
