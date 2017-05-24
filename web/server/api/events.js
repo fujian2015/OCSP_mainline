@@ -218,6 +218,12 @@ router.put('/:id', function(req, res) {
 router.get('/', function(req, res) {
   let page_size = parseInt(req.query.page_size);
   let page = parseInt(req.query.page);
+  if (isNaN(page_size)){
+    page_size = 15;
+  }
+  if (isNaN(page)){
+    page = 1;
+  }
   let limit = page_size;
   let offset = (page-1)*page_size;
   Event_Model.findAll({
