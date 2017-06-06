@@ -66,10 +66,13 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
 
 
     logInfo(s"The number of partitions is $numPartitions")
+    //MainFrameConf.flushSystemProps()//重新获取stream_systemprop的配置，事件输出时立即生效
     val extraID = MainFrameConf.systemProps.getBoolean(MainFrameConf.EXTRAID, false)
-    val jsonFormatEvtIds = MainFrameConf.systemProps.get(MainFrameConf.jsonFormat, "")
-    logInfo(s"json_ids="+jsonFormatEvtIds+",this evt_id="+conf.id)
-    val isJsonFormat=if(jsonFormatEvtIds.split(",").contains(conf.id)) true else false
+    //在stream_systemprop的配置stream_datainterface的diid，则该输入源下的所有事件均json格式输出
+    val jsonFormatEvtDiIds = MainFrameConf.systemProps.get(MainFrameConf.jsonFormat, "")
+    val evt_diid=conf.getInIFId
+    logInfo(s"json_ids="+jsonFormatEvtDiIds+",this evt_DI_id="+evt_diid)
+    val isJsonFormat=if(jsonFormatEvtDiIds.split(",").contains(evt_diid)) true else false
     logInfo(s"isJsonFormat="+isJsonFormat)
 
     jsonRDD.coalesce(numPartitions).mapPartitions(iter => {
