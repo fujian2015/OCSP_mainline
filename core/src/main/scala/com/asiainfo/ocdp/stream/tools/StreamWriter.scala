@@ -76,7 +76,8 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
     logInfo(s"isJsonFormat="+isJsonFormat)
 
     jsonRDD.coalesce(numPartitions).mapPartitions(iter => {
-      val diConf = broadDiconf.value
+      //val diConf = broadDiconf.value
+      val diConf =conf.outIFIds(0)
       val messages = ArrayBuffer[KeyedMessage[String, String]]()
       val it = iter.toList.map(jsonstr =>
         {
