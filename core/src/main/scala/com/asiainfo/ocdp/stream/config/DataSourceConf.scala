@@ -9,4 +9,6 @@ class DataSourceConf extends BaseConf {
   @BeanProperty var dsid: String = ""
   @BeanProperty var name: String = ""
   @BeanProperty var dsType: String = ""
+
+  override def toString = s"DataSourceConf($dsid, $name, ${getAll.toList})"
 }
