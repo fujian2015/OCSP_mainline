@@ -156,8 +156,8 @@ router.post('/', function(req, res) {
         return Event_Model.create(new_event, {transaction: t});
       });
     });
-  }).then(function () {
-    res.status(201).send({success: true});
+  }).then((data)=> {
+    res.status(201).send({success: true,"event_id":data.dataValues.id});
   }, function () {
     res.status(500).send(trans.databaseError);
   }).catch(function () {
