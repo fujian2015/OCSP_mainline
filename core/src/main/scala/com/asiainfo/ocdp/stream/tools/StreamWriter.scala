@@ -52,18 +52,9 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
 
     val numPartitionsCustom = conf.get("numPartitions", "null")
 
-
     if (NumberUtils.isDigits(numPartitionsCustom)){
       numPartitions = numPartitionsCustom.toInt
     }
-
-    if (numPartitions < 0){
-      numPartitions = jsonRDD.partitions.length/10
-      if(numPartitions < 1){
-        numPartitions = 1
-      }
-    }
-
 
     logInfo(s"The number of partitions is $numPartitions")
     //MainFrameConf.flushSystemProps()//重新获取stream_systemprop的配置，事件输出时立即生效
@@ -75,7 +66,13 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
     val isJsonFormat=if(jsonFormatEvtDiIds.split(",").contains(evt_diid)) true else false
     logInfo(s"isJsonFormat="+isJsonFormat)
 
-    jsonRDD.coalesce(numPartitions).mapPartitions(iter => {
+    (if (numPartitions < 0){
+      logInfo("No need to coalesce")
+      jsonRDD
+    }else{
+      logInfo(s"Change partition to ${numPartitions}")
+      jsonRDD.coalesce(numPartitions)
+    }).mapPartitions(iter => {
       //val diConf = broadDiconf.value
       val diConf =conf.outIFIds(0)
       val messages = ArrayBuffer[KeyedMessage[String, String]]()
@@ -89,16 +86,17 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
             val outMap=line.+("inst_id"-> conf.id ).asInstanceOf[Map[String,String]]
             //line+("process_dt"->sdf.format(System.currentTimeMillis))
             msg=Json4sUtils.map2JsonStr(outMap)
-            logInfo(msg)
+            logDebug(msg)
           }else{//2-如果只输出数据
             //val msg_json = line._2
             val msg_head = Json4sUtils.jsonStr2String(jsonstr, fildList, delim)
 
             // 加入当前msg输出时间戳
             msg = { if (extraID)
-              conf.id + delim + msg_head + delim + sdf.format(System.currentTimeMillis)
+              conf.id + delim + msg_head// + delim + sdf.format(System.currentTimeMillis)
             else
-              msg_head + delim + sdf.format(System.currentTimeMillis) }
+              msg_head// + delim + sdf.format(System.currentTimeMillis)
+            }
           }
 
           if (key == null) messages.append(new KeyedMessage[String, String](topic, msg))

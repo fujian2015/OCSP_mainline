@@ -21,6 +21,8 @@ class Event extends Serializable with Logging{
   val eventServer = new EventServer()
   val batchLimit = MainFrameConf.systemProps.getInt("cacheQryBatchSizeLimit")
 
+  var receive_interval = 0
+
   def init(eventconf: EventConf) {
     conf = eventconf
   }
@@ -113,7 +115,16 @@ class Event extends Serializable with Logging{
         if (index == size - 1) batchList += batchArrayBuffer.toArray
       }
 
-      val outPutJsonList = eventServer.getEventCache(eventCacheService, batchList.toArray, time_EventId, conf.getInterval)
+      val outPutJsonList = {
+        if(conf.getInterval == receive_interval){
+          logInfo("Start to distinct...")
+          eventServer.distinct(batchList.toArray)
+        }else{
+          logInfo(s"Start to update cache since [${conf.getInterval} != ${receive_interval}]...")
+          eventServer.getEventCache(eventCacheService, batchList.toArray, time_EventId, conf.getInterval)
+        }
+
+      }
 
       outPutJsonList.iterator
     })
