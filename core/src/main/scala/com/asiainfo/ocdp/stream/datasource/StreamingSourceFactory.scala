@@ -42,14 +42,20 @@ object StreamingSourceFactory extends Logging {
     val groupId = dsConf.get(DataSourceConstant.GROUP_ID_KEY)
     val kc = new KafkaCluster(kafkaParams)
 
-    for (offsets <- offsetList) {
-      val o = kc.setConsumerOffsets(groupId, Map((offsets.topicAndPartition(), offsets.untilOffset)))
-      if (o.isLeft) {
-        logError(s"Error updating the offset to Kafka cluster: ${o.left.get}")
-        return false
-      }
+    val offsetMap = offsetList.map(offset => (offset.topicAndPartition() -> offset.untilOffset)) toMap
+    val o = kc.setConsumerOffsets(groupId, offsetMap)
+
+    if (o.isLeft) {
+      logError(s"Error updating the offset to Kafka cluster: ${o.left.get}")
+      return false
+    }
+
+    logInfo(s"update offset into zk group : ${groupId}")
+    for (offset <- offsetList) {
+      logDebug(s"update offsets, topic: ${offset.topic}, partition: ${offset.partition}, offset: ${offset.untilOffset}")
     }
     return true
   }
+
 }
 
