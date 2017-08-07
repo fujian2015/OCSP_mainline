@@ -69,15 +69,15 @@ class Event extends Serializable with Logging{
   def checkEvent(eventDF: DataFrame, uniqKeys: String): (RDD[String]) = {
     val time_EventId = EventConstant.EVENTCACHE_FIELD_TIMEEVENTID_PREFIX_KEY + conf.id
 
-    BroadcastManager.broadcastEventConf(conf)
-    val broadEventConf = BroadcastManager.getBroadEventConf
+    //BroadcastManager.broadcastEventConf(conf)
+    //val broadEventConf = BroadcastManager.getBroadEventConf
 
     val broadSysProps = BroadcastManager.getBroadSysProps
     val broadCodisProps = BroadcastManager.getBroadCodisProps
     val broadTaskConf = BroadcastManager.getBroadTaskConf
 
     ComFunc.Func.DFrametoJsonMapPartitions(eventDF)(iter => {
-      val conf = broadEventConf.value
+      //val conf = broadEventConf.value
       //Init Broadcast conf
       BroadcastConf.initProp(broadSysProps.value, broadCodisProps.value)
 
@@ -98,7 +98,7 @@ class Event extends Serializable with Logging{
         val line = jsonList(index)
         val current = Json4sUtils.jsonStr2Map(line)
 
-        broadEventConf.value.outIFIds.foreach(diConf =>{
+        conf.outIFIds.foreach(diConf =>{
           val eventUniqKeys = diConf.get("uniqKeys")
           var eventKeyValue = ""
           if (StringUtils.isEmpty((eventUniqKeys))){
