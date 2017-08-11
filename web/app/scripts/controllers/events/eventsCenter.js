@@ -305,7 +305,7 @@ angular.module('ocspApp')
   
               if(invalidOuptuFields.length!==0){
                 $scope.outputFieldsInvalid = true;
-                $scope.outputFieldsInvalidMessage = invalidOuptuFields.join(',') + ' is invalid output fileds';
+                $scope.outputFieldsInvalidMessage = invalidOuptuFields.join(',') + $translate.instant('ocsp_web_common_035');
               }else {
                 $scope.outputFieldsInvalid = false;
                 $scope.outputFieldsInvalidMessage = "";  
@@ -340,6 +340,12 @@ angular.module('ocspApp')
               });
             });
             if($("#eventForm .ng-invalid").length === 0) {
+              $scope.checkOutputFileds();
+              if($scope.outputFieldsInvalid){
+                Notification.error($scope.outputFieldsInvalidMessage);
+                return;
+              }
+
               if($scope.newEvent.note) {
                 $scope.newEvent.note = $scope.newEvent.note.replace(/[<p>|</p>]/g, "");
                 $scope.newEvent.note = `<p>${$scope.newEvent.note}</p>`;
