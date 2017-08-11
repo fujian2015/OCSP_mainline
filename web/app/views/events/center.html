@@ -139,10 +139,11 @@
               <div class="form-group">
                 <label>{{'ocsp_web_streams_manage_018' | translate}}*</label>
                 <tokenfield inputs="{{item.inputFields}}" labels="{{item.labels}}"
-                            ng-model="item.select_expr" name="eventsFields" ng-change="updateFormDirtyStatus()" required="true">
+                            ng-model="item.select_expr" name="eventsFields" change="checkUpdateOutputFileds(item)" required="true">
                 </tokenfield>
                 <span class="redtip"
                       ng-show="mainForm['eventsFields'].$touched && mainForm['eventsFields'].$error.required">{{'ocsp_web_common_027' | translate}}</span>
+                <span class="redtip" ng-show="!isUpdatedOutputFieldsValid">{{isUpdatedOutputFieldsValidMessages}}</span>
               </div>
               <div class="form-group">
                 <label>{{'ocsp_web_streams_manage_019' | translate}}*</label>
@@ -328,7 +329,7 @@
               </div>
             </div>
           </div>
-          <button class="btn btn-primary" ng-disabled="!isMainFormDataChanged" ng-click="update()" style="margin-top: 10px;margin-bottom: 10px;" ng-disabled="isAdmin()">{{'ocsp_web_common_009' | translate}}</button>
+          <button class="btn btn-primary" ng-disabled="!isMainFormDataChanged || !isUpdatedOutputFieldsValid" ng-click="update()" style="margin-top: 10px;margin-bottom: 10px;" ng-disabled="isAdmin()">{{'ocsp_web_common_009' | translate}}</button>
         </div>
       </div>
       <div class="col-md-8" ng-if="eventsList.length > 0">

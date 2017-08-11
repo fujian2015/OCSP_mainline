@@ -257,6 +257,10 @@ angular.module('ocspApp')
       });
     };
 
+    $scope.trimStr = function(str){
+      return str.replace(/(^\s*)|(\s*$)/g, '');
+    };
+
     $scope.openCreateEvent = ()=>{
       let modal = $uibModal.open({
         animation: true,
@@ -279,10 +283,6 @@ angular.module('ocspApp')
           $scope.outputFieldsInvalid = false;
           $scope.outputFieldsInvalidMessage = "";
 
-          let trimStr = function(str){
-            return str.replace(/(^\s*)|(\s*$)/g, '');
-          };
-
           $scope.checkOutputFileds = function(){
             let invalidOuptuFields = [];
 
@@ -293,7 +293,7 @@ angular.module('ocspApp')
               for(let idx in outputFields){
                 let tmpExistCheck = false;
                 for(let innerIdx in existsFields){
-                  if(trimStr(outputFields[idx]) === trimStr(existsFields[innerIdx])){
+                  if($scope.trimStr(outputFields[idx]) === $scope.trimStr(existsFields[innerIdx])){
                     tmpExistCheck = true;
                     break;
                   }
@@ -529,8 +529,47 @@ angular.module('ocspApp')
       }
     };
 
+    $scope.isUpdatedOutputFieldsValid = true;
+    $scope.isUpdatedOutputFieldsValidMessages = "";
+    $scope.checkUpdateOutputFileds = function(item){
+      $scope.isMainFormDataChanged = JSON.stringify($scope.oldItem)!==JSON.stringify($scope.item);
+      let invalidOuptuFields = [];
+
+      if(!!item.select_expr){
+        let existsFields = item.inputFields.split(',');
+        let outputFields = item.select_expr.split(',');
+        
+        for(let idx in outputFields){
+          let tmpExistCheck = false;
+          for(let innerIdx in existsFields){
+            if($scope.trimStr(outputFields[idx]) === $scope.trimStr(existsFields[innerIdx])){
+              tmpExistCheck = true;
+              break;
+            }
+          }
+          if(!tmpExistCheck){
+            invalidOuptuFields.push(outputFields[idx]);
+          }
+        }
+
+        if(invalidOuptuFields.length!==0){
+          $scope.isUpdatedOutputFieldsValid = false;
+          $scope.isUpdatedOutputFieldsValidMessages = invalidOuptuFields.join(',') + $translate.instant('ocsp_web_common_035');
+        }else {
+          $scope.isUpdatedOutputFieldsValid = true;
+          $scope.isUpdatedOutputFieldsValidMessages = "";  
+        }
+      } else {
+        $scope.isUpdatedOutputFieldsValid = true;
+        $scope.isUpdatedOutputFieldsValidMessages = "";
+      }
+      
+    };
+
     $scope.update = function(){
       $scope.isMainFormDataChanged = false;
+      
+
       if($scope.item.id === undefined || $scope.item.id === null){
         Notification.error("Cannot update null event");
       }else{
