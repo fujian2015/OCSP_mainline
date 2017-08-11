@@ -268,10 +268,53 @@ angular.module('ocspApp')
         scope: $scope,
         controller: ['$scope', 'Notification', function($scope, Notification) {
           $scope.newEvent = {
-            output: {}
+            output: {},
+            inputFields:'',
+            select_expr:'',
           };
           $scope.closeModal = function(){
             modal.close();
+          };
+
+          $scope.outputFieldsInvalid = false;
+          $scope.outputFieldsInvalidMessage = "";
+
+          let trimStr = function(str){
+            return str.replace(/(^\s*)|(\s*$)/g, '');
+          };
+
+          $scope.checkOutputFileds = function(){
+            let invalidOuptuFields = [];
+
+            if(!!$scope.newEvent.select_expr){
+              let existsFields = $scope.newEvent.inputFields.split(',');
+              let outputFields = $scope.newEvent.select_expr.split(',');
+              
+              for(let idx in outputFields){
+                let tmpExistCheck = false;
+                for(let innerIdx in existsFields){
+                  if(trimStr(outputFields[idx]) === trimStr(existsFields[innerIdx])){
+                    tmpExistCheck = true;
+                    break;
+                  }
+                }
+                if(!tmpExistCheck){
+                  invalidOuptuFields.push(outputFields[idx]);
+                }
+              }
+  
+              if(invalidOuptuFields.length!==0){
+                $scope.outputFieldsInvalid = true;
+                $scope.outputFieldsInvalidMessage = invalidOuptuFields.join(',') + ' is invalid output fileds';
+              }else {
+                $scope.outputFieldsInvalid = false;
+                $scope.outputFieldsInvalidMessage = "";  
+              }
+            } else {
+              $scope.outputFieldsInvalid = false;
+              $scope.outputFieldsInvalidMessage = "";
+            }
+            
           };
 
           $scope.eventcodealreadyexists = false;

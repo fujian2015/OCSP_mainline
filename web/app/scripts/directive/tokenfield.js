@@ -9,7 +9,13 @@ angular.module('ocspApp').directive('tokenfield',['strService', function(strServ
     transclude: true,
     replace: true,
     scope: {
-      ngModel: '='
+      ngModel: '=',
+      change: '&'
+    },
+    controller:function($scope){
+      $scope.onchanged = function(){
+        $scope.change();
+      };
     },
     link: function (scope, element, attrs) {
       let _findLabelTips = function(){
@@ -65,6 +71,7 @@ angular.module('ocspApp').directive('tokenfield',['strService', function(strServ
       });
       scope.$watch('ngModel', function() {
         token.tokenfield('setTokens', scope.ngModel);
+        scope.change();
       });
       if(_bDisabled) {
         element.find("input.token-input").attr('disabled',true);
