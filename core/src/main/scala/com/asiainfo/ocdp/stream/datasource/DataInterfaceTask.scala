@@ -111,45 +111,52 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
     val dataSchemas = broadDiConf.value.getDataSchemas
     val partitionsList = ArrayBuffer[Int]()
 
-    val kerberos_enable = MainFrameConf.systemProps.getBoolean(MainFrameConf.KERBEROS_ENABLE, true)
-
-    for (dataSchema <- dataSchemas) {
-
-      val kvRDD = withUptime("1.kafka RDD 转换成 rowRDD"){
+    val rowRDD = if(dataSchemas.length == 1){
+      withUptime("1.kafka RDD transformed to rowRDD via single mode"){
         rdd.map( input => {
-            transform(input, dataSchema, broadDiConf.value, totalRecordsCounter, reservedRecordsCounter)
+          transform(input, dataSchemas(0), totalRecordsCounter, reservedRecordsCounter)
         }).collect { case Some(row) => row }
       }
-
-      partitionsList += kvRDD.partitions.length
-
-      if (kvRDD.partitions.size > 0) {
-
-        if (null == unionRDD)
-          unionRDD = kvRDD
-        else
-          unionRDD = unionRDD.union(kvRDD)
-
-      } else
-        println("当前时间片内正确输入格式的流数据为空, 不做任何处理.")
-    }
-
-    var repartition_unionRDD: RDD[(String, Array[String])] = null
-    if (dataSchemas.length>1){
-      var numPartitions = broadDiConf.value.getNumPartitions
-      if (numPartitions <= 0){
-        numPartitions = partitionsList.max
-      }
-
-      logInfo(s"repartition to ${numPartitions} which is max of ${partitionsList} since there are ${dataSchemas.length} data schemas.")
-
-      repartition_unionRDD = unionRDD.partitionBy(new HashPartitioner(numPartitions))
     }
     else{
-      repartition_unionRDD = unionRDD
-    }
+      for (dataSchema <- dataSchemas) {
 
-    val rowRDD = repartition_unionRDD.map(input => Row.fromSeq(input._2))
+        val kvRDD = withUptime("1.kafka RDD 转换成 rowRDD"){
+          rdd.map( input => {
+            transform(input, dataSchema, broadDiConf.value, totalRecordsCounter, reservedRecordsCounter)
+          }).collect { case Some(row) => row }
+        }
+
+        partitionsList += kvRDD.partitions.length
+
+        if (kvRDD.partitions.size > 0) {
+
+          if (null == unionRDD)
+            unionRDD = kvRDD
+          else
+            unionRDD = unionRDD.union(kvRDD)
+
+        } else
+          println("当前时间片内正确输入格式的流数据为空, 不做任何处理.")
+      }
+
+      var repartition_unionRDD: RDD[(String, Array[String])] = null
+      if (dataSchemas.length>1){
+        var numPartitions = broadDiConf.value.getNumPartitions
+        if (numPartitions <= 0){
+          numPartitions = partitionsList.max
+        }
+
+        logInfo(s"repartition to ${numPartitions} which is max of ${partitionsList} since there are ${dataSchemas.length} data schemas.")
+
+        repartition_unionRDD = unionRDD.partitionBy(new HashPartitioner(numPartitions))
+      }
+      else{
+        repartition_unionRDD = unionRDD
+      }
+
+      repartition_unionRDD.map(input => Row.fromSeq(input._2))
+    }
 
     val df = ComFunc.Func.createDataFrame(ssc, rowRDD, conf.getCommonSchema)
     val filter_expr = conf.get("filter_expr")
@@ -163,6 +170,30 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
         df.selectExpr(conf.getAllItemsSchema.fieldNames: _*)
     }
 
+  }
+
+  private def transform[T: ClassTag](input: T, dataSchema: DataSchema,
+                                     totalRecordsCounter: Accumulator[Long], reservedRecordsCounter: Accumulator[Long]): Option[Row] = {
+
+    val delim = dataSchema.getDelim
+    val raw = input.asInstanceOf[ConsumerRecord[String, String]]
+    val topic = raw.topic()
+    val source = raw.value()
+    val inputArr = StringUtils.splitByWholeSeparatorPreserveAllTokens(source,StringEscapeUtils.unescapeJava(delim))
+
+    totalRecordsCounter.add(1)
+
+    val valid = {
+      if (CommonConstant.MulTopic) topic == dataSchema.getTopic && inputArr.size == dataSchema.getRawSchemaSize
+      else inputArr.size == dataSchema.getRawSchemaSize
+    }
+
+    if (valid) {
+      reservedRecordsCounter.add(1)
+      Some(Row.fromSeq(inputArr))
+    } else {
+      None
+    }
   }
 
   final def process(ssc: StreamingContext) = {
