@@ -70,7 +70,6 @@ angular
           cepConfig: function ($http,$rootScope,$location) {
             $http.get("/api/config/cepEnable").success((data) => {
               $rootScope.cep = JSON.parse(data);
-              console.log($rootScope.cep);
               if(!$rootScope.cep){
                 $location.path('/');
               }
