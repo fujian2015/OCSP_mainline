@@ -60,6 +60,7 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
 
     logInfo(s"The number of partitions is $numPartitions")
     val extraID = MainFrameConf.systemProps.getBoolean(MainFrameConf.EXTRAID, false)
+    val timeStamp = MainFrameConf.systemProps.getBoolean(MainFrameConf.TIMESTAMP, true)
 
     logInfo(s"Send records to ${conf.outIFIds(0).dsConf} for event ${conf.id}")
 
@@ -76,11 +77,11 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
           val key = uniqKeys.split(diConf.uniqKeysDelim).map(item=>line(item.trim)).mkString(diConf.uniqKeyValuesDelim)
           //val msg_json = line._2
           val msg_head = Json4sUtils.jsonStr2String(jsonstr, fildList, delim)
+          var msg = { if (extraID) conf.id + delim + msg_head
+                    else msg_head }
           // 加入当前msg输出时间戳
-          val msg = { if (extraID)
-              conf.id + delim + msg_head + delim + sdf.format(System.currentTimeMillis)
-            else
-              msg_head + delim + sdf.format(System.currentTimeMillis) }
+          if (timeStamp)
+            msg = msg + delim + sdf.format(System.currentTimeMillis)
           if (key == null) messages.append(new ProducerRecord[String, String](topic, msg))
           else messages.append(new ProducerRecord[String, String](topic, key, msg))
           key

@@ -23,7 +23,7 @@ object OffsetStatistics {
       var total = 0L;
 
       for (o <- offsetArray) {
-        logger.info(s"reading offset: ${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset} ")
+        logger.debug(s"reading offset: ${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset} ")
         if (o.untilOffset >= o.fromOffset) {
           val size = o.untilOffset - o.fromOffset
           if (size <= minOff) {
