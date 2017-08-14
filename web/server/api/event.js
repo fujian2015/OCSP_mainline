@@ -224,9 +224,36 @@ function _createOrUpdateOutputDataInterface(event, t) {
   }
 }
 
+let mergeDBProps = function(targetProps,dbProps){
+
+  let isPNameExists = function(propslist,pname){
+    for(let i in propslist){
+      if(propslist[i].pname === pname){
+        return true;
+      }
+    }
+    return false;
+  };
+
+  let propertyNamesOfDBProps = Object.getOwnPropertyNames(dbProps);
+  for(let key of propertyNamesOfDBProps){
+    if(!!!targetProps[key]){
+      targetProps[key] = dbProps[key];
+    }
+  }
+
+  for(let i in dbProps.props){
+    if(!isPNameExists(targetProps.props,dbProps.props[i].pname)){
+      targetProps.props.push(dbProps.props[i]);
+    }
+  }
+
+  return targetProps;
+};
+
 router.put('/:id', function(req, res){
   let event = req.body.event;
-  EventDef.find({attributes: ["owner"], where: {id: event.id}}).then((owner)=> {
+  EventDef.find({attributes: ["owner","PROPERTIES"], where: {id: event.id}}).then((owner)=> {
     if(owner && owner.dataValues && owner.dataValues.owner === req.query.username) {
       return sequelize.transaction(function (t) {
         return _createOrUpdateOutputDataInterface(event, t).then(function (result) {
@@ -235,6 +262,7 @@ router.put('/:id', function(req, res){
           if (event.parent) {
             event.cep.type = event.parent.id;
           }
+          event.PROPERTIES = JSON.stringify(mergeDBProps(JSON.parse(event.PROPERTIES),JSON.parse(owner.dataValues.PROPERTIES)));
           return sequelize.Promise.all([
             EventDef.update(event, {where: {id: event.id}, transaction: t}),
             CEP.update(event.cep, {where: {event_id: event.id}, transaction: t}),
