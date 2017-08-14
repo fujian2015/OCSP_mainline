@@ -7,6 +7,13 @@ angular.module('ocspApp')
   .controller('TaskManagementCtrl', ['$scope', '$http', 'Notification', '$q', '$rootScope', '$interval', '$uibModal', '$filter', 'moment', 'strService', 'CONFIGS', '$ngConfirm',
     function ($scope, $http, Notification, $q, $rootScope, $interval, $uibModal, $filter, moment, strService, CONFIGS, $ngConfirm) {
     $rootScope.init('task');
+
+    $scope.streamTypes = [
+      {id:1,name:"Spark"},
+      {id:2,name:"Storm"}
+    ];
+    $scope.currentStreamType = {id:1,name:"Spark"};
+
     //i18n
     $scope.localLang = {
       search: $filter('translate')('ocsp_web_common_014'),

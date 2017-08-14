@@ -1,6 +1,17 @@
 <wizard title="{{'ocsp_web_streams_manage_001' | translate}}" width="1020px" name="ocsp_web_streams_manage_001" submit-method="submitMethod()"
-        task="task">
+  task="task">
   <div class="wizard-card" data-cardname="ocsp_web_common_013">
+    <div class="form-group">
+      <label>类型</label>
+      <ui-select ng-model="currentStreamType" ng-required="true">
+        <ui-select-match>
+          <span ng-bind="$select.selected.name"></span>
+        </ui-select-match>
+        <ui-select-choices repeat="streamtype in streamTypes track by streamtype.id">
+          <span ng-bind="streamtype.name"></span>
+        </ui-select-choices>
+      </ui-select>
+    </div>
     <div class="form-group">
       <label>{{'ocsp_web_common_011' | translate}}*</label>
       <input type="text" name="name" class="form-control" ng-model="task.name" required>
@@ -17,8 +28,7 @@
         <ui-select-match>
           <span ng-bind="$select.selected.name"></span>
         </ui-select-match>
-        <ui-select-choices
-          repeat="datasource in (inputDatasources | filter: $select.search) track by datasource.id">
+        <ui-select-choices repeat="datasource in (inputDatasources | filter: $select.search) track by datasource.id">
           <span ng-bind="datasource.name"></span>
         </ui-select-choices>
       </ui-select>
@@ -28,10 +38,7 @@
       <uib-accordion>
         <div uib-accordion-group class="panel-default" ng-repeat="item in task.input.inputs" is-open="item.isOpen">
           <uib-accordion-heading>
-            <i class="pull-left glyphicon"
-               ng-class="{'glyphicon-chevron-down': item.isOpen, 'glyphicon-chevron-right': !item.isOpen}"></i>
-            &nbsp;
-            {{'ocsp_web_streams_manage_038' | translate}} {{item.name}}
+            <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': item.isOpen, 'glyphicon-chevron-right': !item.isOpen}"></i>            &nbsp; {{'ocsp_web_streams_manage_038' | translate}} {{item.name}}
             <a class="pull-right" ng-click="$event.stopPropagation();$event.preventDefault();remove(task.input.inputs, $index)"><i
             class="glyphicon glyphicon-remove"></i></a>
           </uib-accordion-heading>
@@ -55,18 +62,18 @@
             <div class="form-group">
               <table class="table table-hover">
                 <thead>
-                <tr>
-                  <th class="col-md-3">{{'ocsp_web_common_011' | translate}}*</th>
-                  <th class="col-md-8">pvalue*</th>
-                  <th class="col-md-1"><a ng-click="add(item.userFields)"><i class="glyphicon glyphicon-plus"></i></a></th>
-                </tr>
+                  <tr>
+                    <th class="col-md-3">{{'ocsp_web_common_011' | translate}}*</th>
+                    <th class="col-md-8">pvalue*</th>
+                    <th class="col-md-1"><a ng-click="add(item.userFields)"><i class="glyphicon glyphicon-plus"></i></a></th>
+                  </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="userfield in item.userFields">
-                  <td><input type="text" class="form-control" ng-model="userfield.name" required></td>
-                  <td><input type="text" class="form-control" ng-model="userfield.value" required></td>
-                  <td><a ng-click="remove(item.userFields, $index)"><i class="glyphicon glyphicon-remove"></i></a></td>
-                </tr>
+                  <tr ng-repeat="userfield in item.userFields">
+                    <td><input type="text" class="form-control" ng-model="userfield.name" required></td>
+                    <td><input type="text" class="form-control" ng-model="userfield.value" required></td>
+                    <td><a ng-click="remove(item.userFields, $index)"><i class="glyphicon glyphicon-remove"></i></a></td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -92,25 +99,14 @@
   </div>
   <div class="wizard-card" data-cardname="ocsp_web_streams_manage_007">
     <div class="form-group">
-      <isteven-multi-select
-        input-model="inputLabels"
-        output-model="task.outputLabels"
-        button-label="name"
-        item-label="name"
-        tick-property="tick1"
-        helper-elements="filter"
-        translation="localLang"
-        required>
+      <isteven-multi-select input-model="inputLabels" output-model="task.outputLabels" button-label="name" item-label="name" tick-property="tick1"
+        helper-elements="filter" translation="localLang" required>
       </isteven-multi-select>
     </div>
     <div class="form-group">
       <ul dnd-list="task.outputLabels">
-        <li ng-repeat="item in task.outputLabels"
-            dnd-draggable="item"
-            dnd-moved="sortLabels(task.outputLabels, $index)"
-            dnd-effect-allowed="move"
-            dnd-selected="models.selected = item"
-            ng-class="{'selected': models.selected === item}">
+        <li ng-repeat="item in task.outputLabels" dnd-draggable="item" dnd-moved="sortLabels(task.outputLabels, $index)" dnd-effect-allowed="move"
+          dnd-selected="models.selected = item" ng-class="{'selected': models.selected === item}">
           <dnd-nodrag>
             <div dnd-handle class="handle"><span class="badge">{{$index+1}}</span>&nbsp;{{item.name}}</div>
           </dnd-nodrag>
@@ -133,10 +129,7 @@
       <uib-accordion>
         <div uib-accordion-group class="panel-default" ng-repeat="item in task.events" is-open="item.isOpen">
           <uib-accordion-heading>
-            <i class="pull-left glyphicon"
-               ng-class="{'glyphicon-chevron-down': item.isOpen, 'glyphicon-chevron-right': !item.isOpen}"></i>
-            &nbsp;
-            {{'ocsp_web_streams_manage_031' | translate}} {{item.name}}
+            <i class="pull-left glyphicon" ng-class="{'glyphicon-chevron-down': item.isOpen, 'glyphicon-chevron-right': !item.isOpen}"></i>            &nbsp; {{'ocsp_web_streams_manage_031' | translate}} {{item.name}}
             <a class="pull-right" ng-click="$event.stopPropagation();$event.preventDefault();remove(task.events, $index)"><i
             class="glyphicon glyphicon-remove"></i></a>
           </uib-accordion-heading>
@@ -171,8 +164,7 @@
                 <ui-select-match>
                   <span ng-bind="$select.selected.name"></span>
                 </ui-select-match>
-                <ui-select-choices
-                  repeat="datasource in (datasources | filter: $select.search) track by datasource.id">
+                <ui-select-choices repeat="datasource in (datasources | filter: $select.search) track by datasource.id">
                   <span ng-bind="datasource.name"></span>
                 </ui-select-choices>
               </ui-select>
@@ -217,8 +209,8 @@
     </div>
   </div>
 </wizard>
-<a ng-repeat="item in jobs" href="" class="list-group-item tasks" ng-click="changeItem(item)"
-   ng-class="{true: 'choose'}[item.id === selectedJob.id]" ng-show="item.type === 1">
+<a ng-repeat="item in jobs" href="" class="list-group-item tasks" ng-click="changeItem(item)" ng-class="{true: 'choose'}[item.id === selectedJob.id]"
+  ng-show="item.type === 1">
   <i ng-class="statusName(item.status)"></i>
   &nbsp;&nbsp;{{item.name}}
 </a>
