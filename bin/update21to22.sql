@@ -71,7 +71,7 @@ CREATE TABLE `STREAM_HISTORY_CONFIG` (
   `id` int(11) NOT NULL,
   `config_data` text NOT NULL,
   `create_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `user_name` varchar(256) NOT NULL,
+  `user_name` varchar(256),
   `note` text,
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
