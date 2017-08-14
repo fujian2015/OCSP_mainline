@@ -156,11 +156,18 @@ router.post('/upload', upload.single('file'), function(req, res){
         }
         return sequelize.Promise.all(promises);
       }).then(() => {
-        fs.rename(jarName, './uploads/' + req.file.originalname.replace(/\.jar/g, "") + "_" + username + ".jar" , (err) => {
+        let targetFileName = './uploads/' + req.file.originalname.replace(/\.jar/g, "") + "_" + username + ".jar";
+        fs.rename(jarName, targetFileName, (err) => {
           if (err) {
             res.status(500).send(trans.uploadError + path.join(__dirname, "../../uploads"));
           } else {
-            res.status(200).send({success: true});
+            fs.chmod(targetFileName,'755',function(err){
+              if(err){
+                res.status(500).send(trans.uploadError + path.join(__dirname, "../../uploads"));
+              } else {
+                res.status(200).send({success: true});
+              }
+            });
           }
         });
       }).catch((error) => {
