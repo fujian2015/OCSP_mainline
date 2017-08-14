@@ -18,7 +18,7 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.streaming.{StreamingContext, Time}
 import org.apache.spark.{Accumulator, HashPartitioner, SparkContext}
-import org.apache.spark.streaming.kafka010.{CanCommitOffsets, HasOffsetRanges => HasOffsetRanges010}
+import org.apache.spark.streaming.kafka010.{CanCommitOffsets, OffsetRange => OffsetRange010, HasOffsetRanges => HasOffsetRanges010}
 import org.apache.commons.codec.digest.DigestUtils
 
 import scala.collection.mutable.ArrayBuffer
@@ -233,11 +233,9 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
 
       val currentReservedRecordsCounterValue = reservedRecordsCounter.value
 
-      val offsetList = rdd.asInstanceOf[HasOffsetRanges010].offsetRanges
+      val offsetArray = rdd.asInstanceOf[HasOffsetRanges010].offsetRanges
 
-      for (o <- offsetList) {
-        logInfo(s"reading offset: ${o.topic} ${o.partition} ${o.fromOffset} ${o.untilOffset} ")
-      }
+      OffsetStatistics.getSatisticsInfo(offsetArray)
 
       //2.1 流数据转换
       val mixDF = toDataFrame(rdd, ssc.sparkContext, totalRecordsCounter, reservedRecordsCounter)
@@ -298,7 +296,7 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
             memRemaining,
             (System.currentTimeMillis() - time.milliseconds))
         }
-        inputStream.asInstanceOf[CanCommitOffsets].commitAsync(offsetList)
+        inputStream.asInstanceOf[CanCommitOffsets].commitAsync(offsetArray)
       }
     })
   }
