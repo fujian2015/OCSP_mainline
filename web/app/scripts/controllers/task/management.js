@@ -316,7 +316,8 @@ angular.module('ocspApp')
 
     $scope.selectedJob = {
       input: {
-        inputs: []
+        inputs: [],
+        userFields:[]
       },
       events: []
     };
@@ -371,6 +372,7 @@ angular.module('ocspApp')
       datainterface.inputs = [];
       if(prop !== undefined && prop !== null) {
         prop = JSON.parse(prop);
+        datainterface.userFields = prop.userFields;
         if(prop.fields !== undefined && prop.fields.length > 0) {
           datainterface.fields = "";
           if (prop.fields.length > 0){
@@ -709,6 +711,16 @@ angular.module('ocspApp')
           userFields: []
         });
       }
+    };
+
+    $scope.addUserField = function () {
+      if($scope.selectedJob.input.userFields === undefined || $scope.selectedJob.input.userFields === null){
+        $scope.selectedJob.input.userFields = [];
+      }
+      $scope.selectedJob.input.userFields.push({
+        name:"",
+        value:""
+      });
     };
 
     $scope.selectedRecoverMode = function(str){
