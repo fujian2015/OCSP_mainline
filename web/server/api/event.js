@@ -235,13 +235,6 @@ let mergeDBProps = function(targetProps,dbProps){
     return false;
   };
 
-  let propertyNamesOfDBProps = Object.getOwnPropertyNames(dbProps);
-  for(let key of propertyNamesOfDBProps){
-    if(!!!targetProps[key]){
-      targetProps[key] = dbProps[key];
-    }
-  }
-
   for(let i in dbProps.props){
     if(!isPNameExists(targetProps.props,dbProps.props[i].pname)){
       targetProps.props.push(dbProps.props[i]);
