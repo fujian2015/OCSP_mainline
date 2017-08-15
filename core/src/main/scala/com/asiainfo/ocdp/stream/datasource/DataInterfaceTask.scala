@@ -111,12 +111,14 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
     val dataSchemas = broadDiConf.value.getDataSchemas
     val partitionsList = ArrayBuffer[Int]()
 
-    val rowRDD = if(dataSchemas.length == 1){
-      withUptime("1.kafka RDD transformed to rowRDD via single mode"){
+    val df = if(dataSchemas.length == 1){
+      val rowRDD = withUptime("1.kafka RDD transformed to rowRDD via single mode"){
         rdd.map( input => {
           transform(input, dataSchemas(0), totalRecordsCounter, reservedRecordsCounter)
         }).collect { case Some(row) => row }
       }
+
+      ComFunc.Func.createDataFrame(ssc, rowRDD, dataSchemas(0).rawSchema)
     }
     else{
       for (dataSchema <- dataSchemas) {
@@ -155,10 +157,11 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
         repartition_unionRDD = unionRDD
       }
 
-      repartition_unionRDD.map(input => Row.fromSeq(input._2))
+      val rowRDD = repartition_unionRDD.map(input => Row.fromSeq(input._2))
+
+      ComFunc.Func.createDataFrame(ssc, rowRDD, conf.getCommonSchema)
     }
 
-    val df = ComFunc.Func.createDataFrame(ssc, rowRDD, conf.getCommonSchema)
     val filter_expr = conf.get("filter_expr")
 
     logInfo(s"All fields is ${conf.getAllItemsSchema.fieldNames.toList}")
