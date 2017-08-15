@@ -20,8 +20,6 @@ object MainFrameConf {
   val codisProps = new DataSourceConf()
 
   val MONITOR_TASK_MONITOR_ENABLE = "ocsp.monitor.task-monitor.enable"
-  val EXTRAID = "ocsp.event.append-id.enable"
-  val TIMESTAMP = "ocsp.event.append-timestamp.enable"
   val KERBEROS_ENABLE = "ocsp.kerberos.enable"
 
   initMainFrameConf()

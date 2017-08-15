@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.Properties
 
 import com.asiainfo.ocdp.stream.common.{BroadcastManager, ComFunc, Logging}
-import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, EventConf, MainFrameConf}
+import com.asiainfo.ocdp.stream.config.{DataInterfaceConf, EventConf}
 //import kafka.producer.KeyedMessage
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.commons.lang.math.NumberUtils
@@ -58,10 +58,13 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
       numPartitions = numPartitionsCustom.toInt
     }
 
-    logInfo(s"The number of partitions is $numPartitions")
-    val extraID = MainFrameConf.systemProps.getBoolean(MainFrameConf.EXTRAID, false)
-    val timeStamp = MainFrameConf.systemProps.getBoolean(MainFrameConf.TIMESTAMP, true)
 
+    val extraID = conf.get(EventConf.EXTRAID, "false").toBoolean
+    val timeStamp = conf.get(EventConf.TIMESTAMP, "true").toBoolean
+
+    logInfo(s"ocsp.event.append-id.enable is $extraID")
+    logInfo(s"ocsp.event.append-timestamp.enable is $timeStamp")
+    logInfo(s"The number of partitions is $numPartitions")
     logInfo(s"Send records to ${conf.outIFIds(0).dsConf} for event ${conf.id}")
 
     (if (numPartitions < 0){

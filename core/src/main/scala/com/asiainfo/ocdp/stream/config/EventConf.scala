@@ -19,3 +19,7 @@ class EventConf(conf: Map[String, String] = null) extends BaseConf(conf) {
   override def toString = s"EventConf($id, $name, $p_event_id)"
 }
 
+object EventConf{
+  val EXTRAID = "ocsp.event.append-id.enable"
+  val TIMESTAMP = "ocsp.event.append-timestamp.enable"
+}
