@@ -245,6 +245,15 @@ angular.module('ocspApp')
               $http.get('/api/typestructure').success(function(tree){
                 for (let i in events) {
                   _findNodeTree(tree, events[i]);
+                  if(!events[i].STREAM_EVENT_CEP){
+                    tree.push({
+                      id: events[i].id,
+                      type: "event",
+                      label: _status(events[i].status) + " " +  events[i].name,
+                      status: events[i].status,
+                      event: events[i]
+                    });
+                  }
                 }
                 _noLeaf(tree);
                 $scope.$parent.treedata = tree;
