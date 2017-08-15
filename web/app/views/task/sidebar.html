@@ -71,8 +71,8 @@
         </thead>
         <tbody>
         <tr ng-repeat="userfield in task.input.userFields">
-          <td><input type="text" class="form-control" ng-model="userfield.name" required></td>
-          <td><input type="text" class="form-control" ng-model="userfield.value" required></td>
+          <td><input type="text" class="form-control" ng-model="userfield.pname" required></td>
+          <td><input type="text" class="form-control" ng-model="userfield.pvalue" required></td>
           <td><a ng-click="remove(task.input.userFields, $index)"><i class="glyphicon glyphicon-remove"></i></a></td>
         </tr>
         </tbody>

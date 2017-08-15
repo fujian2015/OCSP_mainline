@@ -718,8 +718,8 @@ angular.module('ocspApp')
         input.userFields = [];
       }
       input.userFields.push({
-        name:"",
-        value:""
+        pname:"",
+        pvalue:""
       });
     };
 
