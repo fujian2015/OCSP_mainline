@@ -52,24 +52,6 @@
               <label>{{'ocsp_web_streams_manage_012' | translate}}*</label>
               <input type="text" class="form-control" ng-model="item.delim" required>
             </div>
-            <div class="form-group">
-              <table class="table table-hover">
-                <thead>
-                <tr>
-                  <th class="col-md-3">{{'ocsp_web_common_011' | translate}}*</th>
-                  <th class="col-md-8">pvalue*</th>
-                  <th class="col-md-1"><a ng-click="add(item.userFields)"><i class="glyphicon glyphicon-plus"></i></a></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="userfield in item.userFields">
-                  <td><input type="text" class="form-control" ng-model="userfield.name" required></td>
-                  <td><input type="text" class="form-control" ng-model="userfield.value" required></td>
-                  <td><a ng-click="remove(item.userFields, $index)"><i class="glyphicon glyphicon-remove"></i></a></td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
       </uib-accordion>
@@ -77,6 +59,24 @@
     <div class="form-group">
       <label>{{'ocsp_web_streams_manage_047' | translate}}*</label>
       <tokenfield ng-model="task.input.fields" disabled="true" required="true"></tokenfield>
+    </div>
+    <div class="form-group">
+      <table class="table table-hover">
+        <thead>
+        <tr>
+          <th class="col-md-3">{{'ocsp_web_common_011' | translate}}*</th>
+          <th class="col-md-8">pvalue*</th>
+          <th class="col-md-1"><a ng-click="addUserField(task.input)"><i class="glyphicon glyphicon-plus"></i></a></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="userfield in task.input.userFields">
+          <td><input type="text" class="form-control" ng-model="userfield.name" required></td>
+          <td><input type="text" class="form-control" ng-model="userfield.value" required></td>
+          <td><a ng-click="remove(task.input.userFields, $index)"><i class="glyphicon glyphicon-remove"></i></a></td>
+        </tr>
+        </tbody>
+      </table>
     </div>
     <div class="form-group">
       <label>{{'ocsp_web_streams_manage_013' | translate}}</label>

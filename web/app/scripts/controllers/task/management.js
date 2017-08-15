@@ -713,11 +713,11 @@ angular.module('ocspApp')
       }
     };
 
-    $scope.addUserField = function () {
-      if($scope.selectedJob.input.userFields === undefined || $scope.selectedJob.input.userFields === null){
-        $scope.selectedJob.input.userFields = [];
+    $scope.addUserField = function (input) {
+      if(input.userFields === undefined || input.userFields === null){
+        input.userFields = [];
       }
-      $scope.selectedJob.input.userFields.push({
+      input.userFields.push({
         name:"",
         value:""
       });
