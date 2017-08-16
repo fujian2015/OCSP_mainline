@@ -300,7 +300,7 @@ angular.module('ocspApp')
               let existsFields = $scope.newEvent.inputFields.split(',');
               if(userFieldsFromDB!==undefined && userFieldsFromDB!==null){
                 existsFields.concat(userFieldsFromDB.map((x) => x.pname));
-                userFieldsFromDB.forEach((x) => { existsFields.push(x.pname)});
+                userFieldsFromDB.forEach((x) => { existsFields.push(x.pname); });
               }
               let outputFields = $scope.newEvent.select_expr.split(',');
               
@@ -567,7 +567,7 @@ angular.module('ocspApp')
         let existsFields = item.inputFields.split(',');
         if(userFieldsFromDB!==undefined && userFieldsFromDB!==null){
           existsFields.concat(userFieldsFromDB.map((x) => x.pname));
-          userFieldsFromDB.forEach((x) => { existsFields.push(x.pname)});
+          userFieldsFromDB.forEach((x) => { existsFields.push(x.pname); });
         }
         let outputFields = item.select_expr.split(',');
         
@@ -636,7 +636,7 @@ angular.module('ocspApp')
     $scope.getAllPossibleFields = function(fields,userFields){
       let resultStr = fields;
       if(userFields!==undefined && userFields !== null){
-        userFields.forEach((x) => { resultStr += "," + x.pname });
+        userFields.forEach((x) => { resultStr += "," + x.pname; });
       }
       return resultStr;
     };   

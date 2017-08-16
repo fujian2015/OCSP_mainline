@@ -246,6 +246,7 @@ CREATE TABLE `STREAM_USER_SECURITY` (
   `spark_keytab` varchar(500) DEFAULT NULL,
   `kafka_principal` varchar(500) DEFAULT NULL,
   `kafka_keytab` varchar(500) DEFAULT NULL,
+  `kafka_jaas` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

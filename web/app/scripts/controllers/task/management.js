@@ -249,7 +249,7 @@ angular.module('ocspApp')
                   files: {
                     kafkaconfigfile: userInfo.kafka_keytab,
                     sparkconfigfile: userInfo.spark_keytab,
-                    ocsp_kafka_jaas: "OCSP_Kafka_jaas.conf"
+                    ocsp_kafka_jaas: userInfo.kafka_jaas
                   }
                 };
                 $http.post('/api/user/checkfiles',{"filesNeedCheck":filesNeedCheck}).success(function(data){
@@ -263,7 +263,7 @@ angular.module('ocspApp')
                       Notification.error("Spark keytab " + $filter('translate')('ocsp_web_user_manage_010'));
                     }
                     if(!data.ocsp_kafka_jaasexist) {
-                      Notification.error("OCSP_Kafka_jaas.conf " + $filter('translate')('ocsp_web_user_manage_010'));
+                      Notification.error("Kafka Jaas Config " + $filter('translate')('ocsp_web_user_manage_010'));
                     }
                   }
                 });
@@ -739,7 +739,7 @@ angular.module('ocspApp')
     $scope.getAllPossibleFields = function(fields,userFields){
       let resultStr = fields;
       if(userFields!==undefined && userFields!==null){
-        userFields.forEach((x) => { resultStr += "," + x.pname });
+        userFields.forEach((x) => { resultStr += "," + x.pname; });
       }
       return resultStr;
     };    
@@ -751,11 +751,6 @@ angular.module('ocspApp')
       return str.replace(/(^\s*)|(\s*$)/g, '');
     };
 
-    $scope.checkCardValidStatus = function(card){
-      console.log("checkCardValidStatus");
-      return false;
-    }
-
 
     $scope.checkOutputFields = function(select_expr,fields,userFields){
       let invalidOuptuFields = [];
@@ -764,7 +759,7 @@ angular.module('ocspApp')
         let existsFields = fields.split(',');
         if(userFields!==undefined && userFields!==null){
           existsFields.concat(userFields.map((x) => x.pname));
-          userFields.forEach((x) => { existsFields.push(x.pname)});
+          userFields.forEach((x) => { existsFields.push(x.pname); });
         }
 
         let outputFields = select_expr.split(',');

@@ -61,13 +61,14 @@ router.get('/', function(req, res){
 });
 
 router.get('/:userName', function(req, res){
-  let userAttrs = ['id','name','spark_principal', 'spark_keytab', 'kafka_principal', 'kafka_keytab'];
+  let userAttrs = ['id','name','spark_principal', 'spark_keytab', 'kafka_principal', 'kafka_keytab', 'kafka_jaas'];
   let userInfo = {
     isDBUser:false,
     spark_principal:'',
     spark_keytab:'',
     kafka_principal:'',
-    kafka_keytab:''
+    kafka_keytab:'',
+    kafka_jaas:''
   };
   User.findOne({
     where:{name: req.params.userName},
@@ -88,7 +89,7 @@ router.get('/:userName', function(req, res){
         userInfo.spark_keytab = user.spark_keytab;
         userInfo.kafka_principal = user.kafka_principal;
         userInfo.kafka_keytab = user.kafka_keytab;
-
+        userInfo.kafka_jaas = user.kafka_jaas;
       }
       res.send(userInfo);
     }).catch(function (err) {
