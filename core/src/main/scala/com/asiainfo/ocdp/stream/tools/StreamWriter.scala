@@ -47,17 +47,13 @@ class StreamKafkaWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
     val delim = conf.delim
     val topic = diConf.get("topic")
 
-    val broadDiconf = BroadcastManager.getBroadDiConf()
     val broadSysconf = BroadcastManager.getBroadSysProps
     var numPartitions = -1
-
     val numPartitionsCustom = conf.get("numPartitions", "null")
-
 
     if (NumberUtils.isDigits(numPartitionsCustom)){
       numPartitions = numPartitionsCustom.toInt
     }
-
 
     val extraID = conf.get(EventConf.EXTRAID, "false").toBoolean
     val timeStamp = conf.get(EventConf.TIMESTAMP, "true").toBoolean
