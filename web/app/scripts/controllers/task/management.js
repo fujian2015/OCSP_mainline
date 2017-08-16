@@ -736,4 +736,10 @@ angular.module('ocspApp')
       }
     };
 
+    $scope.getAllPossibleFields = function(fields,userFields){
+      let resultStr = fields;
+      userFields.forEach((x) => { resultStr += "," + x.pname });
+      return resultStr;
+    };    
+
   }]);

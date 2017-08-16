@@ -487,7 +487,7 @@
                           </div>
                           <div class="form-group">
                             <label>{{'ocsp_web_streams_manage_018' | translate}}*</label>
-                            <tokenfield inputs="{{selectedJob.input.fields}}" labels="{{selectedJob.labels}}" ng-model="item.select_expr" name="eventsFields_{{$index}}" required="true" readonly="{{cep}}"></tokenfield>
+                            <tokenfield inputs="{{getAllPossibleFields(selectedJob.input.fields,selectedJob.input.userFields)}}" labels="{{selectedJob.labels}}" ng-model="item.select_expr" name="eventsFields_{{$index}}" required="true" readonly="{{cep}}"></tokenfield>
                             <span class="redtip" ng-show="mainForm['eventsFields_' + $index].$touched && mainForm['eventsFields_' + $index].$error.required">{{'ocsp_web_common_027' | translate}}</span>
                           </div>
                           <div class="form-group">

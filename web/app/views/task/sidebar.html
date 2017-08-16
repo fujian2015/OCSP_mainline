@@ -147,7 +147,7 @@
             </div>
             <div class="form-group">
               <label>{{'ocsp_web_streams_manage_018' | translate}}*</label>
-              <tokenfield inputs="{{task.input.fields}}" labels="{{task.outputLabels}}" ng-model="item.select_expr" required="true"></tokenfield>
+              <tokenfield inputs="{{getAllPossibleFields(task.input.fields,task.input.userFields)}}" labels="{{task.outputLabels}}" ng-model="item.select_expr" required="true"></tokenfield>
             </div>
             <div class="form-group">
               <label>{{'ocsp_web_streams_manage_019' | translate}}*</label>
