@@ -205,10 +205,12 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
     confCheck()
 
     val kerberos_enable = MainFrameConf.systemProps.getBoolean(MainFrameConf.KERBEROS_ENABLE, false)
+    val kafka_kerberos_enable = if (kerberos_enable) MainFrameConf.systemProps.getBoolean(MainFrameConf.KAFKA_KERBEROS_ENABLE, true)
+                                else false
     val latest = taskConf.getRecovery_mode() == "from_latest";
 
     //1 根据输入数据接口配置，生成数据流 DStream
-    val dataSource = new KafkaReader(ssc, conf, kerberos_enable, latest)
+    val dataSource = new KafkaReader(ssc, conf, kafka_kerberos_enable, latest)
     val inputStream = dataSource.createStreamMulData(taskConf)
 
     //1.2 根据输入数据接口配置，生成构造 sparkSQL DataFrame 的 structType

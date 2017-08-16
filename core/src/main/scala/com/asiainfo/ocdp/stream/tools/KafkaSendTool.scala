@@ -46,12 +46,14 @@ object KafkaSendTool {
   // 对应的producer若不存在，则创建新的producer，并存入dsid2ProducerMap
   private def getProducer(dsConf: DataSourceConf, broadSysConf: Broadcast[SystemProps]): KafkaProducer[String, String] =
     dsid2ProducerMap.getOrElseUpdate(dsConf.dsid, {
-      val kerberos_enable = broadSysConf.value.getBoolean("ocsp.kerberos.enable",false)
+    val kerberos_enable = broadSysConf.value.getBoolean(MainFrameConf.KERBEROS_ENABLE, false)
+    val kafka_kerberos_enable = if (kerberos_enable) broadSysConf.value.getBoolean(MainFrameConf.KAFKA_KERBEROS_ENABLE, true)
+                                else false
       val props = new Properties()
       props.put("bootstrap.servers", dsConf.get("metadata.broker.list", ""))
       props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer")
       props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
-      if (kerberos_enable) {
+      if (kafka_kerberos_enable) {
         props.put("security.protocol","SASL_PLAINTEXT")
       }
       //props.put("serializer.class", dsConf.get("serializer.class", DEFAULT_SERIALIZER_CLASS))

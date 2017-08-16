@@ -21,6 +21,7 @@ object MainFrameConf {
 
   val MONITOR_TASK_MONITOR_ENABLE = "ocsp.monitor.task-monitor.enable"
   val KERBEROS_ENABLE = "ocsp.kerberos.enable"
+  val KAFKA_KERBEROS_ENABLE = "ocsp.kafka-kerberos.enable"
 
   initMainFrameConf()
 
