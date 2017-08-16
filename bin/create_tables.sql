@@ -153,7 +153,7 @@ CREATE TABLE `STREAM_SYSTEMPROP` (
 
 LOCK TABLES `STREAM_SYSTEMPROP` WRITE;
 /*!40000 ALTER TABLE `STREAM_SYSTEMPROP` DISABLE KEYS */;
-INSERT INTO `STREAM_SYSTEMPROP` VALUES (1,'cacheManager','JodisCacheManager',0,NULL),(2,'ocsp.monitor.task-monitor.enable','true',0,''),(3,'ocsp.monitor.task-monitor.retain-check-interval-mins','2880',0,''),(4,'ocsp.monitor.task-monitor.retain-mins','10080',0,''),(7,'checkpoint_dir','streaming/checkpoint',0,NULL),(11,'SPARK_HOME','/usr/hdp/2.4.0.0-169/spark',1,'Spark安装路径'),(12,'master','yarn',1,'Spark应用程序的运行模式'),(13,'supervise','false',0,NULL),(17,'delaySeconds','20',0,NULL),(18,'periodSeconds','10',0,NULL),(21,'cacheQryBatchSizeLimit','1000',0,NULL),(27,'cacheQryTaskSizeLimit','1000',0,NULL),(28,'ocsp.event.append-id.enable','false',0,NULL),(29,'ocsp.event.cep.enable','false',0,NULL),(30,'ocsp.kerberos.enable','false',1,NULL);
+INSERT INTO `STREAM_SYSTEMPROP` VALUES (1,'cacheManager','JodisCacheManager',0,NULL),(2,'ocsp.monitor.task-monitor.enable','true',0,''),(3,'ocsp.monitor.task-monitor.retain-check-interval-mins','2880',0,''),(4,'ocsp.monitor.task-monitor.retain-mins','10080',0,''),(7,'checkpoint_dir','streaming/checkpoint',0,NULL),(11,'SPARK_HOME','/usr/hdp/2.4.0.0-169/spark',1,'Spark安装路径'),(12,'master','yarn',1,'Spark应用程序的运行模式'),(13,'supervise','false',0,NULL),(17,'delaySeconds','20',0,NULL),(18,'periodSeconds','10',0,NULL),(21,'cacheQryBatchSizeLimit','1000',0,NULL),(27,'cacheQryTaskSizeLimit','1000',0,NULL),(29,'ocsp.event.cep.enable','false',0,NULL),(30,'ocsp.kerberos.enable','false',1,NULL);
 /*!40000 ALTER TABLE `STREAM_SYSTEMPROP` ENABLE KEYS */;
 UNLOCK TABLES;
 
