@@ -623,13 +623,6 @@ angular.module('ocspApp')
         if(array[0].fields !== undefined && array[0].fields.trim() !== ""){
           result = new Set(strService.split(array[0].fields));
         }
-        if(array[0].userFields !== undefined && array[0].userFields.length > 0){
-          for(let i in array[0].userFields){
-            if(!result.has(array[0].userFields[i].name)){
-              result.add(array[0].userFields[i].name);
-            }
-          }
-        }
         for (let i = 1 ; i < array.length; i++) {
           let tmp = new Set();
           if(array[i].fields !== undefined && array[i].fields.trim() !== ""){
@@ -637,13 +630,6 @@ angular.module('ocspApp')
             for(let j in splits){
               if(result.has(splits[j])){
                 tmp.add(splits[j]);
-              }
-            }
-          }
-          if(array[i].userFields !== undefined && array[i].userFields.length > 0){
-            for(let j in array[i].userFields){
-              if(result.has(array[i].userFields[j].name)){
-                tmp.add(array[i].userFields[j].name);
               }
             }
           }
