@@ -27,6 +27,10 @@ module.exports = function(sequelize, DataTypes) {
     kafka_keytab: {
       type: DataTypes.STRING,
       allowNull: true
+    },
+    kafka_jaas: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     createdAt: false,

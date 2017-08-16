@@ -48,8 +48,9 @@ class EventCycleLife(jsonStr: String, eventId: String) extends Logging{
       if (_startDate.compareTo(_currentDate) <= 0 && _endDate.compareTo(_currentDate) >= 0){
         if (StringUtils.isNotEmpty(period) && !StringUtils.equalsIgnoreCase(period, "always")){
           val nowTime = getTime(now)
+          logInfo(s"period times are ${times} and now is ${nowTime}")
           times.foreach(p => if(p.contains(nowTime)) return true)
-
+          logInfo(s"Event ${eventId} is not available since ${times}")
           false
         }else{
           logInfo(s"Event ${eventId} is available since startDate is ${startDate} and endDate is ${endDate}")
@@ -109,6 +110,7 @@ class Period(p:Map[String,Any]){
 
   def contains(n:Time): Boolean ={begin <= n && end >= n}
 
+  override def toString = s"Period(begin:$begin, end:$end)"
 }
 
 class Time(t:Map[String,Any]) {
@@ -137,5 +139,7 @@ class Time(t:Map[String,Any]) {
   def <= (t:Time): Boolean ={this==t || this < t}
 
   def >= (t:Time): Boolean ={this==t || this > t}
+
+  override def toString = s"Time(day:$day, hour:$hour)"
 }
 

@@ -100,12 +100,13 @@ angular.module('ocspApp')
         let filesNeedCheck = {
           files:{
             kafkaconfigfile:$scope.user.kafka_keytab,
+            ocsp_kafka_jaas:$scope.user.kafka_jaas,
             sparkconfigfile:$scope.user.spark_keytab
           }
         };
 
         $http.post('/api/user/checkfiles',{"filesNeedCheck":filesNeedCheck}).success(function(data){
-          if(data.kafkaconfigfileexist && data.sparkconfigfileexist){
+          if(data.kafkaconfigfileexist && data.sparkconfigfileexist && data.ocsp_kafka_jaasexist){
             $http.put('/api/user/' + $scope.user.name, { "user": $scope.user }).success(function (data) {
               if (data.status) {
                 Notification.success($filter('translate')('ocsp_web_common_026'));
@@ -119,6 +120,9 @@ angular.module('ocspApp')
             }
             if(!data.sparkconfigfileexist){
               Notification.error("Spark keytab " + $filter('translate')('ocsp_web_user_manage_010'));
+            }
+            if(!data.ocsp_kafka_jaasexist){
+              Notification.error("Kafka Jaas Config " + $filter('translate')('ocsp_web_user_manage_010'));
             }
           }
         });
