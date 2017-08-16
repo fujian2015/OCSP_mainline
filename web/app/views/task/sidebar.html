@@ -1,6 +1,6 @@
-<wizard title="{{'ocsp_web_streams_manage_001' | translate}}" width="1020px" name="ocsp_web_streams_manage_001" submit-method="submitMethod()"
+<wizard title="{{'ocsp_web_streams_manage_001' | translate}}" width="1020px" name="ocsp_web_streams_manage_001" ng-disabled="outputFieldsInvalid" submit-method="submitMethod()"
         task="task">
-  <div class="wizard-card" data-cardname="ocsp_web_common_013">
+  <div class="wizard-card" data-cardname="ocsp_web_common_013" data-validate="checkCardValidStatus()">
     <div class="form-group">
       <label>{{'ocsp_web_common_011' | translate}}*</label>
       <input type="text" name="name" class="form-control" ng-model="task.name" required>
@@ -121,7 +121,7 @@
       </ul>
     </div>
   </div>
-  <div class="wizard-card" data-cardname="ocsp_web_streams_manage_008">
+  <div class="wizard-card" data-cardname="ocsp_web_streams_manage_008" data-validate="checkCardValidStatus">
     <div class="form-group" ng-if="cep">
       <div class="alert alert-danger alert-dismissible text-center" role="alert">
         {{'ocsp_web_streams_cep1' | translate}} {{'ocsp_web_common_037' | translate}} {{'ocsp_web_streams_cep2' | translate}}
@@ -147,7 +147,8 @@
             </div>
             <div class="form-group">
               <label>{{'ocsp_web_streams_manage_018' | translate}}*</label>
-              <tokenfield inputs="{{getAllPossibleFields(task.input.fields,task.input.userFields)}}" labels="{{task.outputLabels}}" ng-model="item.select_expr" required="true"></tokenfield>
+              <tokenfield change="checkOutputFields(item.select_expr,task.input.fields,task.input.userFields)" inputs="{{getAllPossibleFields(task.input.fields,task.input.userFields)}}" labels="{{task.outputLabels}}" ng-model="item.select_expr" required="true"></tokenfield>
+              <span id="idWarningMessageOfTokenField" class="redtip" ng-show="outputFieldsInvalid">{{outputFieldsInvalidMessage}}</span>
             </div>
             <div class="form-group">
               <label>{{'ocsp_web_streams_manage_019' | translate}}*</label>

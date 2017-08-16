@@ -738,8 +738,63 @@ angular.module('ocspApp')
 
     $scope.getAllPossibleFields = function(fields,userFields){
       let resultStr = fields;
-      userFields.forEach((x) => { resultStr += "," + x.pname });
+      if(userFields!==undefined && userFields!==null){
+        userFields.forEach((x) => { resultStr += "," + x.pname });
+      }
       return resultStr;
     };    
+
+    $scope.outputFieldsInvalid = false;
+    $scope.outputFieldsInvalidMessage = "";
+
+    $scope.trimStr = function(str){
+      return str.replace(/(^\s*)|(\s*$)/g, '');
+    };
+
+    $scope.checkCardValidStatus = function(card){
+      console.log("checkCardValidStatus");
+      return false;
+    }
+
+
+    $scope.checkOutputFields = function(select_expr,fields,userFields){
+      let invalidOuptuFields = [];
+
+      if(!!select_expr){
+        let existsFields = fields.split(',');
+        if(userFields!==undefined && userFields!==null){
+          existsFields.concat(userFields.map((x) => x.pname));
+          userFields.forEach((x) => { existsFields.push(x.pname)});
+        }
+
+        let outputFields = select_expr.split(',');
+
+        for(let idx in outputFields){
+          let tmpExistCheck = false;
+          for(let innerIdx in existsFields){
+            if($scope.trimStr(outputFields[idx]) === $scope.trimStr(existsFields[innerIdx])){
+              tmpExistCheck = true;
+              break;
+            }
+          }
+          if(!tmpExistCheck){
+            invalidOuptuFields.push(outputFields[idx]);
+          }
+        }
+
+        if(invalidOuptuFields.length!==0){
+          $scope.outputFieldsInvalid = true;
+          $scope.outputFieldsInvalidMessage = invalidOuptuFields.join(',') + $filter('translate')('ocsp_web_common_035');
+        }else {
+          $scope.outputFieldsInvalid = false;
+          $scope.outputFieldsInvalidMessage = "";  
+        }
+
+      } else {
+        $scope.outputFieldsInvalid = false;
+        $scope.outputFieldsInvalidMessage = "";
+      }
+      
+    };
 
   }]);
