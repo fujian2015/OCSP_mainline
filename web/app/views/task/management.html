@@ -355,24 +355,6 @@
                             <input type="text" class="form-control" ng-model="item.delim" name="inputDelim_{{$index}}" required>
                             <span class="redtip" ng-show="mainForm['inputDelim_' + $index].$touched && mainForm['inputDelim_' + $index].$error.required">{{'ocsp_web_common_027' | translate}}</span>
                           </div>
-                          <div class="form-group">
-                            <table class="table table-hover">
-                              <thead>
-                              <tr>
-                                <th class="col-md-3">{{'ocsp_web_streams_case_field_name' | translate}}*</th>
-                                <th class="col-md-8">{{'ocsp_web_streams_case_expression' | translate}}*</th>
-                                <th class="col-md-1"><a ng-click="add(item.userFields)"><i class="glyphicon glyphicon-plus"></i></a></th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <tr ng-repeat="userfield in item.userFields">
-                                <td><input type="text" class="form-control" ng-model="userfield.name" required></td>
-                                <td><input type="text" class="form-control" ng-model="userfield.value" required></td>
-                                <td><a ng-click="remove(item.userFields, $index)"><i class="glyphicon glyphicon-remove"></i></a></td>
-                              </tr>
-                              </tbody>
-                            </table>
-                          </div>
                         </div>
                       </div>
                     </uib-accordion>
@@ -387,6 +369,24 @@
                           <span class="redtip" ng-show="mainForm.inputFields.$touched && mainForm.inputFields.$error.required">{{'ocsp_web_common_027' | translate}}</span>
                         </div>
                       </div>
+                    </div>
+                    <div class="form-group">
+                      <table class="table table-hover">
+                        <thead>
+                        <tr>
+                          <th class="col-md-3">{{'ocsp_web_streams_case_field_name' | translate}}</th>
+                          <th class="col-md-8">{{'ocsp_web_streams_case_expression' | translate}}</th>
+                          <th class="col-md-1"><a ng-click="addUserField(selectedJob.input)"><i class="glyphicon glyphicon-plus"></i></a></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="userfield in selectedJob.input.userFields">
+                          <td><input type="text" class="form-control" ng-model="userfield.pname" required></td>
+                          <td><input type="text" class="form-control" ng-model="userfield.pvalue" required></td>
+                          <td><a ng-click="remove(selectedJob.input.userFields, $index)"><i class="glyphicon glyphicon-remove"></i></a></td>
+                        </tr>
+                        </tbody>
+                      </table>
                     </div>
                     <div class="form-group">
                       <div class="row">
@@ -487,8 +487,9 @@
                           </div>
                           <div class="form-group">
                             <label>{{'ocsp_web_streams_manage_018' | translate}}*</label>
-                            <tokenfield inputs="{{selectedJob.input.fields}}" labels="{{selectedJob.labels}}" ng-model="item.select_expr" name="eventsFields_{{$index}}" required="true" readonly="{{cep}}"></tokenfield>
+                            <tokenfield change="checkOutputFields(item.select_expr,selectedJob.input.fields,selectedJob.input.userFields)" inputs="{{getAllPossibleFields(selectedJob.input.fields,selectedJob.input.userFields)}}" labels="{{selectedJob.labels}}" ng-model="item.select_expr" name="eventsFields_{{$index}}" required="true" readonly="{{cep}}"></tokenfield>
                             <span class="redtip" ng-show="mainForm['eventsFields_' + $index].$touched && mainForm['eventsFields_' + $index].$error.required">{{'ocsp_web_common_027' | translate}}</span>
+                            <span class="redtip" ng-show="outputFieldsInvalid">{{outputFieldsInvalidMessage}}</span>
                           </div>
                           <div class="form-group">
                             <label>{{'ocsp_web_streams_manage_019' | translate}}*</label>
@@ -642,7 +643,7 @@
                     </uib-accordion>
                   </div>
                 </uib-accordion>
-                <button type="submit" class="btn btn-primary" ng-click="update()" ng-disabled="isAdmin()">{{'ocsp_web_common_009' | translate}}</button>
+                <button type="submit" class="btn btn-primary" ng-click="update()" ng-disabled="isAdmin() || outputFieldsInvalid">{{'ocsp_web_common_009' | translate}}</button>
               </div>
             </div>
           </div>

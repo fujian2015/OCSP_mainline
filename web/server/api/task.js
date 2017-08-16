@@ -110,7 +110,10 @@ function dealDataInterfaceProperties(dataInterface, dsid, type) {
   dataInterface.dsid = dsid;
   dataInterface.type = type;
   dataInterface.status = 1;
-  dataInterface.properties = { "props": [], "userFields": [], "fields": [] };
+  if(dataInterface.userFields === undefined || dataInterface.userFields === null){
+    dataInterface.userFields = [];
+  }
+  dataInterface.properties = { "props": [], "userFields": dataInterface.userFields, "fields": [] };
   if (dataInterface.delim !== undefined && dataInterface.delim === "|") {
     dataInterface.delim = "\\|";
   }

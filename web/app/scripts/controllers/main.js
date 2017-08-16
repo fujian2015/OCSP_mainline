@@ -8,7 +8,7 @@
  * Controller of the ocspApp
  */
 angular.module('ocspApp')
-  .controller('MainCtrl',['$scope', '$location', '$rootScope', 'hotkeys', function ($scope, $location, $rootScope, hotkeys) {
+  .controller('MainCtrl',['$scope', '$location', '$rootScope', 'hotkeys','$http', function ($scope, $location, $rootScope, hotkeys,$http) {
     if($rootScope.getUsername()){
       if($rootScope.isAdmin()) {
         $location.path("/dashboard");
@@ -19,7 +19,10 @@ angular.module('ocspApp')
 
     $scope.login = function(){
       if($scope.user.pass !== undefined) {
-        $rootScope.login($scope.user.name, $scope.user.pass);
+        $http.get("/api/config/cepEnable").success((data) => {
+          $rootScope.cep = JSON.parse(data);
+          $rootScope.login($scope.user.name, $scope.user.pass);
+        });
       }
     };
 

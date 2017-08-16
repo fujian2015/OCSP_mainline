@@ -7,13 +7,6 @@ angular.module('ocspApp')
   .controller('TaskManagementCtrl', ['$scope', '$http', 'Notification', '$q', '$rootScope', '$interval', '$uibModal', '$filter', 'moment', 'strService', 'CONFIGS', '$ngConfirm',
     function ($scope, $http, Notification, $q, $rootScope, $interval, $uibModal, $filter, moment, strService, CONFIGS, $ngConfirm) {
     $rootScope.init('task');
-
-    $scope.streamTypes = [
-      {id:1,name:"Spark"},
-      {id:2,name:"Storm"}
-    ];
-    $scope.currentStreamType = {id:1,name:"Spark"};
-
     //i18n
     $scope.localLang = {
       search: $filter('translate')('ocsp_web_common_014'),
@@ -323,7 +316,8 @@ angular.module('ocspApp')
 
     $scope.selectedJob = {
       input: {
-        inputs: []
+        inputs: [],
+        userFields:[]
       },
       events: []
     };
@@ -378,6 +372,7 @@ angular.module('ocspApp')
       datainterface.inputs = [];
       if(prop !== undefined && prop !== null) {
         prop = JSON.parse(prop);
+        datainterface.userFields = prop.userFields;
         if(prop.fields !== undefined && prop.fields.length > 0) {
           datainterface.fields = "";
           if (prop.fields.length > 0){
@@ -628,13 +623,6 @@ angular.module('ocspApp')
         if(array[0].fields !== undefined && array[0].fields.trim() !== ""){
           result = new Set(strService.split(array[0].fields));
         }
-        if(array[0].userFields !== undefined && array[0].userFields.length > 0){
-          for(let i in array[0].userFields){
-            if(!result.has(array[0].userFields[i].name)){
-              result.add(array[0].userFields[i].name);
-            }
-          }
-        }
         for (let i = 1 ; i < array.length; i++) {
           let tmp = new Set();
           if(array[i].fields !== undefined && array[i].fields.trim() !== ""){
@@ -642,13 +630,6 @@ angular.module('ocspApp')
             for(let j in splits){
               if(result.has(splits[j])){
                 tmp.add(splits[j]);
-              }
-            }
-          }
-          if(array[i].userFields !== undefined && array[i].userFields.length > 0){
-            for(let j in array[i].userFields){
-              if(result.has(array[i].userFields[j].name)){
-                tmp.add(array[i].userFields[j].name);
               }
             }
           }
@@ -718,6 +699,16 @@ angular.module('ocspApp')
       }
     };
 
+    $scope.addUserField = function (input) {
+      if(input.userFields === undefined || input.userFields === null){
+        input.userFields = [];
+      }
+      input.userFields.push({
+        pname:"",
+        pvalue:""
+      });
+    };
+
     $scope.selectedRecoverMode = function(str){
       $scope.selectedJob.recover_mode = str;
     };
@@ -743,6 +734,67 @@ angular.module('ocspApp')
           $scope.inputLabels.push(temp[i]);
         }
       }
+    };
+
+    $scope.getAllPossibleFields = function(fields,userFields){
+      let resultStr = fields;
+      if(userFields!==undefined && userFields!==null){
+        userFields.forEach((x) => { resultStr += "," + x.pname });
+      }
+      return resultStr;
+    };    
+
+    $scope.outputFieldsInvalid = false;
+    $scope.outputFieldsInvalidMessage = "";
+
+    $scope.trimStr = function(str){
+      return str.replace(/(^\s*)|(\s*$)/g, '');
+    };
+
+    $scope.checkCardValidStatus = function(card){
+      console.log("checkCardValidStatus");
+      return false;
+    }
+
+
+    $scope.checkOutputFields = function(select_expr,fields,userFields){
+      let invalidOuptuFields = [];
+
+      if(!!select_expr){
+        let existsFields = fields.split(',');
+        if(userFields!==undefined && userFields!==null){
+          existsFields.concat(userFields.map((x) => x.pname));
+          userFields.forEach((x) => { existsFields.push(x.pname)});
+        }
+
+        let outputFields = select_expr.split(',');
+
+        for(let idx in outputFields){
+          let tmpExistCheck = false;
+          for(let innerIdx in existsFields){
+            if($scope.trimStr(outputFields[idx]) === $scope.trimStr(existsFields[innerIdx])){
+              tmpExistCheck = true;
+              break;
+            }
+          }
+          if(!tmpExistCheck){
+            invalidOuptuFields.push(outputFields[idx]);
+          }
+        }
+
+        if(invalidOuptuFields.length!==0){
+          $scope.outputFieldsInvalid = true;
+          $scope.outputFieldsInvalidMessage = invalidOuptuFields.join(',') + $filter('translate')('ocsp_web_common_035');
+        }else {
+          $scope.outputFieldsInvalid = false;
+          $scope.outputFieldsInvalidMessage = "";  
+        }
+
+      } else {
+        $scope.outputFieldsInvalid = false;
+        $scope.outputFieldsInvalidMessage = "";
+      }
+      
     };
 
   }]);

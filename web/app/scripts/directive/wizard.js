@@ -47,7 +47,12 @@ angular.module('ocspApp').directive('wizard',['$filter', '$rootScope', function(
       });
       wizardModal.on("validate", function(wizard){
         let flag = true;
-        wizard.el.find("span.redtip").remove();
+        wizard.el.find("span.redtip:not(#idWarningMessageOfTokenField)").remove();
+        wizard.el.find("#idWarningMessageOfTokenField").each(function(){
+          if($(this)[0].innerText!==""){
+            flag = false;
+          }
+        });
         wizard.el.find("input.ng-invalid:not(.tokenfield)").each(function(){
           $(this).addClass("ng-touched");
           $(this).after(`

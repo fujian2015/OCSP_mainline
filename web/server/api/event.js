@@ -387,6 +387,7 @@ router.post('/search', function(req, res){
     },
     include: {
       model: CEP,
+      required: false,
       where:{
         $and: []
       }

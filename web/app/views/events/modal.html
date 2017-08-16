@@ -68,7 +68,7 @@
           </div>
           <div class="form-group">
             <label>{{'ocsp_web_streams_manage_018' | translate}}*</label>
-            <tokenfield change="checkOutputFileds()" inputs="{{newEvent.inputFields}}" labels="{{newEvent.labels}}" name="eventsFields" ng-model="newEvent.select_expr" required="true"></tokenfield>
+            <tokenfield change="checkOutputFileds(userFieldsFromDB)" inputs="{{getAllPossibleFields(newEvent.inputFields,userFieldsFromDB)}}" labels="{{newEvent.labels}}" name="eventsFields" ng-model="newEvent.select_expr" required="true"></tokenfield>
             <span class="redtip" ng-show="eventForm['eventsFields'].$touched && eventForm['eventsFields'].$error.required">{{'ocsp_web_common_027' | translate}}</span>
             <span class="redtip" ng-show="outputFieldsInvalid">{{outputFieldsInvalidMessage}}</span>
           </div>

@@ -245,6 +245,15 @@ angular.module('ocspApp')
               $http.get('/api/typestructure').success(function(tree){
                 for (let i in events) {
                   _findNodeTree(tree, events[i]);
+                  if(!events[i].STREAM_EVENT_CEP){
+                    tree.push({
+                      id: events[i].id,
+                      type: "event",
+                      label: _status(events[i].status) + " " +  events[i].name,
+                      status: events[i].status,
+                      event: events[i]
+                    });
+                  }
                 }
                 _noLeaf(tree);
                 $scope.$parent.treedata = tree;
@@ -282,12 +291,17 @@ angular.module('ocspApp')
 
           $scope.outputFieldsInvalid = false;
           $scope.outputFieldsInvalidMessage = "";
+          $scope.userFieldsFromDB = [];
 
-          $scope.checkOutputFileds = function(){
+          $scope.checkOutputFileds = function(userFieldsFromDB){
             let invalidOuptuFields = [];
 
             if(!!$scope.newEvent.select_expr){
               let existsFields = $scope.newEvent.inputFields.split(',');
+              if(userFieldsFromDB!==undefined && userFieldsFromDB!==null){
+                existsFields.concat(userFieldsFromDB.map((x) => x.pname));
+                userFieldsFromDB.forEach((x) => { existsFields.push(x.pname)});
+              }
               let outputFields = $scope.newEvent.select_expr.split(',');
               
               for(let idx in outputFields){
@@ -331,6 +345,13 @@ angular.module('ocspApp')
           };
 
           $scope.selectEventStream = function($item){
+            $http.get('/api/datainterface/' + $item.diid).success(function(data){
+              if(data.length !== 0){
+                let propertiesOfDatainterfaceDataFromDB = JSON.parse(data[0].properties);
+                $scope.userFieldsFromDB = propertiesOfDatainterfaceDataFromDB.userFields;
+              }
+            });
+
             _parseFields($item.diid, $scope.newEvent);
           };
           $scope.saveEvent = function () {
@@ -340,7 +361,7 @@ angular.module('ocspApp')
               });
             });
             if($("#eventForm .ng-invalid").length === 0) {
-              $scope.checkOutputFileds();
+              $scope.checkOutputFileds($scope.userFieldsFromDB);
               if($scope.outputFieldsInvalid){
                 Notification.error($scope.outputFieldsInvalidMessage);
                 return;
@@ -414,9 +435,16 @@ angular.module('ocspApp')
       $scope.item = null;
       $scope.eventsList = [];
       $scope.eventsSearch = {};
+      $scope.userFieldsFromDB = Array();
       $scope.branch = branch;
       if(branch.type === "event"){
         let id = branch.id;
+        $http.get('/api/datainterface/' + branch.event.diid).success(function(data){
+          if(data.length !== 0){
+            let propertiesOfDatainterfaceDataFromDB = JSON.parse(data[0].properties);
+            $scope.userFieldsFromDB = propertiesOfDatainterfaceDataFromDB.userFields;
+          }
+        });
         _getHistory(id);
       }else{
         let array = [];
@@ -531,12 +559,16 @@ angular.module('ocspApp')
 
     $scope.isUpdatedOutputFieldsValid = true;
     $scope.isUpdatedOutputFieldsValidMessages = "";
-    $scope.checkUpdateOutputFileds = function(item){
+    $scope.checkUpdateOutputFileds = function(item,userFieldsFromDB){
       $scope.isMainFormDataChanged = JSON.stringify($scope.oldItem)!==JSON.stringify($scope.item);
       let invalidOuptuFields = [];
 
       if(!!item.select_expr){
         let existsFields = item.inputFields.split(',');
+        if(userFieldsFromDB!==undefined && userFieldsFromDB!==null){
+          existsFields.concat(userFieldsFromDB.map((x) => x.pname));
+          userFieldsFromDB.forEach((x) => { existsFields.push(x.pname)});
+        }
         let outputFields = item.select_expr.split(',');
         
         for(let idx in outputFields){
@@ -600,5 +632,13 @@ angular.module('ocspApp')
     $scope.selectStream = function($item) {
       _parseFields($item.diid, $scope.item);
     };
+
+    $scope.getAllPossibleFields = function(fields,userFields){
+      let resultStr = fields;
+      if(userFields!==undefined && userFields !== null){
+        userFields.forEach((x) => { resultStr += "," + x.pname });
+      }
+      return resultStr;
+    };   
 
   }]);
