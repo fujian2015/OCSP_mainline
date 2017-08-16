@@ -191,9 +191,9 @@ object MainFrameManager extends Logging {
     }
 
     val tid = conf.getId
-    val files = s"${CommonConstant.ocspConfPath}/executor-log4j.properties"
-    val executor_extraJavaOptions = "spark.executor.extraJavaOptions=-Dlog4j.configuration=executor-log4j.properties"
-    val driver_java_options = s"-DOCSP_LOG_PATH=${CommonConstant.ocspLogPath} -DOCSP_TASK_ID=${tid} -Dlog4j.configuration=file:${CommonConstant.ocspConfPath}/driver-log4j.properties"
+    var files = s"${CommonConstant.ocspConfPath}/executor-log4j.properties"
+    var executor_extraJavaOptions = "spark.executor.extraJavaOptions=-Dlog4j.configuration=executor-log4j.properties"
+    var driver_java_options = s"-DOCSP_LOG_PATH=${CommonConstant.ocspLogPath} -DOCSP_TASK_ID=${tid} -Dlog4j.configuration=file:${CommonConstant.ocspConfPath}/driver-log4j.properties"
     val deploy_mode = "client"
     val master =  MainFrameConf.systemProps.get("master")
 
@@ -244,24 +244,23 @@ object MainFrameManager extends Logging {
         queue = ""
       }
 
+      logInfo("kerberos enable: " + MainFrameConf.systemProps.get(MainFrameConf.KERBEROS_ENABLE))
+      logInfo("kafka-kerberos enable: " + MainFrameConf.systemProps.get(MainFrameConf.KAFKA_KERBEROS_ENABLE))
+
       if (MainFrameConf.systemProps.getBoolean(MainFrameConf.KERBEROS_ENABLE, false)) {
-       val kafka_kerberos_enable = MainFrameConf.systemProps.getBoolean(MainFrameConf.KERBEROS_ENABLE, true)
+       val kafka_kerberos_enable = MainFrameConf.systemProps.getBoolean(MainFrameConf.KAFKA_KERBEROS_ENABLE, true)
         val userSecurityInfo = userSecurityServer.getUserSecurityInfo(owner)
         val spark_keytab = CommonConstant.ocspConfPath + "/" + userSecurityInfo.sparkKeytab
         val spark_principal = userSecurityInfo.sparkPrincipal
         if (kafka_kerberos_enable) {
-        	val kafka_keytab = userSecurityInfo.kafkaKeytab
-        	val kafka_jaas = userSecurityInfo.kafkaJaas
-
-        val files = s"${CommonConstant.ocspConfPath}/executor-log4j.properties,${CommonConstant.ocspConfPath}/${kafka_jaas},${CommonConstant.ocspConfPath}/${kafka_keytab}"
-        val executor_extraJavaOptions = s"spark.executor.extraJavaOptions=-Dlog4j.configuration=executor-log4j.properties -Djava.security.auth.login.config=./${kafka_jaas}"
-        val driver_java_options = s"-DOCSP_LOG_PATH=${CommonConstant.ocspLogPath} -DOCSP_TASK_ID=${tid} -Djava.security.auth.login.config=${CommonConstant.ocspConfPath}/${kafka_jaas} -Dlog4j.configuration=file:${CommonConstant.ocspConfPath}/driver-log4j.properties"
-				} else {
-          val files = s"${CommonConstant.ocspConfPath}/executor-log4j.properties"
-          val executor_extraJavaOptions = "spark.executor.extraJavaOptions=-Dlog4j.configuration=executor-log4j.properties"
-          val driver_java_options = s"-DOCSP_LOG_PATH=${CommonConstant.ocspLogPath} -DOCSP_TASK_ID=${tid} -Dlog4j.configuration=file:${CommonConstant.ocspConfPath}/driver-log4j.properties"
+          val kafka_keytab = userSecurityInfo.kafkaKeytab
+          val kafka_jaas = userSecurityInfo.kafkaJaas
+          files = s"${CommonConstant.ocspConfPath}/executor-log4j.properties,${CommonConstant.ocspConfPath}/${kafka_jaas},${CommonConstant.ocspConfPath}/${kafka_keytab}"
+          executor_extraJavaOptions = s"spark.executor.extraJavaOptions=-Dlog4j.configuration=executor-log4j.properties -Djava.security.auth.login.config=./${kafka_jaas}"
+          driver_java_options = s"-DOCSP_LOG_PATH=${CommonConstant.ocspLogPath} -DOCSP_TASK_ID=${tid} -Djava.security.auth.login.config=${CommonConstant.ocspConfPath}/${kafka_jaas} -Dlog4j.configuration=file:${CommonConstant.ocspConfPath}/driver-log4j.properties"
+        } else {
+          driver_java_options = s"-DOCSP_LOG_PATH=${CommonConstant.ocspLogPath} -DOCSP_TASK_ID=${tid} -Dlog4j.configuration=file:${CommonConstant.ocspConfPath}/driver-log4j.properties"
 				}
-
         cmd = cmd  :+ "--files" :+ files :+ "--conf":+executor_extraJavaOptions :+ "--driver-java-options":+driver_java_options :+ "--keytab" :+spark_keytab :+ "--principal" :+ spark_principal :+  "--class":+streamClass :+ "--master":+master :+  "--deploy-mode":+ deploy_mode :+ "--executor-memory":+executor_memory :+ "--executor-cores":+ executor_cores :+ "--driver-memory":+ driver_memory :+  "--num-executors":+ num_executors :+"--queue":+ queue :+ "--jars":+jars.toString() :+ appJars :+ tid
       }else{
         //cmd += files + executor_extraJavaOptions + driver_java_options + streamClass + master + deploy_mode + executor_memory + executor_cores + driver_memory + num_executors + queue + jars + " " + appJars + " " + tid
