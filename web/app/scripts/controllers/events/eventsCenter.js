@@ -1,23 +1,40 @@
 'use strict';
 
 angular.module('ocspApp')
-  .controller('EventsCenterCtrl',['$scope', '$rootScope', '$http', 'Notification', '$filter', '$q', '$uibModal', 'moment', '$sce', 'NgTableParams', '$translate', ($scope, $rootScope, $http, Notification, $filter, $q, $uibModal, moment, $sce, NgTableParams, $translate)=>{
+  .filter('filterEvents', function () {
+    return function (events, eventName) {
+      let results = Array();
+      if(!!events){
+        events.forEach(x => {
+          if(!!eventName && eventName !== ""){
+            if(!!x.name && x.name.indexOf(eventName) > -1){
+              results.push(x);
+            }
+          } else {
+            results.push(x);
+          }
+        });
+      }
+      return results;
+    };
+  })
+  .controller('EventsCenterCtrl', ['$scope', '$rootScope', '$http', 'Notification', '$filter', '$q', '$uibModal', 'moment', '$sce', 'NgTableParams', '$translate', ($scope, $rootScope, $http, Notification, $filter, $q, $uibModal, moment, $sce, NgTableParams, $translate) => {
     $rootScope.init('cep');
     $scope.treedata = [];
     $scope.isMainFormDataChanged = false;
 
-    function _status(status){
-      switch(status){
-        case 0: return $sce.trustAsHtml(`<span class="label label-danger">`+$translate.instant('ocsp_web_streams_manage_025')+`</span>`);
-        case 1: return $sce.trustAsHtml(`<span class="label label-success">`+$translate.instant('ocsp_web_streams_manage_024')+`</span>`);
+    function _status(status) {
+      switch (status) {
+        case 0: return $sce.trustAsHtml(`<span class="label label-danger">` + $translate.instant('ocsp_web_streams_manage_025') + `</span>`);
+        case 1: return $sce.trustAsHtml(`<span class="label label-success">` + $translate.instant('ocsp_web_streams_manage_024') + `</span>`);
       }
     }
 
-    function _findNodeTree(tree, event){
-      if(!event.STREAM_EVENT_CEP){
+    function _findNodeTree(tree, event) {
+      if (!event.STREAM_EVENT_CEP) {
         return;
       }
-      if(tree && tree.length > 0) {
+      if (tree && tree.length > 0) {
         for (let i in tree) {
           if (tree[i].id === event.STREAM_EVENT_CEP.type) {
             if (!tree[i].children) {
@@ -26,7 +43,7 @@ angular.module('ocspApp')
             tree[i].children.push({
               id: event.id,
               type: "event",
-              label: _status(event.status) + " " +  event.name,
+              label: _status(event.status) + " " + event.name,
               status: event.status,
               event: event
             });
@@ -38,8 +55,8 @@ angular.module('ocspApp')
       }
     }
 
-    function _noLeaf(tree){
-      if(tree && tree.length > 0) {
+    function _noLeaf(tree) {
+      if (tree && tree.length > 0) {
         for (let i in tree) {
           if ((!tree[i].children || tree[i].children.length === 0) && tree[i].type && tree[i].type === "type") {
             tree[i].noLeaf = true;
@@ -50,12 +67,12 @@ angular.module('ocspApp')
       }
     }
 
-    function _findTypesName(type){
-      if(type.children_types){
+    function _findTypesName(type) {
+      if (type.children_types) {
         let types = JSON.parse(type.children_types);
-        for(let i in types){
-          for(let j in $scope.types){
-            if(types[i] === $scope.types[j].id){
+        for (let i in types) {
+          for (let j in $scope.types) {
+            if (types[i] === $scope.types[j].id) {
               $scope.types[j].vname = type.vname + "/" + $scope.types[j].type_name;
               _findTypesName($scope.types[j]);
               break;
@@ -65,10 +82,10 @@ angular.module('ocspApp')
       }
     }
 
-    let collapseTree = function(tree){
-      for(let i in tree){
+    let collapseTree = function (tree) {
+      for (let i in tree) {
         tree[i].expanded = false;
-        if(!!tree[i].children && tree[i].children.length!==0){
+        if (!!tree[i].children && tree[i].children.length !== 0) {
           collapseTree(tree[i].children);
         }
       }
@@ -100,18 +117,18 @@ angular.module('ocspApp')
         $scope.inputLabels = arr.labels.data;
         for (let i in events) {
           _findNodeTree(tree, events[i]);
-          if(!events[i].STREAM_EVENT_CEP){
+          if (!events[i].STREAM_EVENT_CEP) {
             tree.push({
               id: events[i].id,
               type: "event",
-              label: _status(events[i].status) + " " +  events[i].name,
+              label: _status(events[i].status) + " " + events[i].name,
               status: events[i].status,
               event: events[i]
             });
           }
         }
-        for(let i in $scope.types){
-          if(!$scope.types[i].parent_type){
+        for (let i in $scope.types) {
+          if (!$scope.types[i].parent_type) {
             $scope.types[i].vname = "/" + $scope.types[i].type_name;
             _findTypesName($scope.types[i]);
           }
@@ -124,7 +141,7 @@ angular.module('ocspApp')
 
     _init();
 
-    $scope.onSelect = function(item){
+    $scope.onSelect = function (item) {
       //Clear periods when select audit type
       item.audit.periods = [{}];
     };
@@ -163,12 +180,12 @@ angular.module('ocspApp')
       if (record && record.config_data) {
         $scope.item = JSON.parse(record.config_data);
         if (!$scope.item.audit) {
-          $scope.item.audit = {type: "always", periods: []};
+          $scope.item.audit = { type: "always", periods: [] };
         }
-        if ($scope.item.audit.enableDate){
+        if ($scope.item.audit.enableDate) {
           $scope.item.audit.startDate = moment($scope.item.audit.startDate).toDate();
           $scope.item.audit.endDate = moment($scope.item.audit.endDate).toDate();
-        }else{
+        } else {
           $scope.item.audit.enableDate = 'none';
         }
         if ($scope.item.audit.periods && $scope.item.audit.periods.length > 0) {
@@ -177,13 +194,13 @@ angular.module('ocspApp')
             $scope.item.audit.periods[i].end = moment($scope.item.audit.periods[i].end).toDate();
           }
         }
-        if($scope.item.task) {
+        if ($scope.item.task) {
           _parseFields($scope.item.task.diid, $scope.item);
         }
         $scope.item.version = (parseInt(history.version) ? parseInt(history.version) : 0) + 1;
-        if($scope.item.parent && !$scope.item.parent.vname){
-          for(let i = 0; i < $scope.types.length; i++){
-            if($scope.item.parent.id === $scope.types[i].id){
+        if ($scope.item.parent && !$scope.item.parent.vname) {
+          for (let i = 0; i < $scope.types.length; i++) {
+            if ($scope.item.parent.id === $scope.types[i].id) {
               $scope.item.parent = $scope.types[i];
               break;
             }
@@ -194,7 +211,7 @@ angular.module('ocspApp')
       $scope.oldItem = JSON.parse(JSON.stringify($scope.item));
     }
 
-    $scope.openCreateType = ()=>{
+    $scope.openCreateType = () => {
       let modal = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'modal-title-bottom',
@@ -203,19 +220,19 @@ angular.module('ocspApp')
         size: 'md',
         backdrop: 'static',
         scope: $scope,
-        controller: ['$scope', 'Notification', function($scope, Notification) {
+        controller: ['$scope', 'Notification', function ($scope, Notification) {
           $scope.newType = {};
-          $scope.closeModal = function(){
+          $scope.closeModal = function () {
             modal.close();
           };
           $scope.saveType = function () {
             angular.forEach($scope.typeForm.$error, function (field) {
-              angular.forEach(field, function(errorField){
+              angular.forEach(field, function (errorField) {
                 errorField.$setTouched();
               });
             });
-            if($("#typeForm .ng-invalid").length === 0) {
-              $http.post("/api/typestructure", {newType: $scope.newType}).then(function(){
+            if ($("#typeForm .ng-invalid").length === 0) {
+              $http.post("/api/typestructure", { newType: $scope.newType }).then(function () {
                 _init();
                 modal.close();
                 Notification.success($filter('translate')('ocsp_web_common_026'));
@@ -226,7 +243,7 @@ angular.module('ocspApp')
       });
     };
 
-    $scope.openSearchModal = ()=>{
+    $scope.openSearchModal = () => {
       let modal = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'modal-title-bottom',
@@ -235,21 +252,21 @@ angular.module('ocspApp')
         size: 'lg',
         backdrop: 'static',
         scope: $scope,
-        controller: ['$scope', function($scope) {
+        controller: ['$scope', function ($scope) {
           $scope.searchItem = {};
-          $scope.closeModal = function(){
+          $scope.closeModal = function () {
             modal.close();
           };
           $scope.search = function () {
-            $http.post("/api/event/search", {searchItem: $scope.searchItem}).success(function(events){
-              $http.get('/api/typestructure').success(function(tree){
+            $http.post("/api/event/search", { searchItem: $scope.searchItem }).success(function (events) {
+              $http.get('/api/typestructure').success(function (tree) {
                 for (let i in events) {
                   _findNodeTree(tree, events[i]);
-                  if(!events[i].STREAM_EVENT_CEP){
+                  if (!events[i].STREAM_EVENT_CEP) {
                     tree.push({
                       id: events[i].id,
                       type: "event",
-                      label: _status(events[i].status) + " " +  events[i].name,
+                      label: _status(events[i].status) + " " + events[i].name,
                       status: events[i].status,
                       event: events[i]
                     });
@@ -266,11 +283,11 @@ angular.module('ocspApp')
       });
     };
 
-    $scope.trimStr = function(str){
+    $scope.trimStr = function (str) {
       return str.replace(/(^\s*)|(\s*$)/g, '');
     };
 
-    $scope.openCreateEvent = ()=>{
+    $scope.openCreateEvent = () => {
       let modal = $uibModal.open({
         animation: true,
         ariaLabelledBy: 'modal-title-bottom',
@@ -279,13 +296,13 @@ angular.module('ocspApp')
         size: 'lg',
         backdrop: 'static',
         scope: $scope,
-        controller: ['$scope', 'Notification', function($scope, Notification) {
+        controller: ['$scope', 'Notification', function ($scope, Notification) {
           $scope.newEvent = {
             output: {},
-            inputFields:'',
-            select_expr:'',
+            inputFields: '',
+            select_expr: '',
           };
-          $scope.closeModal = function(){
+          $scope.closeModal = function () {
             modal.close();
           };
 
@@ -293,42 +310,42 @@ angular.module('ocspApp')
           $scope.outputFieldsInvalidMessage = "";
           $scope.userFieldsFromDB = [];
 
-          $scope.checkOutputFileds = function(userFieldsFromDB){
+          $scope.checkOutputFileds = function (userFieldsFromDB) {
             let invalidOuptuFields = [];
 
-            if(!!$scope.newEvent.select_expr){
+            if (!!$scope.newEvent.select_expr) {
               let existsFields = $scope.newEvent.inputFields.split(',');
-              if(userFieldsFromDB!==undefined && userFieldsFromDB!==null){
+              if (userFieldsFromDB !== undefined && userFieldsFromDB !== null) {
                 existsFields.concat(userFieldsFromDB.map((x) => x.pname));
                 userFieldsFromDB.forEach((x) => { existsFields.push(x.pname); });
               }
               let outputFields = $scope.newEvent.select_expr.split(',');
-              
-              for(let idx in outputFields){
+
+              for (let idx in outputFields) {
                 let tmpExistCheck = false;
-                for(let innerIdx in existsFields){
-                  if($scope.trimStr(outputFields[idx]) === $scope.trimStr(existsFields[innerIdx])){
+                for (let innerIdx in existsFields) {
+                  if ($scope.trimStr(outputFields[idx]) === $scope.trimStr(existsFields[innerIdx])) {
                     tmpExistCheck = true;
                     break;
                   }
                 }
-                if(!tmpExistCheck){
+                if (!tmpExistCheck) {
                   invalidOuptuFields.push(outputFields[idx]);
                 }
               }
-  
-              if(invalidOuptuFields.length!==0){
+
+              if (invalidOuptuFields.length !== 0) {
                 $scope.outputFieldsInvalid = true;
                 $scope.outputFieldsInvalidMessage = invalidOuptuFields.join(',') + $translate.instant('ocsp_web_common_035');
-              }else {
+              } else {
                 $scope.outputFieldsInvalid = false;
-                $scope.outputFieldsInvalidMessage = "";  
+                $scope.outputFieldsInvalidMessage = "";
               }
             } else {
               $scope.outputFieldsInvalid = false;
               $scope.outputFieldsInvalidMessage = "";
             }
-            
+
           };
 
           $scope.eventcodealreadyexists = false;
@@ -344,9 +361,9 @@ angular.module('ocspApp')
             });
           };
 
-          $scope.selectEventStream = function($item){
-            $http.get('/api/datainterface/' + $item.diid).success(function(data){
-              if(data.length !== 0){
+          $scope.selectEventStream = function ($item) {
+            $http.get('/api/datainterface/' + $item.diid).success(function (data) {
+              if (data.length !== 0) {
                 let propertiesOfDatainterfaceDataFromDB = JSON.parse(data[0].properties);
                 $scope.userFieldsFromDB = propertiesOfDatainterfaceDataFromDB.userFields;
               }
@@ -356,24 +373,24 @@ angular.module('ocspApp')
           };
           $scope.saveEvent = function () {
             angular.forEach($scope.eventForm.$error, function (field) {
-              angular.forEach(field, function(errorField){
+              angular.forEach(field, function (errorField) {
                 errorField.$setTouched();
               });
             });
-            if($("#eventForm .ng-invalid").length === 0) {
+            if ($("#eventForm .ng-invalid").length === 0) {
               $scope.checkOutputFileds($scope.userFieldsFromDB);
-              if($scope.outputFieldsInvalid){
+              if ($scope.outputFieldsInvalid) {
                 Notification.error($scope.outputFieldsInvalidMessage);
                 return;
               }
 
-              if($scope.newEvent.note) {
+              if ($scope.newEvent.note) {
                 $scope.newEvent.note = $scope.newEvent.note.replace(/[<p>|</p>]/g, "");
                 $scope.newEvent.note = `<p>${$scope.newEvent.note}</p>`;
               }
               $scope.newEvent.version = "1";
-              $http.get("/api/event/cep/" + $scope.newEvent.cep.code).success(function(data){
-                if(!!data.code){
+              $http.get("/api/event/cep/" + $scope.newEvent.cep.code).success(function (data) {
+                if (!!data.code) {
                   Notification.error($filter('translate')('ocsp_web_streams_cep_eventcodeexists'));
                 } else {
                   $http.post("/api/event/", { event: $scope.newEvent }).success(function (data) {
@@ -416,16 +433,16 @@ angular.module('ocspApp')
 
     $scope.deleteBranch = (branch) => {
       let childrenNumberOfBranch = JSON.parse(branch.children_types);
-      if(childrenNumberOfBranch.length === 0){
-        $http.delete('/api/typestructure/' + branch.id).success(function(data){
-          if(data.success){
+      if (childrenNumberOfBranch.length === 0) {
+        $http.delete('/api/typestructure/' + branch.id).success(function (data) {
+          if (data.success) {
             Notification.success($filter('translate')('ocsp_web_streams_cep_deletetypesuccess'));
             _init();
           } else {
             Notification.error($filter('translate')('ocsp_web_streams_cep_deletetypefailed'));
           }
         });
-      }else{
+      } else {
         Notification.error($filter('translate')('ocsp_web_streams_cep_cantdeletetypewithchild'));
       }
     };
@@ -437,33 +454,33 @@ angular.module('ocspApp')
       $scope.eventsSearch = {};
       $scope.userFieldsFromDB = Array();
       $scope.branch = branch;
-      if(branch.type === "event"){
+      if (branch.type === "event") {
         let id = branch.id;
-        $http.get('/api/datainterface/' + branch.event.diid).success(function(data){
-          if(data.length !== 0){
+        $http.get('/api/datainterface/' + branch.event.diid).success(function (data) {
+          if (data.length !== 0) {
             let propertiesOfDatainterfaceDataFromDB = JSON.parse(data[0].properties);
             $scope.userFieldsFromDB = propertiesOfDatainterfaceDataFromDB.userFields;
           }
         });
         _getHistory(id);
-      }else{
+      } else {
         let array = [];
         $scope.eventsList = [];
-        if(branch.children) {
+        if (branch.children) {
           array = branch.children;
         }
-        for(let i = 0; i < array.length; i++){
-          if(array[i].type === "event"){
+        for (let i = 0; i < array.length; i++) {
+          if (array[i].type === "event") {
             $scope.eventsList.push(array[i].event);
-          }else if(array[i].type === "type" && array[i].children){
+          } else if (array[i].type === "type" && array[i].children) {
             array = array.concat(array[i].children);
           }
         }
-        for(let i = 0; i < $scope.eventsList.length; i++){
+        for (let i = 0; i < $scope.eventsList.length; i++) {
           let result = JSON.parse($scope.eventsList[i].PROPERTIES);
-          if(result && result.props){
-            for(let j = 0; j < result.props.length; j++){
-              if(result.props[j].pname === "period"){
+          if (result && result.props) {
+            for (let j = 0; j < result.props.length; j++) {
+              if (result.props[j].pname === "period") {
                 let tmp = JSON.parse(result.props[j].pvalue);
                 $scope.eventsList[i].startDate = tmp.startDate;
                 $scope.eventsList[i].endDate = tmp.endDate;
@@ -472,19 +489,19 @@ angular.module('ocspApp')
             }
           }
         }
-        $scope.defaultConfigTableParams = new NgTableParams({}, { dataset: $scope.eventsList});
+        $scope.defaultConfigTableParams = new NgTableParams({}, { dataset: $scope.eventsList });
       }
     };
 
     $scope.changeStatus = (status) => {
-      $http.post("/api/event/change/" + $scope.branch.id, {status: status}).success(function(){
+      $http.post("/api/event/change/" + $scope.branch.id, { status: status }).success(function () {
         _init();
         Notification.success($filter('translate')('ocsp_web_common_026'));
       });
     };
 
     $scope.rightSlide = () => {
-      if($scope.hook + 4 < $scope.history.length){
+      if ($scope.hook + 4 < $scope.history.length) {
         $scope.history[$scope.hook].hide = true;
         $scope.history[$scope.hook + 4].hide = false;
         $scope.hook++;
@@ -492,17 +509,17 @@ angular.module('ocspApp')
     };
 
     $scope.leftSlide = () => {
-      if($scope.hook > 0){
+      if ($scope.hook > 0) {
         $scope.history[$scope.hook - 1].hide = false;
-        if($scope.hook + 3 < $scope.history.length) {
+        if ($scope.hook + 3 < $scope.history.length) {
           $scope.history[$scope.hook + 3].hide = true;
         }
         $scope.hook--;
       }
     };
 
-    $scope.pressClick = (record)=> {
-      if(!record.active) {
+    $scope.pressClick = (record) => {
+      if (!record.active) {
         _parseItem(record);
         if ($scope.history.length > 0) {
           for (let i in $scope.history) {
@@ -514,23 +531,23 @@ angular.module('ocspApp')
     };
 
     $scope.auditTypes = [
-      {name: 'always', displayName: $filter('translate')('ocsp_web_streams_subscribe_type_always')},
-      {name: 'day', displayName: $filter('translate')('ocsp_web_streams_subscribe_type_day')},
-      {name: 'week', displayName: $filter('translate')('ocsp_web_streams_subscribe_type_week')},
-      {name: 'month', displayName: $filter('translate')('ocsp_web_streams_subscribe_type_month')}
+      { name: 'always', displayName: $filter('translate')('ocsp_web_streams_subscribe_type_always') },
+      { name: 'day', displayName: $filter('translate')('ocsp_web_streams_subscribe_type_day') },
+      { name: 'week', displayName: $filter('translate')('ocsp_web_streams_subscribe_type_week') },
+      { name: 'month', displayName: $filter('translate')('ocsp_web_streams_subscribe_type_month') }
     ];
 
     $scope.auditTimes = [
-      {name: 'none' ,displayName: '无'},
-      {name: 'have', displayName: '有'}
+      { name: 'none', displayName: '无' },
+      { name: 'have', displayName: '有' }
     ];
 
-    $scope.remove = function(array, $index){
-      array.splice($index,1);
+    $scope.remove = function (array, $index) {
+      array.splice($index, 1);
     };
 
     $scope.add = function (array) {
-      if(array !== undefined) {
+      if (array !== undefined) {
         array.push({
           status: 1,
           output: {},
@@ -539,19 +556,18 @@ angular.module('ocspApp')
       }
     };
 
-    let _trim = function(stringdata)
-    {
-      return stringdata.replace(/(^\s*)|(\s*$)/g,'');
+    let _trim = function (stringdata) {
+      return stringdata.replace(/(^\s*)|(\s*$)/g, '');
     };
 
-    $scope.updateFormDirtyStatus = function(){
+    $scope.updateFormDirtyStatus = function () {
 
       let orgItem = JSON.parse(JSON.stringify($scope.oldItem));
       let newItem = JSON.parse(JSON.stringify($scope.item));
-      if(_trim(orgItem.note)===_trim(newItem.note)){
+      if (_trim(orgItem.note) === _trim(newItem.note)) {
         delete orgItem.note;
         delete newItem.note;
-        $scope.isMainFormDataChanged = JSON.stringify(orgItem)!==JSON.stringify(newItem);
+        $scope.isMainFormDataChanged = JSON.stringify(orgItem) !== JSON.stringify(newItem);
       } else {
         $scope.isMainFormDataChanged = true;
       }
@@ -559,68 +575,70 @@ angular.module('ocspApp')
 
     $scope.isUpdatedOutputFieldsValid = true;
     $scope.isUpdatedOutputFieldsValidMessages = "";
-    $scope.checkUpdateOutputFileds = function(item,userFieldsFromDB){
-      $scope.isMainFormDataChanged = JSON.stringify($scope.oldItem)!==JSON.stringify($scope.item);
+    $scope.checkUpdateOutputFileds = function (item, userFieldsFromDB) {
+      $scope.isMainFormDataChanged = JSON.stringify($scope.oldItem) !== JSON.stringify($scope.item);
       let invalidOuptuFields = [];
 
-      if(!!item.select_expr){
+      if (!!item.select_expr) {
         let existsFields = item.inputFields.split(',');
-        if(userFieldsFromDB!==undefined && userFieldsFromDB!==null){
+        if (userFieldsFromDB !== undefined && userFieldsFromDB !== null) {
           existsFields.concat(userFieldsFromDB.map((x) => x.pname));
           userFieldsFromDB.forEach((x) => { existsFields.push(x.pname); });
         }
         let outputFields = item.select_expr.split(',');
-        
-        for(let idx in outputFields){
+
+        for (let idx in outputFields) {
           let tmpExistCheck = false;
-          for(let innerIdx in existsFields){
-            if($scope.trimStr(outputFields[idx]) === $scope.trimStr(existsFields[innerIdx])){
+          for (let innerIdx in existsFields) {
+            if ($scope.trimStr(outputFields[idx]) === $scope.trimStr(existsFields[innerIdx])) {
               tmpExistCheck = true;
               break;
             }
           }
-          if(!tmpExistCheck){
+          if (!tmpExistCheck) {
             invalidOuptuFields.push(outputFields[idx]);
           }
         }
 
-        if(invalidOuptuFields.length!==0){
+        if (invalidOuptuFields.length !== 0) {
           $scope.isUpdatedOutputFieldsValid = false;
           $scope.isUpdatedOutputFieldsValidMessages = invalidOuptuFields.join(',') + $translate.instant('ocsp_web_common_035');
-        }else {
+        } else {
           $scope.isUpdatedOutputFieldsValid = true;
-          $scope.isUpdatedOutputFieldsValidMessages = "";  
+          $scope.isUpdatedOutputFieldsValidMessages = "";
         }
       } else {
         $scope.isUpdatedOutputFieldsValid = true;
         $scope.isUpdatedOutputFieldsValidMessages = "";
       }
-      
+
     };
 
-    $scope.update = function(){
+    $scope.update = function () {
       $scope.isMainFormDataChanged = false;
-      
 
-      if($scope.item.id === undefined || $scope.item.id === null){
+
+      if ($scope.item.id === undefined || $scope.item.id === null) {
         Notification.error("Cannot update null event");
-      }else{
+      } else {
         if ($scope.mainForm.$invalid) {
           angular.forEach($scope.mainForm.$error, function (field) {
-            angular.forEach(field, function(errorField){
+            angular.forEach(field, function (errorField) {
               errorField.$setTouched();
             });
           });
           Notification.error($filter('translate')('ocsp_web_common_032'));
-        }else {
-          if($scope.item.note) {
+        } else {
+          if ($scope.item.note) {
             $scope.item.note = $scope.item.note.replace(/[<p>|</p>]/g, "");
             $scope.item.note = `<p>${$scope.item.note}</p>`;
           }
           let itemId = $scope.item.id;
-          $q.all({event: $http.put("/api/event/" + $scope.item.id, {event: $scope.item}),
-            history: $http.post("/api/history/event", {event: {config_data: $scope.item, note: $scope.item.note, version: $scope.item.version}})})
-            .then(function(){
+          $q.all({
+            event: $http.put("/api/event/" + $scope.item.id, { event: $scope.item }),
+            history: $http.post("/api/history/event", { event: { config_data: $scope.item, note: $scope.item.note, version: $scope.item.version } })
+          })
+            .then(function () {
               _init();
               _getHistory(itemId);
               Notification.success($filter('translate')('ocsp_web_common_026'));
@@ -629,16 +647,16 @@ angular.module('ocspApp')
       }
     };
 
-    $scope.selectStream = function($item) {
+    $scope.selectStream = function ($item) {
       _parseFields($item.diid, $scope.item);
     };
 
-    $scope.getAllPossibleFields = function(fields,userFields){
+    $scope.getAllPossibleFields = function (fields, userFields) {
       let resultStr = fields;
-      if(userFields!==undefined && userFields !== null){
+      if (userFields !== undefined && userFields !== null) {
         userFields.forEach((x) => { resultStr += "," + x.pname; });
       }
       return resultStr;
-    };   
+    };
 
   }]);

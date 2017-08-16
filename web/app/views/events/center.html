@@ -386,7 +386,7 @@
           <div class="row" style="margin-top: 10px;">
             <div class="col-md-12">
               <table ng-table="defaultConfigTableParams" class="table table-condensed table-bordered table-striped">
-                <tr ng-repeat="row in $data">
+                <tr ng-repeat="row in $data | filterEvents:eventsSearch.name">
                   <td data-title="'Name'">{{row.name}}</td>
                   <td data-title="'Type'">{{row.age}}</td>
                   <td data-title="'StartTime'">{{row.startDate}}</td>
