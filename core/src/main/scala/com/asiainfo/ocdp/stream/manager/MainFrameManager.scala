@@ -244,15 +244,17 @@ object MainFrameManager extends Logging {
         queue = ""
       }
 
-      logInfo("kerberos enable: " + MainFrameConf.systemProps.get(MainFrameConf.KERBEROS_ENABLE))
-      logInfo("kafka-kerberos enable: " + MainFrameConf.systemProps.get(MainFrameConf.KAFKA_KERBEROS_ENABLE))
+      val enableKerberos = MainFrameConf.systemProps.getBoolean(MainFrameConf.KERBEROS_ENABLE, false)
+      val enableKafkaKerberos = MainFrameConf.systemProps.getBoolean(MainFrameConf.KAFKA_KERBEROS_ENABLE, enableKerberos)
 
-      if (MainFrameConf.systemProps.getBoolean(MainFrameConf.KERBEROS_ENABLE, false)) {
-       val kafka_kerberos_enable = MainFrameConf.systemProps.getBoolean(MainFrameConf.KAFKA_KERBEROS_ENABLE, true)
+      logInfo("kerberos enable: " + enableKerberos)
+      logInfo("kafka-kerberos enable: " + enableKafkaKerberos)
+
+      if (enableKerberos) {
         val userSecurityInfo = userSecurityServer.getUserSecurityInfo(owner)
         val spark_keytab = CommonConstant.ocspConfPath + "/" + userSecurityInfo.sparkKeytab
         val spark_principal = userSecurityInfo.sparkPrincipal
-        if (kafka_kerberos_enable) {
+        if (enableKafkaKerberos) {
           val kafka_keytab = userSecurityInfo.kafkaKeytab
           val kafka_jaas = userSecurityInfo.kafkaJaas
           files = s"${CommonConstant.ocspConfPath}/executor-log4j.properties,${CommonConstant.ocspConfPath}/${kafka_jaas},${CommonConstant.ocspConfPath}/${kafka_keytab}"
