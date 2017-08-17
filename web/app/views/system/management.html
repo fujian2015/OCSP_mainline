@@ -118,20 +118,18 @@
               </div>
             </div>
 
-            <div ng-show="kerberosConfigureExist">
-              <div class="form-group">
-                <div class="row">
-                  <div class="col-md-2">
-                    <label>Kerberos</label>
-                  </div>
-                  <div class="col-md-8">
-                    <toggle-switch on-label="{{'ocsp_web_common_040' | translate}}" off-label="{{'ocsp_web_common_041' | translate}}" ng-disabled="!isAdminUser()" id="isIsKerberosEnabled" ng-model="isKerberosEnabled" ng-change="switchKerberosEnableStatus(isKerberosEnabled)">
-                    </toggle-switch>
-                  </div>
+            <div class="form-group">
+              <div class="row">
+                <div class="col-md-2">
+                  <label>Kerberos</label>
+                </div>
+                <div class="col-md-8">
+                  <toggle-switch on-label="{{'ocsp_web_common_040' | translate}}" off-label="{{'ocsp_web_common_041' | translate}}" ng-disabled="!isAdminUser()" id="isIsKerberosEnabled" ng-model="isKerberosEnabled" ng-change="switchKerberosEnableStatus(isKerberosEnabled)">
+                  </toggle-switch>
                 </div>
               </div>
             </div>
-
+            
           </div>
         </uib-accordion>
         <uib-accordion ng-repeat="data in datasource">
