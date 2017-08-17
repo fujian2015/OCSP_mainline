@@ -124,7 +124,7 @@
                   <label>Kerberos</label>
                 </div>
                 <div class="col-md-8">
-                  <toggle-switch on-label="{{'ocsp_web_common_040' | translate}}" off-label="{{'ocsp_web_common_041' | translate}}" ng-disabled="!isAdminUser()" id="isIsKerberosEnabled" ng-model="isKerberosEnabled" ng-change="switchKerberosEnableStatus(isKerberosEnabled)">
+                  <toggle-switch on-label="{{'ocsp_web_common_040' | translate}}" off-label="{{'ocsp_web_common_041' | translate}}" ng-disabled="!isAdminUser() || !kerberosConfigureExist" id="isIsKerberosEnabled" ng-model="isKerberosEnabled" ng-change="switchKerberosEnableStatus(isKerberosEnabled)">
                   </toggle-switch>
                 </div>
               </div>
