@@ -48,18 +48,17 @@ class StreamCodisWriter(diConf: DataInterfaceConf) extends StreamWriter with Log
       numPartitions = numPartitionsCustom.toInt
     }
 
-    if (numPartitions < 0){
-      numPartitions = jsonRDD.partitions.length/10
-      if(numPartitions < 1){
-        numPartitions = 1
-      }
-    }
-
     logInfo(s"The number of partitions is $numPartitions")
 
-    val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys).coalesce(numPartitions)
+    val resultRDD: RDD[(String, String)] = transforEvent2CodisMessage(jsonRDD, uniqKeys)
 
-    resultRDD.mapPartitions(iter => {
+    (if (numPartitions < 0){
+      logInfo("No need to coalesce")
+      resultRDD
+    }else{
+      logInfo(s"Change partition to ${numPartitions}")
+      resultRDD.coalesce(numPartitions)
+    }).mapPartitions(iter => {
 
       //Init Broadcast conf
       BroadcastConf.initProp(broadSysProps.value, broadCodisProps.value)

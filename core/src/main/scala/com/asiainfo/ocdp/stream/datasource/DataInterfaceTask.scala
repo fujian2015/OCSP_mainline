@@ -94,7 +94,7 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
     }
 
     if (StringUtils.isEmpty(groupID)) {
-      val def_group_name = DataSourceConstant.GROUP_ID_DEF + taskConf.getId + taskConf.getName
+      val def_group_name = DataSourceConstant.GROUP_ID_DEF + taskConf.getId
       logWarning("no group_id , use default : " + def_group_name)
       dsconf.set(DataSourceConstant.GROUP_ID_KEY, def_group_name)
     }
@@ -189,8 +189,15 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
         /**
           * update offset BEFORE output the result for AT MOST ONCE
           */
-        if (recover_mode == DataSourceConstant.AT_MOST_ONCE)
+
+        if (taskConf.recovery_mode == DataSourceConstant.FROM_LAST_STOP && recover_mode == DataSourceConstant.AT_MOST_ONCE){
+          logInfo(s"The recovery mode is ${recover_mode}, start to update offsets.")
           StreamingSourceFactory.updateDataSource(broadDiConf.value, rdd)
+          logInfo(s"Update offsets successfully for ${recover_mode}.")
+        } else if(taskConf.recovery_mode != DataSourceConstant.FROM_LAST_STOP) {
+          logInfo(s"The recovery mode is ${taskConf.recovery_mode}, so no need to update offsets.")
+        }
+
 
         if (labels.size > 0) {
           val labelRDD = withUptime("4.dataframe 转成rdd打标"){
@@ -254,8 +261,14 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
       /**
         * update offset AFTER output the result for AT LEAST ONCE
         */
-      if (recover_mode == DataSourceConstant.AT_LEAST_ONCE)
+      if (taskConf.recovery_mode == DataSourceConstant.FROM_LAST_STOP && recover_mode == DataSourceConstant.AT_LEAST_ONCE){
+        logInfo(s"The recovery mode is ${recover_mode}, start to update offsets.")
         StreamingSourceFactory.updateDataSource(broadDiConf.value, rdd)
+        logInfo(s"Update offsets successfully for ${recover_mode}.")
+      } else if(taskConf.recovery_mode != DataSourceConstant.FROM_LAST_STOP) {
+        logInfo(s"The recovery mode is ${taskConf.recovery_mode}, so no need to update offsets.")
+      }
+
     })
   }
 
@@ -284,7 +297,7 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
       else new EventCycleLife(period).contains(now)
     })
 
-    validEvents.map(event => eventService.submit(new BuildEvent(event, df, uniqKeys))).foreach(_=>eventService.take.get())
+    validEvents.map(event => eventService.submit(new BuildEvent(event, df, uniqKeys, taskConf.getReceive_interval))).foreach(_=>eventService.take.get())
 
     threadPool.shutdown()
   }
@@ -298,8 +311,9 @@ class DataInterfaceTask(taskConf: TaskConf) extends StreamTask {
   }
 }
 
-class BuildEvent(event: Event, df: DataFrame, uniqKeys: String) extends Callable[String] {
+class BuildEvent(event: Event, df: DataFrame, uniqKeys: String, receive_interval: Int) extends Callable[String] {
   override def call() = {
+    event.receive_interval = receive_interval
     event.buildEvent(df, uniqKeys)
     ""
   }

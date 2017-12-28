@@ -1,12 +1,18 @@
 package com.asiainfo.ocdp.stream.service
 
+import java.text.SimpleDateFormat
 import java.util.concurrent.FutureTask
+
 import com.asiainfo.ocdp.stream.common.Logging
 import com.asiainfo.ocdp.stream.config.MainFrameConf
-import com.asiainfo.ocdp.stream.tools.{CacheQryThreadPool, InsertEventRows, QryEventCache}
+import com.asiainfo.ocdp.stream.tools.{CacheQryThreadPool, InsertEventRows, Json4sUtils, QryEventCache}
+
 import scala.collection.mutable.Map
 import scala.collection.immutable
 import java.util.concurrent.ExecutorCompletionService
+
+import org.apache.commons.lang.StringUtils
+
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -71,6 +77,49 @@ class EventServer extends Logging with Serializable {
     }
     // 返回所有batchLimt的满足营销时间的数据json
     outPutJsonMap.toList.map(_._2)
+  }
+
+
+  def distinct(batchList: Array[Array[(String, String)]]): List[String] = {
+    val outPutJsonMap = Map[String, String]()
+    batchList.foreach(batch => batch.foreach(value => {
+      val key = value._1
+      val jsonLine = value._2
+      outPutJsonMap += (key -> jsonLine)
+
+//      if (outPutJsonMap.contains(key)){
+//        val currentMapLine = Json4sUtils.jsonStr2Map(jsonLine)
+//        val lastMapLine = Json4sUtils.jsonStr2Map(outPutJsonMap(key))
+//
+//        val currentTimestamp = getTimestamp(StringUtils.trimToEmpty(currentMapLine("datetime")))
+//        val lastTimestamp = getTimestamp(StringUtils.trimToEmpty(lastMapLine("datetime")))
+//
+//        if (currentTimestamp > lastTimestamp){
+//          outPutJsonMap += (key -> jsonLine)
+//        }
+//      }
+//      else{
+//        outPutJsonMap += (key -> jsonLine)
+//      }
+
+    }))
+
+    outPutJsonMap.toList.map(_._2)
+  }
+
+
+  private def getTimestamp(time: String): Long = {
+    val dateformat_mme = "yyyyMMddHHmmss"
+    val dateformat_mc = "yyyyMMdd HH:mm:ss:SSS"
+    try {
+      new SimpleDateFormat("yyyyMMdd HH:mm:ss:SSS").parse(time).getTime
+    }catch {
+      case ex: Exception => {
+        logError(s"Unexpected Error since datetime is ${time}:", ex)
+        System.currentTimeMillis()
+      }
+    }
+
   }
 
 }

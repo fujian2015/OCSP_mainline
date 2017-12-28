@@ -37,10 +37,11 @@ class KafkaReader(ssc: StreamingContext, conf: DataInterfaceConf) extends Stream
       throw new Exception(s"get kafka partition failed: ${partitionsE.left.get}")
     val partitions = partitionsE.right.get
 
+    //TestOffsets(mKC, mKafkaParams, mTopicsSet)
     val consumerOffsets = (if(taskConf.recovery_mode == DataSourceConstant.FROM_LAST_STOP) {
-      val consumerOffsetsE = mKC.getConsumerOffsets(mGroupId, partitions)
-      //TestOffsets(mKC, mKafkaParams, mTopicsSet)
+      log.info("using last end offset")
       CheckOffsets(mKC, mTopicsSet, mGroupId)
+      val consumerOffsetsE = mKC.getConsumerOffsets(mGroupId, partitions)
       (if (consumerOffsetsE.isLeft) {
         logWarning("Init Direct Kafka Stream: Failed to get Consumer offset! Use the latest data!")
         getFromOffsets(mKC, mKafkaParams, mTopicsSet)
@@ -48,11 +49,12 @@ class KafkaReader(ssc: StreamingContext, conf: DataInterfaceConf) extends Stream
         consumerOffsetsE.right.get
       })
     } else {
+      log.info("using latest offset")
       getFromOffsets(mKC, mKafkaParams, mTopicsSet)
     })
 
     consumerOffsets.foreach{ case (tp, lo) =>
-      logInfo("using offset : " + lo)
+      logInfo("topic : " + tp.topic + "  using offset : " + lo)
     }
 
     KafkaUtils.createDirectStream[String, String, StringDecoder, StringDecoder, (String, String)](
@@ -74,7 +76,7 @@ class KafkaReader(ssc: StreamingContext, conf: DataInterfaceConf) extends Stream
       //TestOffsets(mKC, mKafkaParams, mTopicsSet)
       CheckOffsets(mKC, mTopicsSet, mGroupId)
       (if (consumerOffsetsE.isLeft) {
-        logWarning("Init Direct Kafka Stream: Failed to get Consumer offset! Use the latest data!")
+        logError("Init Direct Kafka Stream: Failed to get Consumer offset! Use the latest data!")
         getFromOffsets(mKC, mKafkaParams, mTopicsSet)
       } else {
         consumerOffsetsE.right.get
@@ -136,6 +138,7 @@ class KafkaReader(ssc: StreamingContext, conf: DataInterfaceConf) extends Stream
   }
 
   private def CheckOffsets(kc: KafkaCluster, topics: Set[String], mGroupId: String): Unit = {
+
     topics.foreach(topic => {
       val partitionsE = kc.getPartitions(Set(topic))
       if (partitionsE.isLeft)
@@ -153,13 +156,43 @@ class KafkaReader(ssc: StreamingContext, conf: DataInterfaceConf) extends Stream
           else
             throw new Exception(s"get earliest leader offsets failed: ${earliestOffsetsE.left.get}")
 
+        val latestOffsetsE = kc.getLatestLeaderOffsets(partitions)
+        val latestOffsets =
+          if (latestOffsetsE.isRight)
+            latestOffsetsE.right.get
+          else
+            throw new Exception(s"get latest leader offsets failed: ${latestOffsetsE.left.get}")
+
         val res = consumerOffsetsE.right.get.filter({ case (tp, n) =>
-          val off = earliestOffsets(tp).offset
-          off > n
+          val eoff = earliestOffsets(tp).offset
+          val loff = latestOffsets(tp).offset
+          (n < eoff || n > loff)
         })
 
-        if (!res.isEmpty)
-          kc.setConsumerOffsets(mGroupId, res)
+        if (!res.isEmpty) {
+
+          earliestOffsets.map { case (tp, lo) =>
+            (tp, lo.offset)
+            logInfo("earliest leaderoffset : " + lo.offset)
+          }
+          latestOffsets.map { case (tp, lo) =>
+            (tp, lo.offset)
+            logInfo("lastest leaderoffset : " + lo.offset)
+          }
+
+          consumerOffsetsE.right.get.map({ case (tp, n) =>
+            logInfo("topic name : " + topic + " offset in zookeeper : " + n)
+          })
+
+          logError("consumer offset in zookeeper is out of date, using the earliest offset!");
+
+          val updateOff = consumerOffsetsE.right.get.map({ case (tp, n) =>
+            val off = earliestOffsets(tp).offset
+            (tp, off)
+          })
+
+          kc.setConsumerOffsets(mGroupId, updateOff)
+        }
       }
     })
   }
