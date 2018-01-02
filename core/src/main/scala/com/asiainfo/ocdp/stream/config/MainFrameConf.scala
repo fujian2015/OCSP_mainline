@@ -22,6 +22,8 @@ object MainFrameConf {
   val MONITOR_TASK_MONITOR_ENABLE = "ocsp.monitor.task-monitor.enable"
   val EXTRAID = "ocsp.event.append-id.enable"
   val jsonFormat="ocsp.event.output.record.json_format.ids"
+  // 当ocsp.event.append-id.enable=true时，设置不追加eventId的事件列表
+  val event_no_append_ids = "ocsp.event.output.record.no_append.ids"
 
   initMainFrameConf()
 
